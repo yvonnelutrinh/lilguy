@@ -1,15 +1,22 @@
+"use client"; // new
 
 import Image from "next/image";
 import HeaderTestComponent from "@/components/HeaderTestComponent";
 import FooterTestComponent from "@/components/FooterTestComponent";
+import LilGuy from "@/components/LilGuy/LilGuy"; // new
+import TextBox from "@/components/TextBox/TextBox"; // new
+import { useState } from "react"; // new
 
 export default function Home() {
+  const [health, setHealth] = useState(100); //new
+
   return (
-    
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-      <HeaderTestComponent/>
-      <FooterTestComponent/>
+        <HeaderTestComponent />
+        <LilGuy health={health} />
+        <TextBox health={health} setHealth={setHealth} />
+        <FooterTestComponent />
         <Image
           className="dark:invert"
           src="/next.svg"
