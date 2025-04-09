@@ -316,13 +316,34 @@ __turbopack_context__.s({
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/jsx-dev-runtime.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/index.js [app-client] (ecmascript)");
 ;
-var _s = __turbopack_context__.k.signature();
+var _s = __turbopack_context__.k.signature(), _s1 = __turbopack_context__.k.signature();
 "use client";
 ;
-function LilGuyCanvas({ health = 100, showControls = false, showHealthBar = false, size = 'normal', className = "", initialAnimation = "idle" }) {
+function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "normal", className = "", initialAnimation = "idle" }) {
     _s();
     const canvasRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(null);
     const [playerState, setPlayerState] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(initialAnimation);
+    const [clickCount, setClickCount] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(0);
+    const handleClick = ()=>{
+        const newCount = clickCount + 1;
+        setClickCount(newCount);
+        if (newCount >= 3) {
+            setPlayerState("angry");
+            setTimeout(()=>{
+                setPlayerState("idle");
+                setClickCount(0);
+            }, 3000);
+        }
+    };
+    const [health, setHealth] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "LilGuyCanvas.useEffect": ()=>{
+            const stored = localStorage.getItem("weeklyAverage");
+            if (stored) {
+                setHealth(parseFloat(stored));
+            }
+        }
+    }["LilGuyCanvas.useEffect"], []);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "LilGuyCanvas.useEffect": ()=>{
             const canvas = canvasRef.current;
@@ -330,7 +351,7 @@ function LilGuyCanvas({ health = 100, showControls = false, showHealthBar = fals
             const ctx = canvas.getContext("2d");
             if (!ctx) return;
             let CANVAS_WIDTH, CANVAS_HEIGHT;
-            if (size === 'widget') {
+            if (size === "widget") {
                 // smaller canvas for widget
                 CANVAS_WIDTH = canvas.width = 48;
                 CANVAS_HEIGHT = canvas.height = 48;
@@ -341,11 +362,18 @@ function LilGuyCanvas({ health = 100, showControls = false, showHealthBar = fals
             }
             const playerImage = new Image();
             playerImage.src = "/lilguy_update.png";
-            const spriteWidth = 100;
-            const spriteHeight = 100;
+            const spriteWidth = 500;
+            const spriteHeight = 500;
             let gameFrame = 0;
             const staggerFrames = 5;
-            const scale = 0.25;
+            // scale for widget or normal
+            let scale;
+            if (size === "widget") {
+                scale = 0.25 * 0.4;
+            } else {
+                // normal size
+                scale = 0.25;
+            }
             const displayWidth = spriteWidth * scale;
             const displayHeight = spriteHeight * scale;
             const centerX = (CANVAS_WIDTH - displayWidth) / 2;
@@ -358,6 +386,14 @@ function LilGuyCanvas({ health = 100, showControls = false, showHealthBar = fals
                 },
                 {
                     name: "walk",
+                    frames: 5
+                },
+                {
+                    name: "happy",
+                    frames: 6
+                },
+                {
+                    name: "angry",
                     frames: 5
                 }
             ];
@@ -383,20 +419,6 @@ function LilGuyCanvas({ health = 100, showControls = false, showHealthBar = fals
                     let position = Math.floor(gameFrame / staggerFrames) % spriteAnimations[playerState].loc.length;
                     let frameX = spriteWidth * position;
                     let frameY = spriteAnimations[playerState].loc[position].y;
-                    // position and scale based on widget/web app
-                    let xPosition, yPosition, scaledWidth, scaledHeight;
-                    if (size === 'widget') {
-                        xPosition = 0;
-                        yPosition = 0;
-                        scaledWidth = spriteWidth * 0.5;
-                        scaledHeight = spriteHeight * 0.5;
-                    } else {
-                        // normal size
-                        xPosition = centerX;
-                        yPosition = centerY;
-                        scaledWidth = displayWidth;
-                        scaledHeight = displayHeight;
-                    }
                     ctx.drawImage(playerImage, frameX, frameY, spriteWidth, spriteHeight, centerX, centerY, displayWidth, displayHeight);
                     gameFrame++;
                     requestAnimationFrame(animate);
@@ -413,30 +435,31 @@ function LilGuyCanvas({ health = 100, showControls = false, showHealthBar = fals
         size
     ]);
     // Combine user-provided className with conditional classes
-    const canvasClasses = `${size === 'normal' ? 'border border-black bg-gray-100 w-[100%] h-[auto] pb-4' : size === 'widget' ? 'w-full h-full' : 'w-[100%] h-[auto]'} ${className}`;
+    const canvasClasses = `${size === "normal" ? "border border-black bg-gray-100 w-[100%] h-[auto] pb-4" : size === "widget" ? "w-full h-full" : "w-[100%] h-[auto]"} ${className}`;
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-        className: `relative flex items-center justify-center ${size === 'widget' ? 'w-full h-full' : ''}`,
+        className: `relative flex items-center justify-center ${size === "widget" ? "w-full h-full" : ""}`,
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("canvas", {
                 ref: canvasRef,
-                className: canvasClasses
+                className: canvasClasses,
+                onClick: handleClick
             }, void 0, false, {
                 fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                lineNumber: 129,
+                lineNumber: 152,
                 columnNumber: 7
             }, this),
             showHealthBar && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "absolute bottom-5 w-full",
                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(HealthBar, {
-                    health: health
+                    health: health ?? 100
                 }, void 0, false, {
                     fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                    lineNumber: 136,
+                    lineNumber: 156,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                lineNumber: 135,
+                lineNumber: 155,
                 columnNumber: 9
             }, this),
             showControls && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -448,7 +471,7 @@ function LilGuyCanvas({ health = 100, showControls = false, showHealthBar = fals
                         children: "Choose Animation:"
                     }, void 0, false, {
                         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                        lineNumber: 142,
+                        lineNumber: 162,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -463,7 +486,7 @@ function LilGuyCanvas({ health = 100, showControls = false, showHealthBar = fals
                                 children: "Idle"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                                lineNumber: 155,
+                                lineNumber: 179,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -471,67 +494,83 @@ function LilGuyCanvas({ health = 100, showControls = false, showHealthBar = fals
                                 children: "Walk"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                                lineNumber: 156,
+                                lineNumber: 180,
+                                columnNumber: 13
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
+                                value: "happy",
+                                children: "Happy"
+                            }, void 0, false, {
+                                fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
+                                lineNumber: 181,
+                                columnNumber: 13
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
+                                value: "angry",
+                                children: "Angry"
+                            }, void 0, false, {
+                                fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
+                                lineNumber: 182,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                        lineNumber: 148,
+                        lineNumber: 168,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                lineNumber: 141,
+                lineNumber: 161,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-        lineNumber: 128,
+        lineNumber: 147,
         columnNumber: 5
     }, this);
 }
-_s(LilGuyCanvas, "FI9LDTp29MSHxl5PFgckHLDuZn0=");
+_s(LilGuyCanvas, "B69503oOGZLUaGMR040AZv9cfes=");
 _c = LilGuyCanvas;
-function HealthBar({ health, showLabel = true, className = "" }) {
+function HealthBar({ showLabel = true, className = "", health }) {
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         className: `w-full flex flex-col justify-center items-center ${className}`,
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                className: "relative w-[100%] h-4 bg-gray-300 rounded-full mb-2",
+                className: "relative w-[90%] h-4 bg-gray-300 rounded-full mb-2",
                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                     className: "absolute top-0 left-0 h-full rounded-full",
                     style: {
                         width: `${health}%`,
-                        backgroundColor: health <= 30 ? "red" : health <= 70 ? "yellow" : "green"
+                        backgroundColor: (health ?? 100) <= 30 ? "red" : (health ?? 100) <= 70 ? "yellow" : "green"
                     }
                 }, void 0, false, {
                     fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                    lineNumber: 175,
+                    lineNumber: 207,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                lineNumber: 174,
+                lineNumber: 206,
                 columnNumber: 7
             }, this),
             showLabel && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "text-xs text-black",
                 children: [
-                    health,
-                    "/100"
+                    Math.floor(health ?? 100),
+                    " / 100"
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                lineNumber: 185,
+                lineNumber: 221,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-        lineNumber: 173,
+        lineNumber: 203,
         columnNumber: 5
     }, this);
 }
@@ -545,7 +584,7 @@ function LilGuy({ health = 100 }) {
         size: "normal"
     }, void 0, false, {
         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-        lineNumber: 194,
+        lineNumber: 236,
         columnNumber: 5
     }, this);
 }
@@ -556,22 +595,35 @@ function WidgetLilGuy() {
         size: "widget"
     }, void 0, false, {
         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-        lineNumber: 206,
-        columnNumber: 5
+        lineNumber: 247,
+        columnNumber: 10
     }, this);
 }
 _c3 = WidgetLilGuy;
 // health bar as separate component for widget
 function WidgetHealth({ health = 100 }) {
+    _s1();
+    const [widgetHealth, setWidgetHealth] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "WidgetHealth.useEffect": ()=>{
+            const stored = localStorage.getItem("weeklyAverage");
+            if (stored) {
+                setWidgetHealth(parseFloat(stored));
+            } else {
+                setWidgetHealth(health);
+            }
+        }
+    }["WidgetHealth.useEffect"], []);
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(HealthBar, {
-        health: health,
+        health: widgetHealth ?? 100,
         className: "mb-2"
     }, void 0, false, {
         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-        lineNumber: 214,
-        columnNumber: 10
+        lineNumber: 268,
+        columnNumber: 5
     }, this);
 }
+_s1(WidgetHealth, "Q1bmF73rZJrOZ417yggS2BrFskw=");
 _c4 = WidgetHealth;
 ;
 var _c, _c1, _c2, _c3, _c4;
@@ -696,6 +748,7 @@ __turbopack_context__.s({
     "default": (()=>__TURBOPACK__default__export__)
 });
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/jsx-dev-runtime.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/index.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$recharts$2f$es6$2f$chart$2f$LineChart$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/recharts/es6/chart/LineChart.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$recharts$2f$es6$2f$cartesian$2f$Line$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/recharts/es6/cartesian/Line.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$recharts$2f$es6$2f$cartesian$2f$XAxis$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/recharts/es6/cartesian/XAxis.js [app-client] (ecmascript)");
@@ -705,6 +758,8 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$recharts$2f$
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$recharts$2f$es6$2f$component$2f$ResponsiveContainer$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/recharts/es6/component/ResponsiveContainer.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$recharts$2f$es6$2f$component$2f$Legend$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/recharts/es6/component/Legend.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Card$2f$Card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/components/ui/Card/Card.tsx [app-client] (ecmascript)");
+;
+var _s = __turbopack_context__.k.signature();
 ;
 ;
 ;
@@ -747,11 +802,19 @@ const weekData = [
     }
 ];
 const ProductivityMetrics = ({ className })=>{
+    _s();
     // calculate today's productive time
     const todayData = weekData[new Date().getDay() === 0 ? 6 : new Date().getDay() - 1];
     const todayProductiveHours = todayData.productive / 100 * 8; // assuming an 8h workday
     // calculate weekly average
     const weeklyAverage = weekData.reduce((sum, day)=>sum + day.productive, 0) / weekData.length;
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "ProductivityMetrics.useEffect": ()=>{
+            localStorage.setItem("weeklyAverage", JSON.stringify(weeklyAverage));
+        }
+    }["ProductivityMetrics.useEffect"], [
+        weeklyAverage
+    ]);
     // calculate streak (consecutive days above 60% productivity)
     let streak = 0;
     for(let i = weekData.length - 1; i >= 0; i--){
@@ -778,20 +841,20 @@ const ProductivityMetrics = ({ className })=>{
                                         children: "Today"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/ProductivityMetrics/ProductivityMetrics.tsx",
-                                        lineNumber: 53,
+                                        lineNumber: 57,
                                         columnNumber: 25
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Card$2f$Card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardDescription"], {
                                         children: "Productive Time"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/ProductivityMetrics/ProductivityMetrics.tsx",
-                                        lineNumber: 54,
+                                        lineNumber: 58,
                                         columnNumber: 25
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/ProductivityMetrics/ProductivityMetrics.tsx",
-                                lineNumber: 52,
+                                lineNumber: 56,
                                 columnNumber: 21
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Card$2f$Card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -804,7 +867,7 @@ const ProductivityMetrics = ({ className })=>{
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/ProductivityMetrics/ProductivityMetrics.tsx",
-                                        lineNumber: 57,
+                                        lineNumber: 61,
                                         columnNumber: 25
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -815,7 +878,7 @@ const ProductivityMetrics = ({ className })=>{
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/ProductivityMetrics/ProductivityMetrics.tsx",
-                                        lineNumber: 58,
+                                        lineNumber: 62,
                                         columnNumber: 25
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -828,24 +891,24 @@ const ProductivityMetrics = ({ className })=>{
                                             }
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/ProductivityMetrics/ProductivityMetrics.tsx",
-                                            lineNumber: 62,
+                                            lineNumber: 66,
                                             columnNumber: 29
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/ProductivityMetrics/ProductivityMetrics.tsx",
-                                        lineNumber: 61,
+                                        lineNumber: 65,
                                         columnNumber: 25
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/ProductivityMetrics/ProductivityMetrics.tsx",
-                                lineNumber: 56,
+                                lineNumber: 60,
                                 columnNumber: 21
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/ProductivityMetrics/ProductivityMetrics.tsx",
-                        lineNumber: 51,
+                        lineNumber: 55,
                         columnNumber: 17
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Card$2f$Card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
@@ -859,20 +922,20 @@ const ProductivityMetrics = ({ className })=>{
                                         children: "Weekly Average"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/ProductivityMetrics/ProductivityMetrics.tsx",
-                                        lineNumber: 75,
+                                        lineNumber: 79,
                                         columnNumber: 25
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Card$2f$Card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardDescription"], {
                                         children: "Productivity Score"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/ProductivityMetrics/ProductivityMetrics.tsx",
-                                        lineNumber: 76,
+                                        lineNumber: 80,
                                         columnNumber: 25
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/ProductivityMetrics/ProductivityMetrics.tsx",
-                                lineNumber: 74,
+                                lineNumber: 78,
                                 columnNumber: 21
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Card$2f$Card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -885,7 +948,7 @@ const ProductivityMetrics = ({ className })=>{
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/ProductivityMetrics/ProductivityMetrics.tsx",
-                                        lineNumber: 79,
+                                        lineNumber: 83,
                                         columnNumber: 25
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -893,7 +956,7 @@ const ProductivityMetrics = ({ className })=>{
                                         children: weeklyAverage > 70 ? 'Excellent!' : weeklyAverage > 50 ? 'Good' : 'Needs improvement'
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/ProductivityMetrics/ProductivityMetrics.tsx",
-                                        lineNumber: 80,
+                                        lineNumber: 84,
                                         columnNumber: 25
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -906,24 +969,24 @@ const ProductivityMetrics = ({ className })=>{
                                             }
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/ProductivityMetrics/ProductivityMetrics.tsx",
-                                            lineNumber: 84,
+                                            lineNumber: 88,
                                             columnNumber: 29
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/ProductivityMetrics/ProductivityMetrics.tsx",
-                                        lineNumber: 83,
+                                        lineNumber: 87,
                                         columnNumber: 25
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/ProductivityMetrics/ProductivityMetrics.tsx",
-                                lineNumber: 78,
+                                lineNumber: 82,
                                 columnNumber: 21
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/ProductivityMetrics/ProductivityMetrics.tsx",
-                        lineNumber: 73,
+                        lineNumber: 77,
                         columnNumber: 17
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Card$2f$Card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
@@ -937,20 +1000,20 @@ const ProductivityMetrics = ({ className })=>{
                                         children: "Productive Streak"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/ProductivityMetrics/ProductivityMetrics.tsx",
-                                        lineNumber: 97,
+                                        lineNumber: 101,
                                         columnNumber: 25
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Card$2f$Card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardDescription"], {
                                         children: "Consecutive Days"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/ProductivityMetrics/ProductivityMetrics.tsx",
-                                        lineNumber: 98,
+                                        lineNumber: 102,
                                         columnNumber: 25
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/ProductivityMetrics/ProductivityMetrics.tsx",
-                                lineNumber: 96,
+                                lineNumber: 100,
                                 columnNumber: 21
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Card$2f$Card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -963,7 +1026,7 @@ const ProductivityMetrics = ({ className })=>{
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/ProductivityMetrics/ProductivityMetrics.tsx",
-                                        lineNumber: 101,
+                                        lineNumber: 105,
                                         columnNumber: 25
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -971,7 +1034,7 @@ const ProductivityMetrics = ({ className })=>{
                                         children: streak > 5 ? 'Amazing streak!' : streak > 2 ? 'Keep it up!' : 'Start a streak!'
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/ProductivityMetrics/ProductivityMetrics.tsx",
-                                        lineNumber: 102,
+                                        lineNumber: 106,
                                         columnNumber: 25
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -983,30 +1046,30 @@ const ProductivityMetrics = ({ className })=>{
                                                 }
                                             }, i, false, {
                                                 fileName: "[project]/src/components/ProductivityMetrics/ProductivityMetrics.tsx",
-                                                lineNumber: 107,
+                                                lineNumber: 111,
                                                 columnNumber: 33
                                             }, this))
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/ProductivityMetrics/ProductivityMetrics.tsx",
-                                        lineNumber: 105,
+                                        lineNumber: 109,
                                         columnNumber: 25
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/ProductivityMetrics/ProductivityMetrics.tsx",
-                                lineNumber: 100,
+                                lineNumber: 104,
                                 columnNumber: 21
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/ProductivityMetrics/ProductivityMetrics.tsx",
-                        lineNumber: 95,
+                        lineNumber: 99,
                         columnNumber: 17
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/ProductivityMetrics/ProductivityMetrics.tsx",
-                lineNumber: 50,
+                lineNumber: 54,
                 columnNumber: 13
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Card$2f$Card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
@@ -1018,12 +1081,12 @@ const ProductivityMetrics = ({ className })=>{
                             children: "Weekly Productivity"
                         }, void 0, false, {
                             fileName: "[project]/src/components/ProductivityMetrics/ProductivityMetrics.tsx",
-                            lineNumber: 123,
+                            lineNumber: 127,
                             columnNumber: 21
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/components/ProductivityMetrics/ProductivityMetrics.tsx",
-                        lineNumber: 122,
+                        lineNumber: 126,
                         columnNumber: 17
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Card$2f$Card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -1045,19 +1108,19 @@ const ProductivityMetrics = ({ className })=>{
                                             strokeDasharray: "3 3"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/ProductivityMetrics/ProductivityMetrics.tsx",
-                                            lineNumber: 137,
+                                            lineNumber: 141,
                                             columnNumber: 33
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$recharts$2f$es6$2f$cartesian$2f$XAxis$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["XAxis"], {
                                             dataKey: "day"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/ProductivityMetrics/ProductivityMetrics.tsx",
-                                            lineNumber: 138,
+                                            lineNumber: 142,
                                             columnNumber: 33
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$recharts$2f$es6$2f$cartesian$2f$YAxis$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["YAxis"], {}, void 0, false, {
                                             fileName: "[project]/src/components/ProductivityMetrics/ProductivityMetrics.tsx",
-                                            lineNumber: 139,
+                                            lineNumber: 143,
                                             columnNumber: 33
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$recharts$2f$es6$2f$component$2f$Tooltip$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Tooltip"], {
@@ -1067,12 +1130,12 @@ const ProductivityMetrics = ({ className })=>{
                                             }
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/ProductivityMetrics/ProductivityMetrics.tsx",
-                                            lineNumber: 140,
+                                            lineNumber: 144,
                                             columnNumber: 33
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$recharts$2f$es6$2f$component$2f$Legend$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Legend"], {}, void 0, false, {
                                             fileName: "[project]/src/components/ProductivityMetrics/ProductivityMetrics.tsx",
-                                            lineNumber: 146,
+                                            lineNumber: 150,
                                             columnNumber: 33
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$recharts$2f$es6$2f$cartesian$2f$Line$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Line"], {
@@ -1083,7 +1146,7 @@ const ProductivityMetrics = ({ className })=>{
                                             name: "Productive %"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/ProductivityMetrics/ProductivityMetrics.tsx",
-                                            lineNumber: 147,
+                                            lineNumber: 151,
                                             columnNumber: 33
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$recharts$2f$es6$2f$cartesian$2f$Line$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Line"], {
@@ -1094,43 +1157,44 @@ const ProductivityMetrics = ({ className })=>{
                                             name: "Unproductive %"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/ProductivityMetrics/ProductivityMetrics.tsx",
-                                            lineNumber: 154,
+                                            lineNumber: 158,
                                             columnNumber: 33
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/ProductivityMetrics/ProductivityMetrics.tsx",
-                                    lineNumber: 128,
+                                    lineNumber: 132,
                                     columnNumber: 29
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/ProductivityMetrics/ProductivityMetrics.tsx",
-                                lineNumber: 127,
+                                lineNumber: 131,
                                 columnNumber: 25
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/components/ProductivityMetrics/ProductivityMetrics.tsx",
-                            lineNumber: 126,
+                            lineNumber: 130,
                             columnNumber: 21
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/components/ProductivityMetrics/ProductivityMetrics.tsx",
-                        lineNumber: 125,
+                        lineNumber: 129,
                         columnNumber: 17
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/ProductivityMetrics/ProductivityMetrics.tsx",
-                lineNumber: 121,
+                lineNumber: 125,
                 columnNumber: 13
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/ProductivityMetrics/ProductivityMetrics.tsx",
-        lineNumber: 49,
+        lineNumber: 53,
         columnNumber: 9
     }, this);
 };
+_s(ProductivityMetrics, "OD7bBpZva5O2jO+Puf00hKivP7c=");
 _c = ProductivityMetrics;
 const __TURBOPACK__default__export__ = ProductivityMetrics;
 var _c;
@@ -1217,7 +1281,7 @@ function TextBox({ health, setHealth }) {
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                         onClick: ()=>setHealth(Math.min(health + 5, 100)),
                         className: "jsx-655c3b27499c53a" + " " + "flex-1 px-4 py-2 bg-green-200 text-black border border-black rounded transition-all transform hover:bg-green-300",
-                        children: "Work"
+                        children: "Walk"
                     }, void 0, false, {
                         fileName: "[project]/src/components/TextBox/TextBox.tsx",
                         lineNumber: 59,

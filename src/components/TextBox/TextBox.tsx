@@ -60,7 +60,7 @@ export default function TextBox({ health, setHealth }: TextBoxProps) {
           onClick={() => setHealth(Math.min(health + 5, 100))}
           className="flex-1 px-4 py-2 bg-green-200 text-black border border-black rounded transition-all transform hover:bg-green-300"
         >
-          Work
+          Walk
         </button>
         <button
           onClick={() => setHealth(Math.max(health - 5, 0))}

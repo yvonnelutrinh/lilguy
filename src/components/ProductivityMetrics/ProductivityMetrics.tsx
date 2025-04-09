@@ -1,5 +1,5 @@
 
-import React from 'react';
+import {useEffect} from 'react';
 import {
     LineChart,
     Line,
@@ -34,6 +34,10 @@ const ProductivityMetrics: React.FC<ProductivityMetricsProps> = ({ className }) 
 
     // calculate weekly average
     const weeklyAverage = weekData.reduce((sum, day) => sum + day.productive, 0) / weekData.length;
+
+        useEffect(() => {
+          localStorage.setItem("weeklyAverage", JSON.stringify(weeklyAverage));
+        }, [weeklyAverage]);
 
     // calculate streak (consecutive days above 60% productivity)
     let streak = 0;
