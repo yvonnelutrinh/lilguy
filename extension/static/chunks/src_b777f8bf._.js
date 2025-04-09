@@ -340,11 +340,16 @@ function LilGuyCanvas({ health = 100, showControls = false, showHealthBar = fals
                 CANVAS_HEIGHT = canvas.height = 250;
             }
             const playerImage = new Image();
-            playerImage.src = "/LilGuy_02.png";
+            playerImage.src = "/lilguy_update.png";
             const spriteWidth = 100;
             const spriteHeight = 100;
             let gameFrame = 0;
             const staggerFrames = 5;
+            const scale = 0.25;
+            const displayWidth = spriteWidth * scale;
+            const displayHeight = spriteHeight * scale;
+            const centerX = (CANVAS_WIDTH - displayWidth) / 2;
+            const centerY = (CANVAS_HEIGHT - displayHeight) / 2;
             const spriteAnimations = {};
             const animationStates = [
                 {
@@ -387,12 +392,12 @@ function LilGuyCanvas({ health = 100, showControls = false, showHealthBar = fals
                         scaledHeight = spriteHeight * 0.5;
                     } else {
                         // normal size
-                        xPosition = 150;
-                        yPosition = 80;
-                        scaledWidth = spriteWidth;
-                        scaledHeight = spriteHeight;
+                        xPosition = centerX;
+                        yPosition = centerY;
+                        scaledWidth = displayWidth;
+                        scaledHeight = displayHeight;
                     }
-                    ctx.drawImage(playerImage, frameX, frameY, spriteWidth, spriteHeight, xPosition, yPosition, scaledWidth, scaledHeight);
+                    ctx.drawImage(playerImage, frameX, frameY, spriteWidth, spriteHeight, centerX, centerY, displayWidth, displayHeight);
                     gameFrame++;
                     requestAnimationFrame(animate);
                 }
@@ -417,7 +422,7 @@ function LilGuyCanvas({ health = 100, showControls = false, showHealthBar = fals
                 className: canvasClasses
             }, void 0, false, {
                 fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                lineNumber: 122,
+                lineNumber: 129,
                 columnNumber: 7
             }, this),
             showHealthBar && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -426,12 +431,12 @@ function LilGuyCanvas({ health = 100, showControls = false, showHealthBar = fals
                     health: health
                 }, void 0, false, {
                     fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                    lineNumber: 129,
+                    lineNumber: 136,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                lineNumber: 128,
+                lineNumber: 135,
                 columnNumber: 9
             }, this),
             showControls && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -443,7 +448,7 @@ function LilGuyCanvas({ health = 100, showControls = false, showHealthBar = fals
                         children: "Choose Animation:"
                     }, void 0, false, {
                         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                        lineNumber: 135,
+                        lineNumber: 142,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -458,7 +463,7 @@ function LilGuyCanvas({ health = 100, showControls = false, showHealthBar = fals
                                 children: "Idle"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                                lineNumber: 148,
+                                lineNumber: 155,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -466,25 +471,25 @@ function LilGuyCanvas({ health = 100, showControls = false, showHealthBar = fals
                                 children: "Walk"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                                lineNumber: 149,
+                                lineNumber: 156,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                        lineNumber: 141,
+                        lineNumber: 148,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                lineNumber: 134,
+                lineNumber: 141,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-        lineNumber: 121,
+        lineNumber: 128,
         columnNumber: 5
     }, this);
 }
@@ -504,12 +509,12 @@ function HealthBar({ health, showLabel = true, className = "" }) {
                     }
                 }, void 0, false, {
                     fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                    lineNumber: 168,
+                    lineNumber: 175,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                lineNumber: 167,
+                lineNumber: 174,
                 columnNumber: 7
             }, this),
             showLabel && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -520,13 +525,13 @@ function HealthBar({ health, showLabel = true, className = "" }) {
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                lineNumber: 178,
+                lineNumber: 185,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-        lineNumber: 166,
+        lineNumber: 173,
         columnNumber: 5
     }, this);
 }
@@ -540,7 +545,7 @@ function LilGuy({ health = 100 }) {
         size: "normal"
     }, void 0, false, {
         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-        lineNumber: 187,
+        lineNumber: 194,
         columnNumber: 5
     }, this);
 }
@@ -551,7 +556,7 @@ function WidgetLilGuy() {
         size: "widget"
     }, void 0, false, {
         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-        lineNumber: 199,
+        lineNumber: 206,
         columnNumber: 5
     }, this);
 }
@@ -563,7 +568,7 @@ function WidgetHealth({ health = 100 }) {
         className: "mb-2"
     }, void 0, false, {
         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-        lineNumber: 207,
+        lineNumber: 214,
         columnNumber: 10
     }, this);
 }
@@ -1175,16 +1180,16 @@ function TextBox({ health, setHealth }) {
         }
     }["TextBox.useEffect"], []);
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-        className: "jsx-1b521f0484efe7c7" + " " + "w-[100%] flex flex-col items-center",
+        className: "jsx-655c3b27499c53a" + " " + "w-[100%] flex flex-col items-center",
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                className: "jsx-1b521f0484efe7c7" + " " + "w-full bg-white p-[24px] min-h-[12.5rem] max-w-[25rem] border border-black flex flex-col items-start justify-start mb-4",
+                className: "jsx-655c3b27499c53a" + " " + "w-full bg-white p-[24px] min-h-[12.5rem] max-w-[25rem] border border-black flex flex-col items-start justify-start mb-4",
                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                    className: "jsx-1b521f0484efe7c7" + " " + "text-left text-xl text-black font-mono",
+                    className: "jsx-655c3b27499c53a" + " " + "text-left text-xl text-black font-mono",
                     children: [
                         text,
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                            className: "jsx-1b521f0484efe7c7" + " " + "ml-1 text-xl cursor-blink",
+                            className: "jsx-655c3b27499c53a" + " " + "ml-1 text-xl cursor-blink",
                             children: "|"
                         }, void 0, false, {
                             fileName: "[project]/src/components/TextBox/TextBox.tsx",
@@ -1203,15 +1208,15 @@ function TextBox({ health, setHealth }) {
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$styled$2d$jsx$2f$style$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
-                id: "1b521f0484efe7c7",
-                children: ".cursor-blink.jsx-1b521f0484efe7c7{animation:.9s step-end infinite blink}@keyframes blink{0%{opacity:1}50%{opacity:0}to{opacity:1}}"
+                id: "655c3b27499c53a",
+                children: ".cursor-blink.jsx-655c3b27499c53a{animation:.9s step-end infinite blink}@keyframes blink{0%{opacity:1}50%{opacity:0}to{opacity:1}}"
             }, void 0, false, void 0, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                className: "jsx-1b521f0484efe7c7" + " " + "flex gap-4 w-full",
+                className: "jsx-655c3b27499c53a" + " " + "flex gap-4 w-full",
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                         onClick: ()=>setHealth(Math.min(health + 5, 100)),
-                        className: "jsx-1b521f0484efe7c7" + " " + "flex-1 px-4 py-2 bg-green-200 text-black border border-black rounded transition-all transform hover:bg-green-300",
+                        className: "jsx-655c3b27499c53a" + " " + "flex-1 px-4 py-2 bg-green-200 text-black border border-black rounded transition-all transform hover:bg-green-300",
                         children: "Work"
                     }, void 0, false, {
                         fileName: "[project]/src/components/TextBox/TextBox.tsx",
@@ -1220,7 +1225,7 @@ function TextBox({ health, setHealth }) {
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                         onClick: ()=>setHealth(Math.max(health - 5, 0)),
-                        className: "jsx-1b521f0484efe7c7" + " " + "flex-1 px-4 py-2 bg-red-200 text-black border border-black rounded transition-all transform hover:bg-red-300",
+                        className: "jsx-655c3b27499c53a" + " " + "flex-1 px-4 py-2 bg-red-200 text-black border border-black rounded transition-all transform hover:bg-red-300",
                         children: "Laze"
                     }, void 0, false, {
                         fileName: "[project]/src/components/TextBox/TextBox.tsx",

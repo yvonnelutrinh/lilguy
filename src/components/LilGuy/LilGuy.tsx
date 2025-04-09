@@ -27,6 +27,7 @@ function LilGuyCanvas({
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    
     let CANVAS_WIDTH, CANVAS_HEIGHT;
 
     if (size === 'widget') {
@@ -40,12 +41,18 @@ function LilGuyCanvas({
     }
 
     const playerImage = new Image();
-    playerImage.src = "/LilGuy_02.png";
+    playerImage.src = "/lilguy_update.png";
 
     const spriteWidth = 100;
     const spriteHeight = 100;
     let gameFrame = 0;
     const staggerFrames = 5;
+
+    const scale = 0.25;
+    const displayWidth = spriteWidth * scale;
+    const displayHeight = spriteHeight * scale;
+    const centerX = (CANVAS_WIDTH - displayWidth) / 2;
+    const centerY = (CANVAS_HEIGHT - displayHeight) / 2;
 
     const spriteAnimations: Record<
       string,
@@ -85,10 +92,10 @@ function LilGuyCanvas({
         scaledHeight = spriteHeight* 0.5;
       } else {
         // normal size
-        xPosition = 150;
-        yPosition = 80;
-        scaledWidth = spriteWidth;
-        scaledHeight = spriteHeight;
+        xPosition = centerX;
+        yPosition = centerY;
+        scaledWidth = displayWidth;
+        scaledHeight = displayHeight;
       }
 
       ctx.drawImage(
@@ -97,10 +104,10 @@ function LilGuyCanvas({
         frameY,
         spriteWidth,
         spriteHeight,
-        xPosition,
-        yPosition,
-        scaledWidth,
-        scaledHeight
+        centerX,
+        centerY,
+        displayWidth,
+        displayHeight
       );
 
       gameFrame++;
