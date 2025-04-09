@@ -1,6 +1,5 @@
 
-import { useState } from 'react';
-import { Bell, Settings, Menu } from 'lucide-react';
+import { Bell, Settings } from 'lucide-react';
 import { DropdownMenu } from "radix-ui";
 import { Button } from '@/components/ui/Button/Button';
 
@@ -11,16 +10,10 @@ const notifications = [
 ];
 
 const Header: React.FC = () => {
-    const [isOpen, setIsOpen] = useState(false);
-
     return (
         <header className="bg-white border-b-2 border-black px-4 py-2 flex justify-between items-center">
             <div className="flex items-center gap-2">
-                <Menu className="md:hidden h-5 w-5" onClick={() => setIsOpen(!isOpen)} />
-                <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 bg-pixel-primary text-white pixelated rounded flex items-center justify-center font-bold">P</div>
-                    <h1 className="text-base font-bold hidden sm:block">PixelPal Power-Up</h1>
-                </div>
+                <h1 className="text-base font-bold sm:block">LilGuy</h1>
             </div>
 
             <div className="flex items-center gap-2">
@@ -37,8 +30,8 @@ const Header: React.FC = () => {
                             )}
                         </Button>
                     </DropdownMenu.Trigger>
-                    <DropdownMenu.Content align="end" className="w-80">
-                        <DropdownMenu.Label>Notifications</DropdownMenu.Label>
+                    <DropdownMenu.Content align="end" className="rounded-lg border w-80 bg-white z-50">
+                        <DropdownMenu.Label className="py-2 px-4">Notifications</DropdownMenu.Label>
                         <DropdownMenu.Separator />
                         {notifications.length === 0 ? (
                             <div className="py-2 px-4 text-sm text-gray-500 text-center">

@@ -29,8 +29,8 @@ export default function TextBox({ health, setHealth }: TextBoxProps) {
   }, []);
 
   return (
-    <div className="w-[400px] flex flex-col items-center">
-      <div className="w-full bg-white p-[24px] h-[200px] border border-black flex flex-col items-start justify-start mb-4">
+    <div className="w-[100%] flex flex-col items-center">
+      <div className="w-full bg-white p-[24px] min-h-[12.5rem] max-w-[25rem] border border-black flex flex-col items-start justify-start mb-4">
         <p className="text-left text-xl text-black font-mono">
           {text}
           <span className="ml-1 text-xl cursor-blink">|</span>

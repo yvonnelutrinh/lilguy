@@ -80,11 +80,11 @@ export default function LilGuy({ health }: LilGuyProps) {
       <canvas
         ref={canvasRef}
         id="canvas1"
-        className="border border-black w-[400px] h-[250px]"
+        className="border border-black w-[100%] h-[auto]"
       />
 
       <div className="absolute bottom-5 w-full flex justify-center items-center mb-2">
-        <div className="relative w-[368px] h-4 bg-gray-300 rounded-full">
+        <div className="relative w-[80%] h-4 bg-gray-300 rounded-full">
           <div
             className={`absolute top-0 left-0 h-full rounded-full`}
             style={{
