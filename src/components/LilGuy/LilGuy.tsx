@@ -1,12 +1,13 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import TextBox from "../TextBox/TextBox";
 
 interface LilGuyProps {
   showControls?: boolean;
   showHealthBar?: boolean;
   size?: "normal" | "widget";
   className?: string;
-  initialAnimation?: "idle" | "walk" | "happy" | "angry";
+  initialAnimation?: "idle" | "walk" | "happy" | "angry" | "sad" | "shocked";
   health?: number;
 }
 
@@ -17,10 +18,11 @@ function LilGuyCanvas({
   className = "",
   initialAnimation = "idle",
 }: LilGuyProps) {
+
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [playerState, setPlayerState] = useState(initialAnimation);
-
   const [clickCount, setClickCount] = useState(0);
+   const [health, setHealth] = useState<number | null>(null);
 
   const handleClick = () => {
     const newCount = clickCount + 1;
@@ -35,7 +37,6 @@ function LilGuyCanvas({
     }
   };
 
-  const [health, setHealth] = useState<number | null>(null);
   useEffect(() => {
     const stored = localStorage.getItem("weeklyAverage");
     if (stored) {
@@ -62,7 +63,7 @@ function LilGuyCanvas({
     }
 
     const playerImage = new Image();
-    playerImage.src = "/lilguy_update.png";
+    playerImage.src = "/lilguy_3.png";
 
     const spriteWidth = 500;
     const spriteHeight = 500;
@@ -93,6 +94,8 @@ function LilGuyCanvas({
       { name: "walk", frames: 5 },
       { name: "happy", frames: 6 },
       { name: "angry", frames: 5 },
+      { name: "sad", frames: 6 },
+      { name: "shocked", frames: 6 },
     ];
 
     animationStates.forEach((state, index) => {
@@ -134,7 +137,6 @@ function LilGuyCanvas({
     };
   }, [playerState, size]);
 
-  // Combine user-provided className with conditional classes
   const canvasClasses = `${
     size === "normal"
       ? "border border-black bg-gray-100 w-[100%] h-[auto] pb-4"
@@ -143,47 +145,70 @@ function LilGuyCanvas({
       : "w-[100%] h-[auto]"
   } ${className}`;
 
+  
   return (
-    <div
-      className={`relative flex items-center justify-center ${
-        size === "widget" ? "w-full h-full" : ""
-      }`}
-    >
-      <canvas ref={canvasRef} className={canvasClasses} onClick={handleClick} />
+    <>
+      <div
+        className={`relative flex items-center justify-center ${
+          size === "widget" ? "w-full h-full" : ""
+        }`}
+      >
+        <canvas
+          ref={canvasRef}
+          className={canvasClasses}
+          onClick={handleClick}
+        />
 
-      {showHealthBar && (
-        <div className="absolute bottom-5 w-full">
-          <HealthBar health={health ?? 100} />
-        </div>
-      )}
+        {showHealthBar && (
+          <div className="absolute bottom-5 w-full">
+            <HealthBar health={health ?? 100} />
+          </div>
+        )}
 
-      {showControls && (
-        <div className="absolute top-6 z-10 text-lg">
-          <label
-            htmlFor="animations"
-            className="mr-2 text-xl font-semibold text-black"
-          >
-            Choose Animation:
-          </label>
-          <select
-            id="animations"
-            name="animations"
-            value={playerState}
-            onChange={(e) =>
-              setPlayerState(
-                e.target.value as "idle" | "walk" | "happy" | "angry"
-              )
-            }
-            className="text-xl p-1 rounded bg-white border border-gray-300 text-black"
-          >
-            <option value="idle">Idle</option>
-            <option value="walk">Walk</option>
-            <option value="happy">Happy</option>
-            <option value="angry">Angry</option>
-          </select>
-        </div>
-      )}
-    </div>
+        {showControls && (
+          <div className="absolute top-6 z-10 text-lg">
+            <label
+              htmlFor="animations"
+              className="mr-2 text-xl font-semibold text-black"
+            >
+              Choose Animation:
+            </label>
+            <select
+              id="animations"
+              name="animations"
+              value={playerState}
+              onChange={(e) =>
+                setPlayerState(
+                  e.target.value as
+                    | "idle"
+                    | "walk"
+                    | "happy"
+                    | "angry"
+                    | "sad"
+                    | "shocked"
+                )
+              }
+              className="text-xl p-1 rounded bg-white border border-gray-300 text-black"
+            >
+              <option value="idle">Idle</option>
+              <option value="walk">Walk</option>
+              <option value="happy">Happy</option>
+              <option value="angry">Angry</option>
+              <option value="sad">Sad</option>
+              <option value="shocked">Shocked</option>
+            </select>
+          </div>
+        )}
+      </div>
+      {size === "normal" ? (
+        <TextBox
+          health={health}
+          setHealth={setHealth}
+          animation={playerState}
+          setAnimation={setPlayerState}
+        />
+      ) : null}
+    </>
   );
 }
 

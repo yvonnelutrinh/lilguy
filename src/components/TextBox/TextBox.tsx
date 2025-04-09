@@ -3,12 +3,17 @@
 import React, { useEffect, useRef, useState } from "react";
 
 interface TextBoxProps {
-  health: number;
-  setHealth: React.Dispatch<React.SetStateAction<number>>;
+  health: number | null;
+  setHealth: React.Dispatch<React.SetStateAction<number | null>>;
+  animation: "idle" | "walk" | "happy" | "angry" | "sad" | "shocked";
+  setAnimation: React.Dispatch<
+    React.SetStateAction<"idle" | "walk" | "happy" | "angry" | "sad" | "shocked">
+  >;
 }
 
-export default function TextBox({ health, setHealth }: TextBoxProps) {
+export default function TextBox({ health, setHealth, animation, setAnimation }: TextBoxProps) {
   const [text, setText] = useState("");
+    const [buttonText, setButtonText] = useState("Walk");
   const textRef = useRef("");
   const message = "LilGuy is happy to be alive. WORK WORK WORK!";
 
@@ -27,6 +32,12 @@ export default function TextBox({ health, setHealth }: TextBoxProps) {
 
     return () => clearInterval(interval);
   }, []);
+
+    useEffect(() => {
+      if (health !== null) {
+        localStorage.setItem("weeklyAverage", health.toString());
+      }
+    }, [health]);
 
   return (
     <div className="w-[100%] flex flex-col items-center">
@@ -56,17 +67,34 @@ export default function TextBox({ health, setHealth }: TextBoxProps) {
       `}</style>
 
       <div className="flex gap-4 w-full">
+        {/* was work button */}
         <button
-          onClick={() => setHealth(Math.min(health + 5, 100))}
+          onClick={() => {
+            // if (health !== null) {
+            //   setHealth(Math.min(health + 5, 100));
+            // }
+           setAnimation((prev) => (prev === "walk" ? "idle" : "walk"));
+              setButtonText ((prev) => (prev === "Walk" ? "Chill" : "Walk"));
+          }}
           className="flex-1 px-4 py-2 bg-green-200 text-black border border-black rounded transition-all transform hover:bg-green-300"
         >
-          Walk
+          {buttonText}
         </button>
+
+        {/* was laze button */}
         <button
-          onClick={() => setHealth(Math.max(health - 5, 0))}
+          onClick={() => {
+            // if (health !== null) {
+            //   setHealth(Math.max(health - 5, 0));
+            // }
+          setAnimation("happy");
+          setTimeout(() => {
+            setAnimation("idle");
+          }, 2000);
+          }}
           className="flex-1 px-4 py-2 bg-red-200 text-black border border-black rounded transition-all transform hover:bg-red-300"
         >
-          Laze
+          Pet
         </button>
       </div>
     </div>

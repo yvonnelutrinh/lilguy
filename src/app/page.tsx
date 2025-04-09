@@ -3,7 +3,7 @@
 import Header from "@/components/Header/Header";
 import { LilGuy } from "@/components/LilGuy/LilGuy";
 import ProductivityMetrics from "@/components/ProductivityMetrics/ProductivityMetrics";
-import TextBox from "@/components/TextBox/TextBox";
+// import TextBox from "@/components/TextBox/TextBox";
 import { Card, CardContent } from "@/components/ui/Card/Card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs/Tabs";
 import { useState } from "react";
@@ -29,7 +29,7 @@ export default function Home() {
                     {/* <div className="grid grid-rows-[1.25rem_1fr_1.25rem] items-center justify-items-center p-8 pb-20 font-[family-name:var(--font-geist-sans)]"> */}
                     <main className="flex flex-col gap-[2rem] row-start-2 items-center sm:items-start">
                       <LilGuy health={health} />
-                      <TextBox health={health} setHealth={setHealth} />
+                      {/* <TextBox health={health} setHealth={setHealth} /> */}
                     </main>
                     {/* </div> */}
                   </div>

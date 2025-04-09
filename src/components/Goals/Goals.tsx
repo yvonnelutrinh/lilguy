@@ -21,11 +21,20 @@ interface Goal {
 }
 
 const Goals: React.FC = () => {
-  const [goals, setGoals] = useState<Goal[]>(initialGoals);
+  // const [goals, setGoals] = useState<Goal[]>(initialGoals);
+  const [goals, setGoals] = useState<Goal[]>(() => {
+    const savedGoals = localStorage.getItem("goals");
+    return savedGoals ? JSON.parse(savedGoals) : initialGoals;
+  });
   const [newGoalTitle, setNewGoalTitle] = useState('');
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editTitle, setEditTitle] = useState('');
   
+const updateLocalStorage = (updatedGoals: Goal[]) => {
+  localStorage.setItem("goals", JSON.stringify(updatedGoals));
+};
+
+
   const handleAddGoal = () => {
     if (newGoalTitle.trim() === '') return;
     
@@ -36,28 +45,52 @@ const Goals: React.FC = () => {
       progress: 0
     };
     
-    setGoals([...goals, newGoal]);
+    // setGoals([...goals, newGoal]);
+      const updatedGoals = [...goals, newGoal];
+      setGoals(updatedGoals);
+      updateLocalStorage(updatedGoals);
     setNewGoalTitle('');
   };
   
   const handleRemoveGoal = (id: number) => {
-    setGoals(goals.filter(goal => goal.id !== id));
+    // setGoals(goals.filter(goal => goal.id !== id));
+      const updatedGoals = goals.filter((goal) => goal.id !== id);
+      setGoals(updatedGoals);
+      updateLocalStorage(updatedGoals);
   };
   
   const handleToggleComplete = (id: number) => {
-    setGoals(goals.map(goal => 
-      goal.id === id ? { ...goal, completed: !goal.completed, progress: !goal.completed ? 100 : goal.progress } : goal
-    ));
+    // setGoals(goals.map(goal => 
+    //   goal.id === id ? { ...goal, completed: !goal.completed, progress: !goal.completed ? 100 : goal.progress } : goal
+    // ));
+      const updatedGoals = goals.map((goal) =>
+        goal.id === id
+          ? {
+              ...goal,
+              completed: !goal.completed,
+              progress: !goal.completed ? 100 : goal.progress,
+            }
+          : goal
+      );
+      setGoals(updatedGoals);
+      updateLocalStorage(updatedGoals);
   };
   
   const handleProgressChange = (id: number, newProgress: number) => {
-    setGoals(goals.map(goal => 
-      goal.id === id ? { 
-        ...goal, 
-        progress: newProgress, 
-        completed: newProgress === 100
-      } : goal
-    ));
+    // setGoals(goals.map(goal => 
+    //   goal.id === id ? { 
+    //     ...goal, 
+    //     progress: newProgress, 
+    //     completed: newProgress === 100
+    //   } : goal
+    // ));
+      const updatedGoals = goals.map((goal) =>
+        goal.id === id
+          ? { ...goal, progress: newProgress, completed: newProgress === 100 }
+          : goal
+      );
+      setGoals(updatedGoals);
+      updateLocalStorage(updatedGoals);
   };
   
   const startEditing = (goal: Goal) => {
