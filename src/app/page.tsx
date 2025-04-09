@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs/T
 import { useState } from "react";
 import ExtensionWidget from "@/components/ExtensionWidget/ExtensionWidget";
 import Goals from "@/components/Goals/Goals"
+import SiteList from "@/components/SiteList/SiteList";
 
 export default function Home() {
   const [health, setHealth] = useState(100);
@@ -51,7 +52,7 @@ export default function Home() {
                 </TabsContent>
 
                 <TabsContent value="websites" className="mt-4">
-                  Website List
+                  <SiteList />
                 </TabsContent>
 
                 <TabsContent value="goals" className="mt-4">
