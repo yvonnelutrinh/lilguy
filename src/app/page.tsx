@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/Card/Card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs/Tabs";
 import { useState } from "react";
 import ExtensionWidget from "@/components/ExtensionWidget/ExtensionWidget";
+import Goals from "@/components/Goals/Goals"
 
 export default function Home() {
   const [health, setHealth] = useState(100);
@@ -54,7 +55,7 @@ export default function Home() {
                 </TabsContent>
 
                 <TabsContent value="goals" className="mt-4">
-                  Goals List
+                  <Goals />
                 </TabsContent>
 
                 <TabsContent value="widget" className="mt-4">
