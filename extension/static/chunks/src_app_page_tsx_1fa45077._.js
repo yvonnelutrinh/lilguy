@@ -5,8 +5,13 @@
 (globalThis.TURBOPACK_CHUNK_LISTS = globalThis.TURBOPACK_CHUNK_LISTS || []).push({
   "path": "static/chunks/src_app_page_tsx_1fa45077._.js",
   "chunks": [
-    "static/chunks/node_modules_5b4e4a33._.js",
-    "static/chunks/src_e0d7aa84._.js"
+    "static/chunks/src_b777f8bf._.js",
+    "static/chunks/node_modules_tailwind-merge_dist_bundle-mjs_mjs_b854acb4._.js",
+    "static/chunks/node_modules_lodash_20634561._.js",
+    "static/chunks/node_modules_recharts_es6_7bff9f4c._.js",
+    "static/chunks/node_modules_@radix-ui_7d2f03bb._.js",
+    "static/chunks/node_modules_@floating-ui_9ec1fa39._.js",
+    "static/chunks/node_modules_21557693._.js"
   ],
   "source": "dynamic"
 });
