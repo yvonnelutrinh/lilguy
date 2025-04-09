@@ -1,12 +1,13 @@
 "use client";
 
 import Header from "@/components/Header/Header";
-import LilGuy from "@/components/LilGuy/LilGuy";
+import { LilGuy } from "@/components/LilGuy/LilGuy";
 import ProductivityMetrics from "@/components/ProductivityMetrics/ProductivityMetrics";
 import TextBox from "@/components/TextBox/TextBox";
 import { Card, CardContent } from "@/components/ui/Card/Card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs/Tabs";
 import { useState } from "react";
+import ExtensionWidget from "@/components/ExtensionWidget/ExtensionWidget";
 
 export default function Home() {
   const [health, setHealth] = useState(100);
@@ -24,10 +25,10 @@ export default function Home() {
                 <div className="flex flex-col items-center justify-center py-4">
                   <div className="relative mb-4">
                     {/* <div className="grid grid-rows-[1.25rem_1fr_1.25rem] items-center justify-items-center p-8 pb-20 font-[family-name:var(--font-geist-sans)]"> */}
-                      <main className="flex flex-col gap-[2rem] row-start-2 items-center sm:items-start">
-                        <LilGuy health={health} />
-                        <TextBox health={health} setHealth={setHealth} />
-                      </main>
+                    <main className="flex flex-col gap-[2rem] row-start-2 items-center sm:items-start">
+                      <LilGuy health={health} />
+                      <TextBox health={health} setHealth={setHealth} />
+                    </main>
                     {/* </div> */}
                   </div>
                 </div>
@@ -41,6 +42,7 @@ export default function Home() {
                   <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
                   <TabsTrigger value="websites">Websites</TabsTrigger>
                   <TabsTrigger value="goals">Goals</TabsTrigger>
+                  <TabsTrigger value="widget">Widget</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="dashboard" className="mt-4">
@@ -53,6 +55,16 @@ export default function Home() {
 
                 <TabsContent value="goals" className="mt-4">
                   Goals List
+                </TabsContent>
+
+                <TabsContent value="widget" className="mt-4">
+
+                  {/* Widget Preview */}
+                  <div className="mt-8">
+                    <div className="flex justify-center">
+                      <ExtensionWidget />
+                    </div>
+                  </div>
                 </TabsContent>
               </Tabs>
             </div>
