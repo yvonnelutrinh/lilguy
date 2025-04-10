@@ -3,41 +3,65 @@
 import React, { useEffect, useRef, useState } from "react";
 
 interface TextBoxProps {
-  health: number | null;
-  setHealth: React.Dispatch<React.SetStateAction<number | null>>;
   animation: "idle" | "walk" | "happy" | "angry" | "sad" | "shocked";
   setAnimation: React.Dispatch<
-    React.SetStateAction<"idle" | "walk" | "happy" | "angry" | "sad" | "shocked">
+    React.SetStateAction<
+      "idle" | "walk" | "happy" | "angry" | "sad" | "shocked"
+    >
   >;
 }
 
-export default function TextBox({ health, setHealth, animation, setAnimation }: TextBoxProps) {
+export default function TextBox({animation, setAnimation }: TextBoxProps) {
   const [text, setText] = useState("");
-    const [buttonText, setButtonText] = useState("Walk");
+  const [buttonText, setButtonText] = useState("Walk");
+  const [message, setMessage] = useState<string>("");
   const textRef = useRef("");
-  const message = "LilGuy is happy to be alive. WORK WORK WORK!";
 
-  useEffect(() => {
-    let index = 0;
+useEffect(() => {
+  const storedModifiedHealth = localStorage.getItem("modifiedHealth");
+  const modifiedHealth = storedModifiedHealth
+    ? parseFloat(storedModifiedHealth)
+    : undefined;
 
-    const interval = setInterval(() => {
-      if (index < message.length) {
-        textRef.current += message[index];
-        setText(textRef.current);
-        index++;
-      } else {
-        clearInterval(interval);
-      }
-    }, 100);
+  const storedName = localStorage.getItem("lilGuyName") || "LilGuy";
 
-    return () => clearInterval(interval);
-  }, []);
+  let newMessage = `${storedName} is happy to be alive. WORK WORK WORK!`;
 
-    useEffect(() => {
-      if (health !== null) {
-        localStorage.setItem("weeklyAverage", health.toString());
-      }
-    }, [health]);
+  if (modifiedHealth !== undefined) {
+    if (modifiedHealth < 30) {
+      newMessage = `${storedName} looks depressed. He doesn't feel like you're meeting your potential.`;
+    } else if (modifiedHealth >= 30 && modifiedHealth <= 60) {
+      newMessage = `${storedName} is doing OK, but he knows you can do better.`;
+    } else if (modifiedHealth >= 61 && modifiedHealth <= 80) {
+      newMessage = `${storedName} is feeling positive! He knows you're working hard.`;
+    } else if (modifiedHealth >= 81 && modifiedHealth <= 100) {
+      newMessage = `${storedName} is over the moon! He's very proud of you.`;
+    }
+  }
+
+  setMessage(newMessage);
+}, []);
+
+ useEffect(() => {
+   let index = 0;
+   const interval = setInterval(() => {
+     if (index < message.length) {
+       textRef.current += message[index]; 
+       setText(textRef.current); 
+       index++;
+     } else {
+       clearInterval(interval);
+     }
+   }, 100);
+
+   return () => clearInterval(interval);
+ }, [message]);
+
+ useEffect(() => {
+   if (animation === "idle" && buttonText === "Chill") {
+     setButtonText("Walk");
+   }
+ }, [animation]);
 
   return (
     <div className="w-[100%] flex flex-col items-center">
@@ -70,9 +94,6 @@ export default function TextBox({ health, setHealth, animation, setAnimation }: 
         {/* was work button */}
         <button
           onClick={() => {
-            // if (health !== null) {
-            //   setHealth(Math.min(health + 5, 100));
-            // }
            setAnimation((prev) => (prev === "walk" ? "idle" : "walk"));
               setButtonText ((prev) => (prev === "Walk" ? "Chill" : "Walk"));
           }}
@@ -84,9 +105,6 @@ export default function TextBox({ health, setHealth, animation, setAnimation }: 
         {/* was laze button */}
         <button
           onClick={() => {
-            // if (health !== null) {
-            //   setHealth(Math.max(health - 5, 0));
-            // }
           setAnimation("happy");
           setTimeout(() => {
             setAnimation("idle");

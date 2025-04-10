@@ -319,12 +319,32 @@ var _s = __turbopack_context__.k.signature();
 "use client";
 ;
 ;
-function TextBox({ health, setHealth, animation, setAnimation }) {
+function TextBox({ animation, setAnimation }) {
     _s();
     const [text, setText] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
     const [buttonText, setButtonText] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("Walk");
+    const [message, setMessage] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
     const textRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])("");
-    const message = "LilGuy is happy to be alive. WORK WORK WORK!";
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "TextBox.useEffect": ()=>{
+            const storedModifiedHealth = localStorage.getItem("modifiedHealth");
+            const modifiedHealth = storedModifiedHealth ? parseFloat(storedModifiedHealth) : undefined;
+            const storedName = localStorage.getItem("lilGuyName") || "LilGuy";
+            let newMessage = `${storedName} is happy to be alive. WORK WORK WORK!`;
+            if (modifiedHealth !== undefined) {
+                if (modifiedHealth < 30) {
+                    newMessage = `${storedName} looks depressed. He doesn't feel like you're meeting your potential.`;
+                } else if (modifiedHealth >= 30 && modifiedHealth <= 60) {
+                    newMessage = `${storedName} is doing OK, but he knows you can do better.`;
+                } else if (modifiedHealth >= 61 && modifiedHealth <= 80) {
+                    newMessage = `${storedName} is feeling positive! He knows you're working hard.`;
+                } else if (modifiedHealth >= 81 && modifiedHealth <= 100) {
+                    newMessage = `${storedName} is over the moon! He's very proud of you.`;
+                }
+            }
+            setMessage(newMessage);
+        }
+    }["TextBox.useEffect"], []);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "TextBox.useEffect": ()=>{
             let index = 0;
@@ -343,15 +363,17 @@ function TextBox({ health, setHealth, animation, setAnimation }) {
                 "TextBox.useEffect": ()=>clearInterval(interval)
             })["TextBox.useEffect"];
         }
-    }["TextBox.useEffect"], []);
+    }["TextBox.useEffect"], [
+        message
+    ]);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "TextBox.useEffect": ()=>{
-            if (health !== null) {
-                localStorage.setItem("weeklyAverage", health.toString());
+            if (animation === "idle" && buttonText === "Chill") {
+                setButtonText("Walk");
             }
         }
     }["TextBox.useEffect"], [
-        health
+        animation
     ]);
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         className: "jsx-655c3b27499c53a" + " " + "w-[100%] flex flex-col items-center",
@@ -367,18 +389,18 @@ function TextBox({ health, setHealth, animation, setAnimation }) {
                             children: "|"
                         }, void 0, false, {
                             fileName: "[project]/src/components/TextBox/TextBox.tsx",
-                            lineNumber: 47,
+                            lineNumber: 71,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/TextBox/TextBox.tsx",
-                    lineNumber: 45,
+                    lineNumber: 69,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/TextBox/TextBox.tsx",
-                lineNumber: 44,
+                lineNumber: 68,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$styled$2d$jsx$2f$style$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -390,9 +412,6 @@ function TextBox({ health, setHealth, animation, setAnimation }) {
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                         onClick: ()=>{
-                            // if (health !== null) {
-                            //   setHealth(Math.min(health + 5, 100));
-                            // }
                             setAnimation((prev)=>prev === "walk" ? "idle" : "walk");
                             setButtonText((prev)=>prev === "Walk" ? "Chill" : "Walk");
                         },
@@ -400,14 +419,11 @@ function TextBox({ health, setHealth, animation, setAnimation }) {
                         children: buttonText
                     }, void 0, false, {
                         fileName: "[project]/src/components/TextBox/TextBox.tsx",
-                        lineNumber: 71,
+                        lineNumber: 95,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                         onClick: ()=>{
-                            // if (health !== null) {
-                            //   setHealth(Math.max(health - 5, 0));
-                            // }
                             setAnimation("happy");
                             setTimeout(()=>{
                                 setAnimation("idle");
@@ -417,23 +433,23 @@ function TextBox({ health, setHealth, animation, setAnimation }) {
                         children: "Pet"
                     }, void 0, false, {
                         fileName: "[project]/src/components/TextBox/TextBox.tsx",
-                        lineNumber: 85,
+                        lineNumber: 106,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/TextBox/TextBox.tsx",
-                lineNumber: 69,
+                lineNumber: 93,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/TextBox/TextBox.tsx",
-        lineNumber: 43,
+        lineNumber: 67,
         columnNumber: 5
     }, this);
 }
-_s(TextBox, "GL356WW0g21bYRE2783DwuHH2fA=");
+_s(TextBox, "es220tD1kRrsOBq/8U8tSBtHxME=");
 _c = TextBox;
 var _c;
 __turbopack_context__.k.register(_c, "TextBox");
@@ -459,12 +475,34 @@ var _s = __turbopack_context__.k.signature(), _s1 = __turbopack_context__.k.sign
 "use client";
 ;
 ;
-function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "normal", className = "", initialAnimation = "idle" }) {
+function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "normal", className = "", initialAnimation = "idle", health, setHealth }) {
     _s();
     const canvasRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(null);
     const [playerState, setPlayerState] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(initialAnimation);
     const [clickCount, setClickCount] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(0);
-    const [health, setHealth] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
+    const [isEditing, setIsEditing] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
+    const [name, setName] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("LilGuy");
+    const [previousHealth, setPreviousHealth] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(health);
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "LilGuyCanvas.useEffect": ()=>{
+            const storedName = localStorage.getItem("lilGuyName");
+            if (storedName) {
+                setName(storedName);
+            }
+        }
+    }["LilGuyCanvas.useEffect"], []);
+    const handleNameChange = (e)=>{
+        setName(e.target.value);
+    };
+    const handleNameBlur = ()=>{
+        setIsEditing(false);
+        localStorage.setItem("lilGuyName", name);
+    };
+    const handleNameKeyDown = (e)=>{
+        if (e.key === "Enter") {
+            handleNameBlur();
+        }
+    };
     const handleClick = ()=>{
         const newCount = clickCount + 1;
         setClickCount(newCount);
@@ -478,12 +516,34 @@ function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "nor
     };
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "LilGuyCanvas.useEffect": ()=>{
-            const stored = localStorage.getItem("weeklyAverage");
-            if (stored) {
-                setHealth(parseFloat(stored));
+            const currentHealth = health ?? 100;
+            if (currentHealth < 30) {
+                setPlayerState("sad");
+                setPreviousHealth(currentHealth);
+                return;
+            }
+            if (previousHealth === null) {
+                setPreviousHealth(currentHealth);
+            }
+            if (currentHealth !== previousHealth) {
+                const healthChange = currentHealth - (previousHealth ?? 100);
+                if (healthChange === 3 || healthChange === -3) {
+                    setPlayerState("shocked");
+                    setTimeout({
+                        "LilGuyCanvas.useEffect": ()=>{
+                            setPlayerState("idle");
+                        }
+                    }["LilGuyCanvas.useEffect"], 600);
+                } else {
+                    setPlayerState("idle");
+                }
+                setPreviousHealth(currentHealth);
             }
         }
-    }["LilGuyCanvas.useEffect"], []);
+    }["LilGuyCanvas.useEffect"], [
+        health,
+        previousHealth
+    ]);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "LilGuyCanvas.useEffect": ()=>{
             const canvas = canvasRef.current;
@@ -492,11 +552,9 @@ function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "nor
             if (!ctx) return;
             let CANVAS_WIDTH, CANVAS_HEIGHT;
             if (size === "widget") {
-                // smaller canvas for widget
                 CANVAS_WIDTH = canvas.width = 48;
                 CANVAS_HEIGHT = canvas.height = 48;
             } else {
-                // web app canvas size
                 CANVAS_WIDTH = canvas.width = 400;
                 CANVAS_HEIGHT = canvas.height = 250;
             }
@@ -506,12 +564,10 @@ function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "nor
             const spriteHeight = 500;
             let gameFrame = 0;
             const staggerFrames = 5;
-            // scale for widget or normal
             let scale;
             if (size === "widget") {
                 scale = 0.25 * 0.4;
             } else {
-                // normal size
                 scale = 0.25;
             }
             const displayWidth = spriteWidth * scale;
@@ -594,7 +650,7 @@ function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "nor
                         onClick: handleClick
                     }, void 0, false, {
                         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                        lineNumber: 156,
+                        lineNumber: 201,
                         columnNumber: 9
                     }, this),
                     showHealthBar && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -603,113 +659,67 @@ function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "nor
                             health: health ?? 100
                         }, void 0, false, {
                             fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                            lineNumber: 164,
+                            lineNumber: 209,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                        lineNumber: 163,
+                        lineNumber: 208,
                         columnNumber: 11
                     }, this),
                     showControls && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                        className: "absolute top-6 z-10 text-lg",
-                        children: [
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                htmlFor: "animations",
-                                className: "mr-2 text-xl font-semibold text-black",
-                                children: "Choose Animation:"
-                            }, void 0, false, {
-                                fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                                lineNumber: 170,
-                                columnNumber: 13
-                            }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
-                                id: "animations",
-                                name: "animations",
-                                value: playerState,
-                                onChange: (e)=>setPlayerState(e.target.value),
-                                className: "text-xl p-1 rounded bg-white border border-gray-300 text-black",
-                                children: [
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
-                                        value: "idle",
-                                        children: "Idle"
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                                        lineNumber: 193,
-                                        columnNumber: 15
-                                    }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
-                                        value: "walk",
-                                        children: "Walk"
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                                        lineNumber: 194,
-                                        columnNumber: 15
-                                    }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
-                                        value: "happy",
-                                        children: "Happy"
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                                        lineNumber: 195,
-                                        columnNumber: 15
-                                    }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
-                                        value: "angry",
-                                        children: "Angry"
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                                        lineNumber: 196,
-                                        columnNumber: 15
-                                    }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
-                                        value: "sad",
-                                        children: "Sad"
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                                        lineNumber: 197,
-                                        columnNumber: 15
-                                    }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
-                                        value: "shocked",
-                                        children: "Shocked"
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                                        lineNumber: 198,
-                                        columnNumber: 15
-                                    }, this)
-                                ]
-                            }, void 0, true, {
-                                fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                                lineNumber: 176,
-                                columnNumber: 13
-                            }, this)
-                        ]
-                    }, void 0, true, {
+                        className: "absolute top-6 z-10 text-lg"
+                    }, void 0, false, {
                         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                        lineNumber: 169,
+                        lineNumber: 214,
                         columnNumber: 11
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "absolute top-6 w-full text-center",
+                        children: isEditing ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                            type: "text",
+                            value: name,
+                            onChange: handleNameChange,
+                            onBlur: handleNameBlur,
+                            onKeyDown: handleNameKeyDown,
+                            className: "text-2xl bg-transparent border-b-2 border-gray-500 focus:outline-none",
+                            autoFocus: true
+                        }, void 0, false, {
+                            fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
+                            lineNumber: 250,
+                            columnNumber: 13
+                        }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                            onClick: ()=>setIsEditing(true),
+                            className: "text-2xl cursor-pointer",
+                            children: name
+                        }, void 0, false, {
+                            fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
+                            lineNumber: 260,
+                            columnNumber: 13
+                        }, this)
+                    }, void 0, false, {
+                        fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
+                        lineNumber: 248,
+                        columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                lineNumber: 151,
+                lineNumber: 196,
                 columnNumber: 7
             }, this),
             size === "normal" ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$TextBox$2f$TextBox$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
-                health: health,
-                setHealth: setHealth,
                 animation: playerState,
                 setAnimation: setPlayerState
             }, void 0, false, {
                 fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                lineNumber: 204,
-                columnNumber: 9
+                lineNumber: 269,
+                columnNumber: 28
             }, this) : null
         ]
     }, void 0, true);
 }
-_s(LilGuyCanvas, "B69503oOGZLUaGMR040AZv9cfes=");
+_s(LilGuyCanvas, "2i7qo9kWmVT486T2zaY3a6iMsy4=");
 _c = LilGuyCanvas;
 function HealthBar({ showLabel = true, className = "", health }) {
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -725,12 +735,12 @@ function HealthBar({ showLabel = true, className = "", health }) {
                     }
                 }, void 0, false, {
                     fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                    lineNumber: 232,
+                    lineNumber: 291,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                lineNumber: 231,
+                lineNumber: 290,
                 columnNumber: 7
             }, this),
             showLabel && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -741,27 +751,28 @@ function HealthBar({ showLabel = true, className = "", health }) {
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                lineNumber: 246,
+                lineNumber: 305,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-        lineNumber: 228,
+        lineNumber: 287,
         columnNumber: 5
     }, this);
 }
 _c1 = HealthBar;
 // LilGuy for web app
-function LilGuy({ health = 100 }) {
+function LilGuy({ health = 100, setHealth }) {
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(LilGuyCanvas, {
         health: health,
+        setHealth: setHealth,
         showControls: true,
         showHealthBar: true,
         size: "normal"
     }, void 0, false, {
         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-        lineNumber: 261,
+        lineNumber: 322,
         columnNumber: 5
     }, this);
 }
@@ -772,7 +783,7 @@ function WidgetLilGuy() {
         size: "widget"
     }, void 0, false, {
         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-        lineNumber: 272,
+        lineNumber: 334,
         columnNumber: 10
     }, this);
 }
@@ -796,8 +807,8 @@ function WidgetHealth({ health = 100 }) {
         className: "mb-2"
     }, void 0, false, {
         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-        lineNumber: 293,
-        columnNumber: 5
+        lineNumber: 350,
+        columnNumber: 10
     }, this);
 }
 _s1(WidgetHealth, "Q1bmF73rZJrOZ417yggS2BrFskw=");
@@ -1981,8 +1992,8 @@ const initialGoals = [
     {
         id: 2,
         title: 'Complete 3 coding challenges',
-        completed: true,
-        progress: 100
+        completed: false,
+        progress: 50
     },
     {
         id: 3,
@@ -1991,7 +2002,7 @@ const initialGoals = [
         progress: 60
     }
 ];
-const Goals = ()=>{
+const Goals = ({ health, setHealth })=>{
     _s();
     // const [goals, setGoals] = useState<Goal[]>(initialGoals);
     const [goals, setGoals] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])({
@@ -2000,14 +2011,14 @@ const Goals = ()=>{
             return savedGoals ? JSON.parse(savedGoals) : initialGoals;
         }
     }["Goals.useState"]);
-    const [newGoalTitle, setNewGoalTitle] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('');
+    const [newGoalTitle, setNewGoalTitle] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
     const [editingId, setEditingId] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
-    const [editTitle, setEditTitle] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('');
+    const [editTitle, setEditTitle] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
     const updateLocalStorage = (updatedGoals)=>{
         localStorage.setItem("goals", JSON.stringify(updatedGoals));
     };
     const handleAddGoal = ()=>{
-        if (newGoalTitle.trim() === '') return;
+        if (newGoalTitle.trim() === "") return;
         const newGoal = {
             id: Math.max(0, ...goals.map((g)=>g.id)) + 1,
             title: newGoalTitle.trim(),
@@ -2021,7 +2032,7 @@ const Goals = ()=>{
         ];
         setGoals(updatedGoals);
         updateLocalStorage(updatedGoals);
-        setNewGoalTitle('');
+        setNewGoalTitle("");
     };
     const handleRemoveGoal = (id)=>{
         // setGoals(goals.filter(goal => goal.id !== id));
@@ -2029,10 +2040,25 @@ const Goals = ()=>{
         setGoals(updatedGoals);
         updateLocalStorage(updatedGoals);
     };
+    // const handleToggleComplete = (id: number) => {
+    //   // setGoals(goals.map(goal =>
+    //   //   goal.id === id ? { ...goal, completed: !goal.completed, progress: !goal.completed ? 100 : goal.progress } : goal
+    //   // ));
+    //   const updatedGoals = goals.map((goal) =>
+    //     goal.id === id
+    //       ? {
+    //           ...goal,
+    //           completed: !goal.completed,
+    //           progress: !goal.completed ? 100 : goal.progress,
+    //         }
+    //       : goal
+    //   );
+    //   setGoals(updatedGoals);
+    //   updateLocalStorage(updatedGoals);
+    // };
     const handleToggleComplete = (id)=>{
-        // setGoals(goals.map(goal => 
-        //   goal.id === id ? { ...goal, completed: !goal.completed, progress: !goal.completed ? 100 : goal.progress } : goal
-        // ));
+        const goalToToggle = goals.find((goal)=>goal.id === id);
+        if (!goalToToggle) return;
         const updatedGoals = goals.map((goal)=>goal.id === id ? {
                 ...goal,
                 completed: !goal.completed,
@@ -2040,12 +2066,23 @@ const Goals = ()=>{
             } : goal);
         setGoals(updatedGoals);
         updateLocalStorage(updatedGoals);
+        let goalHealth = parseFloat(localStorage.getItem("goalHealth") ?? "0");
+        if (goalToToggle.completed) {
+            goalHealth -= 3;
+        } else {
+            goalHealth += 3;
+        }
+        localStorage.setItem("goalHealth", goalHealth.toString());
+        const weeklyAverage = parseFloat(localStorage.getItem("weeklyAverage") ?? "0");
+        const modifiedHealth = weeklyAverage + goalHealth;
+        localStorage.setItem("modifiedHealth", modifiedHealth.toString());
+        setHealth(modifiedHealth);
     };
     const handleProgressChange = (id, newProgress)=>{
-        // setGoals(goals.map(goal => 
-        //   goal.id === id ? { 
-        //     ...goal, 
-        //     progress: newProgress, 
+        // setGoals(goals.map(goal =>
+        //   goal.id === id ? {
+        //     ...goal,
+        //     progress: newProgress,
         //     completed: newProgress === 100
         //   } : goal
         // ));
@@ -2056,19 +2093,22 @@ const Goals = ()=>{
             } : goal);
         setGoals(updatedGoals);
         updateLocalStorage(updatedGoals);
+        if (newProgress === 100) {
+            handleToggleComplete(id);
+        }
     };
     const startEditing = (goal)=>{
         setEditingId(goal.id);
         setEditTitle(goal.title);
     };
     const saveEdit = ()=>{
-        if (editTitle.trim() === '') return;
+        if (editTitle.trim() === "") return;
         setGoals(goals.map((goal)=>goal.id === editingId ? {
                 ...goal,
                 title: editTitle.trim()
             } : goal));
         setEditingId(null);
-        setEditTitle('');
+        setEditTitle("");
     };
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Card$2f$Card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
         className: "pixel-container",
@@ -2079,20 +2119,20 @@ const Goals = ()=>{
                         children: "Productivity Goals"
                     }, void 0, false, {
                         fileName: "[project]/src/components/Goals/Goals.tsx",
-                        lineNumber: 115,
+                        lineNumber: 164,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Card$2f$Card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardDescription"], {
                         children: "Set and track your productivity goals"
                     }, void 0, false, {
                         fileName: "[project]/src/components/Goals/Goals.tsx",
-                        lineNumber: 116,
+                        lineNumber: 165,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/Goals/Goals.tsx",
-                lineNumber: 114,
+                lineNumber: 163,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Card$2f$Card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -2110,12 +2150,12 @@ const Goals = ()=>{
                                     className: "w-full"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/Goals/Goals.tsx",
-                                    lineNumber: 123,
+                                    lineNumber: 170,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Goals/Goals.tsx",
-                                lineNumber: 122,
+                                lineNumber: 169,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Button$2f$Button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -2127,20 +2167,20 @@ const Goals = ()=>{
                                         className: "h-4 w-4 mr-1"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/Goals/Goals.tsx",
-                                        lineNumber: 131,
+                                        lineNumber: 178,
                                         columnNumber: 13
                                     }, this),
                                     "Add Goal"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/Goals/Goals.tsx",
-                                lineNumber: 130,
+                                lineNumber: 177,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/Goals/Goals.tsx",
-                        lineNumber: 121,
+                        lineNumber: 168,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2150,12 +2190,12 @@ const Goals = ()=>{
                             children: "No goals yet. Add your first goal above!"
                         }, void 0, false, {
                             fileName: "[project]/src/components/Goals/Goals.tsx",
-                            lineNumber: 138,
+                            lineNumber: 185,
                             columnNumber: 13
                         }, this) : goals.map((goal)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "p-3 border-2 border-black",
                                 style: {
-                                    backgroundColor: goal.completed ? 'rgba(16, 185, 129, 0.1)' : 'white'
+                                    backgroundColor: goal.completed ? "rgba(16, 185, 129, 0.1)" : "white"
                                 },
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2171,18 +2211,18 @@ const Goals = ()=>{
                                                             className: "h-5 w-5 text-green-600"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/Goals/Goals.tsx",
-                                                            lineNumber: 157,
+                                                            lineNumber: 206,
                                                             columnNumber: 25
                                                         }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$circle$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Circle$3e$__["Circle"], {
                                                             className: "h-5 w-5 text-gray-400"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/Goals/Goals.tsx",
-                                                            lineNumber: 159,
+                                                            lineNumber: 208,
                                                             columnNumber: 25
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/Goals/Goals.tsx",
-                                                        lineNumber: 152,
+                                                        lineNumber: 201,
                                                         columnNumber: 21
                                                     }, this),
                                                     editingId === goal.id ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Input$2f$Input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
@@ -2191,20 +2231,20 @@ const Goals = ()=>{
                                                         className: "flex-1"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/Goals/Goals.tsx",
-                                                        lineNumber: 164,
+                                                        lineNumber: 213,
                                                         columnNumber: 23
                                                     }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                         className: goal.completed ? "line-through text-muted-foreground" : "",
                                                         children: goal.title
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/Goals/Goals.tsx",
-                                                        lineNumber: 170,
+                                                        lineNumber: 219,
                                                         columnNumber: 23
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/Goals/Goals.tsx",
-                                                lineNumber: 151,
+                                                lineNumber: 200,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2219,12 +2259,12 @@ const Goals = ()=>{
                                                             className: "h-4 w-4"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/Goals/Goals.tsx",
-                                                            lineNumber: 184,
+                                                            lineNumber: 239,
                                                             columnNumber: 25
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/Goals/Goals.tsx",
-                                                        lineNumber: 178,
+                                                        lineNumber: 233,
                                                         columnNumber: 23
                                                     }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Button$2f$Button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
                                                         variant: "ghost",
@@ -2235,12 +2275,12 @@ const Goals = ()=>{
                                                             className: "h-4 w-4"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/Goals/Goals.tsx",
-                                                            lineNumber: 193,
+                                                            lineNumber: 248,
                                                             columnNumber: 25
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/Goals/Goals.tsx",
-                                                        lineNumber: 187,
+                                                        lineNumber: 242,
                                                         columnNumber: 23
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Button$2f$Button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -2252,24 +2292,24 @@ const Goals = ()=>{
                                                             className: "h-4 w-4"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/Goals/Goals.tsx",
-                                                            lineNumber: 202,
+                                                            lineNumber: 257,
                                                             columnNumber: 23
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/Goals/Goals.tsx",
-                                                        lineNumber: 196,
+                                                        lineNumber: 251,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/Goals/Goals.tsx",
-                                                lineNumber: 176,
+                                                lineNumber: 231,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/Goals/Goals.tsx",
-                                        lineNumber: 150,
+                                        lineNumber: 199,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2290,12 +2330,12 @@ const Goals = ()=>{
                                                         onValueChange: (values)=>handleProgressChange(goal.id, values[0])
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/Goals/Goals.tsx",
-                                                        lineNumber: 210,
+                                                        lineNumber: 265,
                                                         columnNumber: 23
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/Goals/Goals.tsx",
-                                                    lineNumber: 209,
+                                                    lineNumber: 264,
                                                     columnNumber: 21
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2306,35 +2346,35 @@ const Goals = ()=>{
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/Goals/Goals.tsx",
-                                                    lineNumber: 219,
+                                                    lineNumber: 276,
                                                     columnNumber: 21
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/Goals/Goals.tsx",
-                                            lineNumber: 208,
+                                            lineNumber: 263,
                                             columnNumber: 19
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/Goals/Goals.tsx",
-                                        lineNumber: 207,
+                                        lineNumber: 262,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, goal.id, true, {
                                 fileName: "[project]/src/components/Goals/Goals.tsx",
-                                lineNumber: 143,
+                                lineNumber: 190,
                                 columnNumber: 15
                             }, this))
                     }, void 0, false, {
                         fileName: "[project]/src/components/Goals/Goals.tsx",
-                        lineNumber: 136,
+                        lineNumber: 183,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/Goals/Goals.tsx",
-                lineNumber: 120,
+                lineNumber: 167,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Card$2f$Card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardFooter"], {
@@ -2342,17 +2382,17 @@ const Goals = ()=>{
                 children: "Completing goals helps your LilGuy grow and gain new items!"
             }, void 0, false, {
                 fileName: "[project]/src/components/Goals/Goals.tsx",
-                lineNumber: 229,
+                lineNumber: 286,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/Goals/Goals.tsx",
-        lineNumber: 113,
+        lineNumber: 162,
         columnNumber: 5
     }, this);
 };
-_s(Goals, "TxM8Nk5f3abge6Pv7AtX1Gl7woE=");
+_s(Goals, "u8/dascb/6yEL+j9FDsOiCOrsoQ=");
 _c = Goals;
 const __TURBOPACK__default__export__ = Goals;
 var _c;
@@ -3098,7 +3138,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$Header$2f$Header$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/components/Header/Header.tsx [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$LilGuy$2f$LilGuy$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/components/LilGuy/LilGuy.tsx [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ProductivityMetrics$2f$ProductivityMetrics$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/components/ProductivityMetrics/ProductivityMetrics.tsx [app-client] (ecmascript)");
-// import TextBox from "@/components/TextBox/TextBox";
+// import TextBox from "@/components/TextBox/TextBox"; // put in LilGuy instead
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Card$2f$Card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/components/ui/Card/Card.tsx [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Tabs$2f$Tabs$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/components/ui/Tabs/Tabs.tsx [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/index.js [app-client] (ecmascript)");
@@ -3119,14 +3159,52 @@ var _s = __turbopack_context__.k.signature();
 ;
 function Home() {
     _s();
-    const [health, setHealth] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(100);
+    const [health, setHealth] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(undefined);
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "Home.useEffect": ()=>{
+            const storedModifiedHealth = localStorage.getItem("modifiedHealth");
+            const storedWeeklyAverage = localStorage.getItem("weeklyAverage");
+            if (storedModifiedHealth) {
+                setHealth(parseFloat(storedModifiedHealth));
+            } else if (storedWeeklyAverage) {
+                setHealth(parseFloat(storedWeeklyAverage));
+            }
+        }
+    }["Home.useEffect"], []);
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "Home.useEffect": ()=>{
+            const recalculateHealth = {
+                "Home.useEffect.recalculateHealth": ()=>{
+                    const weeklyAverage = parseFloat(localStorage.getItem("weeklyAverage") ?? "0");
+                    const goalHealth = parseFloat(localStorage.getItem("goalHealth") ?? "0");
+                    const modifiedHealth = weeklyAverage + goalHealth;
+                    localStorage.setItem("modifiedHealth", modifiedHealth.toString());
+                    setHealth(modifiedHealth);
+                }
+            }["Home.useEffect.recalculateHealth"];
+            recalculateHealth();
+            const handleStorageChange = {
+                "Home.useEffect.handleStorageChange": (e)=>{
+                    if (e.key === "weeklyAverage" || e.key === "goalHealth") {
+                        recalculateHealth();
+                    }
+                }
+            }["Home.useEffect.handleStorageChange"];
+            window.addEventListener("storage", handleStorageChange);
+            return ({
+                "Home.useEffect": ()=>{
+                    window.removeEventListener("storage", handleStorageChange);
+                }
+            })["Home.useEffect"];
+        }
+    }["Home.useEffect"], []);
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
             className: "min-h-screen flex flex-col bg-gradient-to-b from-pixel-background to-white",
             children: [
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$Header$2f$Header$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
                     fileName: "[project]/src/app/page.tsx",
-                    lineNumber: 20,
+                    lineNumber: 59,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("main", {
@@ -3145,35 +3223,36 @@ function Home() {
                                             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("main", {
                                                 className: "flex flex-col gap-[2rem] row-start-2 items-center sm:items-start",
                                                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$LilGuy$2f$LilGuy$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["LilGuy"], {
-                                                    health: health
+                                                    health: health,
+                                                    setHealth: setHealth
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/page.tsx",
-                                                    lineNumber: 31,
+                                                    lineNumber: 70,
                                                     columnNumber: 23
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/page.tsx",
-                                                lineNumber: 30,
+                                                lineNumber: 69,
                                                 columnNumber: 21
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/page.tsx",
-                                            lineNumber: 28,
+                                            lineNumber: 67,
                                             columnNumber: 19
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/page.tsx",
-                                        lineNumber: 27,
+                                        lineNumber: 66,
                                         columnNumber: 17
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/page.tsx",
-                                    lineNumber: 26,
+                                    lineNumber: 65,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/app/page.tsx",
-                                lineNumber: 25,
+                                lineNumber: 64,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3189,7 +3268,7 @@ function Home() {
                                                     children: "Dashboard"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/page.tsx",
-                                                    lineNumber: 44,
+                                                    lineNumber: 86,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Tabs$2f$Tabs$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TabsTrigger"], {
@@ -3197,7 +3276,7 @@ function Home() {
                                                     children: "Websites"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/page.tsx",
-                                                    lineNumber: 45,
+                                                    lineNumber: 87,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Tabs$2f$Tabs$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TabsTrigger"], {
@@ -3205,7 +3284,7 @@ function Home() {
                                                     children: "Goals"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/page.tsx",
-                                                    lineNumber: 46,
+                                                    lineNumber: 88,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Tabs$2f$Tabs$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TabsTrigger"], {
@@ -3213,13 +3292,13 @@ function Home() {
                                                     children: "Widget"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/page.tsx",
-                                                    lineNumber: 47,
+                                                    lineNumber: 89,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/page.tsx",
-                                            lineNumber: 43,
+                                            lineNumber: 85,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Tabs$2f$Tabs$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TabsContent"], {
@@ -3227,12 +3306,12 @@ function Home() {
                                             className: "mt-4",
                                             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ProductivityMetrics$2f$ProductivityMetrics$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
                                                 fileName: "[project]/src/app/page.tsx",
-                                                lineNumber: 51,
+                                                lineNumber: 93,
                                                 columnNumber: 19
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/page.tsx",
-                                            lineNumber: 50,
+                                            lineNumber: 92,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Tabs$2f$Tabs$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TabsContent"], {
@@ -3240,25 +3319,28 @@ function Home() {
                                             className: "mt-4",
                                             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$SiteList$2f$SiteList$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
                                                 fileName: "[project]/src/app/page.tsx",
-                                                lineNumber: 55,
+                                                lineNumber: 97,
                                                 columnNumber: 19
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/page.tsx",
-                                            lineNumber: 54,
+                                            lineNumber: 96,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Tabs$2f$Tabs$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TabsContent"], {
                                             value: "goals",
                                             className: "mt-4",
-                                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$Goals$2f$Goals$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
+                                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$Goals$2f$Goals$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
+                                                health: health,
+                                                setHealth: setHealth
+                                            }, void 0, false, {
                                                 fileName: "[project]/src/app/page.tsx",
-                                                lineNumber: 59,
+                                                lineNumber: 101,
                                                 columnNumber: 19
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/page.tsx",
-                                            lineNumber: 58,
+                                            lineNumber: 100,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Tabs$2f$Tabs$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TabsContent"], {
@@ -3270,55 +3352,55 @@ function Home() {
                                                     className: "flex justify-center",
                                                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ExtensionWidget$2f$ExtensionWidget$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
                                                         fileName: "[project]/src/app/page.tsx",
-                                                        lineNumber: 67,
+                                                        lineNumber: 111,
                                                         columnNumber: 23
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/page.tsx",
-                                                    lineNumber: 66,
+                                                    lineNumber: 110,
                                                     columnNumber: 21
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/page.tsx",
-                                                lineNumber: 65,
+                                                lineNumber: 109,
                                                 columnNumber: 19
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/page.tsx",
-                                            lineNumber: 62,
+                                            lineNumber: 107,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/page.tsx",
-                                    lineNumber: 42,
+                                    lineNumber: 84,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/app/page.tsx",
-                                lineNumber: 41,
+                                lineNumber: 83,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/page.tsx",
-                        lineNumber: 23,
+                        lineNumber: 62,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/app/page.tsx",
-                    lineNumber: 22,
+                    lineNumber: 61,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/src/app/page.tsx",
-            lineNumber: 19,
+            lineNumber: 58,
             columnNumber: 7
         }, this)
     }, void 0, false);
 }
-_s(Home, "aH3ZCpppRyyTlaPGOaL6dJVwzbE=");
+_s(Home, "ZcdhA2nNNa6VFiLfxCsyanpN1FA=");
 _c = Home;
 var _c;
 __turbopack_context__.k.register(_c, "Home");

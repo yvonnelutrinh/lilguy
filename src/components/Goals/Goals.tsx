@@ -9,113 +9,160 @@ import { CheckCircle, Circle, Edit, Save, Trash, Plus } from "lucide-react";
 // Mock data for goals
 const initialGoals = [
   { id: 1, title: 'Study documentation for 2 hours', completed: false, progress: 45 },
-  { id: 2, title: 'Complete 3 coding challenges', completed: true, progress: 100 },
+  { id: 2, title: 'Complete 3 coding challenges', completed: false, progress: 50 },
   { id: 3, title: 'Limit social media to 30 minutes', completed: false, progress: 60 },
 ];
 
-interface Goal {
+export interface Goal {
   id: number;
   title: string;
   completed: boolean;
   progress: number;
 }
 
-const Goals: React.FC = () => {
+interface GoalsProps {
+  health?: number;
+  setHealth: React.Dispatch<React.SetStateAction<number | undefined>>;
+}
+
+const Goals: React.FC<GoalsProps> = ({
+  health,
+  setHealth,
+}) => {
   // const [goals, setGoals] = useState<Goal[]>(initialGoals);
   const [goals, setGoals] = useState<Goal[]>(() => {
     const savedGoals = localStorage.getItem("goals");
     return savedGoals ? JSON.parse(savedGoals) : initialGoals;
   });
-  const [newGoalTitle, setNewGoalTitle] = useState('');
+  const [newGoalTitle, setNewGoalTitle] = useState("");
   const [editingId, setEditingId] = useState<number | null>(null);
-  const [editTitle, setEditTitle] = useState('');
-  
-const updateLocalStorage = (updatedGoals: Goal[]) => {
-  localStorage.setItem("goals", JSON.stringify(updatedGoals));
-};
+  const [editTitle, setEditTitle] = useState("");
 
+  const updateLocalStorage = (updatedGoals: Goal[]) => {
+    localStorage.setItem("goals", JSON.stringify(updatedGoals));
+  };
 
   const handleAddGoal = () => {
-    if (newGoalTitle.trim() === '') return;
-    
+    if (newGoalTitle.trim() === "") return;
+
     const newGoal: Goal = {
-      id: Math.max(0, ...goals.map(g => g.id)) + 1,
+      id: Math.max(0, ...goals.map((g) => g.id)) + 1,
       title: newGoalTitle.trim(),
       completed: false,
-      progress: 0
+      progress: 0,
     };
-    
+
     // setGoals([...goals, newGoal]);
-      const updatedGoals = [...goals, newGoal];
-      setGoals(updatedGoals);
-      updateLocalStorage(updatedGoals);
-    setNewGoalTitle('');
+    const updatedGoals = [...goals, newGoal];
+    setGoals(updatedGoals);
+    updateLocalStorage(updatedGoals);
+    setNewGoalTitle("");
   };
-  
+
   const handleRemoveGoal = (id: number) => {
     // setGoals(goals.filter(goal => goal.id !== id));
-      const updatedGoals = goals.filter((goal) => goal.id !== id);
-      setGoals(updatedGoals);
-      updateLocalStorage(updatedGoals);
+    const updatedGoals = goals.filter((goal) => goal.id !== id);
+    setGoals(updatedGoals);
+    updateLocalStorage(updatedGoals);
   };
-  
-  const handleToggleComplete = (id: number) => {
-    // setGoals(goals.map(goal => 
-    //   goal.id === id ? { ...goal, completed: !goal.completed, progress: !goal.completed ? 100 : goal.progress } : goal
-    // ));
-      const updatedGoals = goals.map((goal) =>
-        goal.id === id
-          ? {
-              ...goal,
-              completed: !goal.completed,
-              progress: !goal.completed ? 100 : goal.progress,
-            }
-          : goal
+
+  // const handleToggleComplete = (id: number) => {
+  //   // setGoals(goals.map(goal =>
+  //   //   goal.id === id ? { ...goal, completed: !goal.completed, progress: !goal.completed ? 100 : goal.progress } : goal
+  //   // ));
+  //   const updatedGoals = goals.map((goal) =>
+  //     goal.id === id
+  //       ? {
+  //           ...goal,
+  //           completed: !goal.completed,
+  //           progress: !goal.completed ? 100 : goal.progress,
+  //         }
+  //       : goal
+  //   );
+  //   setGoals(updatedGoals);
+  //   updateLocalStorage(updatedGoals);
+  // };
+
+const handleToggleComplete = (id: number) => {
+  const goalToToggle = goals.find((goal) => goal.id === id);
+
+  if (!goalToToggle) return;
+
+  const updatedGoals = goals.map((goal) =>
+    goal.id === id
+      ? {
+          ...goal,
+          completed: !goal.completed,
+          progress: !goal.completed ? 100 : goal.progress,
+        }
+      : goal
+  );
+
+  setGoals(updatedGoals);
+  updateLocalStorage(updatedGoals);
+
+      let goalHealth = parseFloat(localStorage.getItem("goalHealth") ?? "0");
+      if (goalToToggle.completed) {
+        goalHealth -= 3;
+      } else {
+        goalHealth += 3;
+      }
+
+      localStorage.setItem("goalHealth", goalHealth.toString());
+
+      const weeklyAverage = parseFloat(
+        localStorage.getItem("weeklyAverage") ?? "0"
       );
-      setGoals(updatedGoals);
-      updateLocalStorage(updatedGoals);
-  };
-  
+      const modifiedHealth = weeklyAverage + goalHealth;
+
+      localStorage.setItem("modifiedHealth", modifiedHealth.toString());
+      setHealth(modifiedHealth);
+};
+
   const handleProgressChange = (id: number, newProgress: number) => {
-    // setGoals(goals.map(goal => 
-    //   goal.id === id ? { 
-    //     ...goal, 
-    //     progress: newProgress, 
+    // setGoals(goals.map(goal =>
+    //   goal.id === id ? {
+    //     ...goal,
+    //     progress: newProgress,
     //     completed: newProgress === 100
     //   } : goal
     // ));
-      const updatedGoals = goals.map((goal) =>
-        goal.id === id
-          ? { ...goal, progress: newProgress, completed: newProgress === 100 }
-          : goal
-      );
-      setGoals(updatedGoals);
-      updateLocalStorage(updatedGoals);
+    const updatedGoals = goals.map((goal) =>
+      goal.id === id
+        ? { ...goal, progress: newProgress, completed: newProgress === 100 }
+        : goal
+    );
+    setGoals(updatedGoals);
+    updateLocalStorage(updatedGoals);
+
+      if (newProgress === 100) {
+        handleToggleComplete(id);
+      }
   };
-  
+
   const startEditing = (goal: Goal) => {
     setEditingId(goal.id);
     setEditTitle(goal.title);
   };
-  
+
   const saveEdit = () => {
-    if (editTitle.trim() === '') return;
-    
-    setGoals(goals.map(goal => 
-      goal.id === editingId ? { ...goal, title: editTitle.trim() } : goal
-    ));
-    
+    if (editTitle.trim() === "") return;
+
+    setGoals(
+      goals.map((goal) =>
+        goal.id === editingId ? { ...goal, title: editTitle.trim() } : goal
+      )
+    );
+
     setEditingId(null);
-    setEditTitle('');
+    setEditTitle("");
   };
-  
+
   return (
     <Card className="pixel-container">
       <CardHeader>
         <CardTitle>Productivity Goals</CardTitle>
-        <CardDescription>
-          Set and track your productivity goals
-        </CardDescription>
+        <CardDescription>Set and track your productivity goals</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex gap-2 mb-6">
@@ -132,7 +179,7 @@ const updateLocalStorage = (updatedGoals: Goal[]) => {
             Add Goal
           </Button>
         </div>
-        
+
         <div className="space-y-4">
           {goals.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
@@ -140,16 +187,18 @@ const updateLocalStorage = (updatedGoals: Goal[]) => {
             </div>
           ) : (
             goals.map((goal) => (
-              <div 
-                key={goal.id} 
+              <div
+                key={goal.id}
                 className="p-3 border-2 border-black"
                 style={{
-                  backgroundColor: goal.completed ? 'rgba(16, 185, 129, 0.1)' : 'white'
+                  backgroundColor: goal.completed
+                    ? "rgba(16, 185, 129, 0.1)"
+                    : "white",
                 }}
               >
                 <div className="flex items-center justify-between gap-2 mb-2">
                   <div className="flex items-center gap-2 flex-1">
-                    <button 
+                    <button
                       onClick={() => handleToggleComplete(goal.id)}
                       className="flex-shrink-0"
                     >
@@ -159,7 +208,7 @@ const updateLocalStorage = (updatedGoals: Goal[]) => {
                         <Circle className="h-5 w-5 text-gray-400" />
                       )}
                     </button>
-                    
+
                     {editingId === goal.id ? (
                       <Input
                         value={editTitle}
@@ -167,35 +216,41 @@ const updateLocalStorage = (updatedGoals: Goal[]) => {
                         className="flex-1"
                       />
                     ) : (
-                      <span className={goal.completed ? "line-through text-muted-foreground" : ""}>
+                      <span
+                        className={
+                          goal.completed
+                            ? "line-through text-muted-foreground"
+                            : ""
+                        }
+                      >
                         {goal.title}
                       </span>
                     )}
                   </div>
-                  
+
                   <div className="flex items-center gap-1">
                     {editingId === goal.id ? (
-                      <Button 
-                        variant="ghost" 
-                        size="icon" 
+                      <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={saveEdit}
                         className="h-8 w-8"
                       >
                         <Save className="h-4 w-4" />
                       </Button>
                     ) : (
-                      <Button 
-                        variant="ghost" 
-                        size="icon" 
+                      <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={() => startEditing(goal)}
                         className="h-8 w-8"
                       >
                         <Edit className="h-4 w-4" />
                       </Button>
                     )}
-                    <Button 
-                      variant="destructive" 
-                      size="icon" 
+                    <Button
+                      variant="destructive"
+                      size="icon"
                       className="h-8 w-8"
                       onClick={() => handleRemoveGoal(goal.id)}
                     >
@@ -203,7 +258,7 @@ const updateLocalStorage = (updatedGoals: Goal[]) => {
                     </Button>
                   </div>
                 </div>
-                
+
                 <div className="pl-7">
                   <div className="flex items-center gap-4">
                     <div className="w-full flex-1">
@@ -213,7 +268,9 @@ const updateLocalStorage = (updatedGoals: Goal[]) => {
                         max={100}
                         step={5}
                         disabled={goal.completed}
-                        onValueChange={(values) => handleProgressChange(goal.id, values[0])}
+                        onValueChange={(values) =>
+                          handleProgressChange(goal.id, values[0])
+                        }
                       />
                     </div>
                     <div className="w-12 text-right font-medium">

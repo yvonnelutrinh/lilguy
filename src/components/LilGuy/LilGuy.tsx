@@ -9,6 +9,7 @@ interface LilGuyProps {
   className?: string;
   initialAnimation?: "idle" | "walk" | "happy" | "angry" | "sad" | "shocked";
   health?: number;
+  setHealth?: React.Dispatch<React.SetStateAction<number | undefined>>;
 }
 
 function LilGuyCanvas({
@@ -17,12 +18,39 @@ function LilGuyCanvas({
   size = "normal",
   className = "",
   initialAnimation = "idle",
+  health,
+  setHealth,
 }: LilGuyProps) {
-
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [playerState, setPlayerState] = useState(initialAnimation);
   const [clickCount, setClickCount] = useState(0);
-   const [health, setHealth] = useState<number | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [name, setName] = useState<string>("LilGuy"); 
+  const [previousHealth, setPreviousHealth] = useState<number | undefined>(
+    health
+  );
+
+  useEffect(() => {
+    const storedName = localStorage.getItem("lilGuyName");
+    if (storedName) {
+      setName(storedName); 
+    }
+  }, []);
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setName(e.target.value);
+  };
+
+  const handleNameBlur = () => {
+    setIsEditing(false);
+    localStorage.setItem("lilGuyName", name);
+  };
+
+  const handleNameKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleNameBlur();
+    }
+  };
 
   const handleClick = () => {
     const newCount = clickCount + 1;
@@ -38,11 +66,33 @@ function LilGuyCanvas({
   };
 
   useEffect(() => {
-    const stored = localStorage.getItem("weeklyAverage");
-    if (stored) {
-      setHealth(parseFloat(stored));
+    const currentHealth = health ?? 100;
+
+      if (currentHealth < 30) {
+        setPlayerState("sad");
+        setPreviousHealth(currentHealth);
+        return;
+      }
+
+      if (previousHealth === null) {
+        setPreviousHealth(currentHealth);
+      }
+    if (currentHealth !== previousHealth) {
+      const healthChange = currentHealth - (previousHealth ?? 100);
+
+  
+      if (healthChange === 3 || healthChange === -3) {
+        setPlayerState("shocked");
+        setTimeout(() => {
+          setPlayerState("idle");
+        }, 600);
+      } else {
+        setPlayerState("idle");
+      }
+
+      setPreviousHealth(currentHealth);
     }
-  }, []);
+  }, [health, previousHealth]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -53,11 +103,9 @@ function LilGuyCanvas({
     let CANVAS_WIDTH, CANVAS_HEIGHT;
 
     if (size === "widget") {
-      // smaller canvas for widget
       CANVAS_WIDTH = canvas.width = 48;
       CANVAS_HEIGHT = canvas.height = 48;
     } else {
-      // web app canvas size
       CANVAS_WIDTH = canvas.width = 400;
       CANVAS_HEIGHT = canvas.height = 250;
     }
@@ -70,12 +118,10 @@ function LilGuyCanvas({
     let gameFrame = 0;
     const staggerFrames = 5;
 
-    // scale for widget or normal
     let scale;
     if (size === "widget") {
       scale = 0.25 * 0.4;
     } else {
-      // normal size
       scale = 0.25;
     }
 
@@ -145,7 +191,6 @@ function LilGuyCanvas({
       : "w-[100%] h-[auto]"
   } ${className}`;
 
-  
   return (
     <>
       <div
@@ -167,7 +212,7 @@ function LilGuyCanvas({
 
         {showControls && (
           <div className="absolute top-6 z-10 text-lg">
-            <label
+            {/* <label
               htmlFor="animations"
               className="mr-2 text-xl font-semibold text-black"
             >
@@ -196,18 +241,32 @@ function LilGuyCanvas({
               <option value="angry">Angry</option>
               <option value="sad">Sad</option>
               <option value="shocked">Shocked</option>
-            </select>
+            </select> */}
           </div>
         )}
+
+        <div className="absolute top-6 w-full text-center">
+          {isEditing ? (
+            <input
+              type="text"
+              value={name}
+              onChange={handleNameChange}
+              onBlur={handleNameBlur}
+              onKeyDown={handleNameKeyDown}
+              className="text-2xl bg-transparent border-b-2 border-gray-500 focus:outline-none"
+              autoFocus
+            />
+          ) : (
+            <span
+              onClick={() => setIsEditing(true)}
+              className="text-2xl cursor-pointer"
+            >
+              {name}
+            </span>
+          )}
+        </div>
       </div>
-      {size === "normal" ? (
-        <TextBox
-          health={health}
-          setHealth={setHealth}
-          animation={playerState}
-          setAnimation={setPlayerState}
-        />
-      ) : null}
+      {size === "normal" ? <TextBox animation={playerState} setAnimation={setPlayerState} /> : null}
     </>
   );
 }
@@ -254,12 +313,15 @@ function HealthBar({
 // LilGuy for web app
 function LilGuy({
   health = 100,
+  setHealth,
 }: {
   health?: number;
+  setHealth?: React.Dispatch<React.SetStateAction<number | undefined>>;
 }) {
   return (
     <LilGuyCanvas
       health={health}
+      setHealth={setHealth}
       showControls={true}
       showHealthBar={true}
       size="normal"
@@ -273,28 +335,19 @@ function WidgetLilGuy() {
 }
 
 // health bar as separate component for widget
-function WidgetHealth({
-  health = 100,
-}: {
-  health?: number;
-}) {
-      const [widgetHealth, setWidgetHealth] = useState<number | null>(null);
+function WidgetHealth({ health = 100 }: { health?: number }) {
+  const [widgetHealth, setWidgetHealth] = useState<number | null>(null);
 
-      useEffect(() => {
-        const stored = localStorage.getItem("weeklyAverage");
-        if (stored) {
-          setWidgetHealth(parseFloat(stored));
-        } else {
-          setWidgetHealth(health);
-        }
-      }, []);
+  useEffect(() => {
+    const stored = localStorage.getItem("weeklyAverage");
+    if (stored) {
+      setWidgetHealth(parseFloat(stored));
+    } else {
+      setWidgetHealth(health);
+    }
+  }, []);
 
-  return (
-    <HealthBar
-      health={widgetHealth ?? 100}
-      className="mb-2"
-    />
-  );
+  return <HealthBar health={widgetHealth ?? 100} className="mb-2" />;
 }
 
 export { LilGuy, WidgetLilGuy, WidgetHealth };
