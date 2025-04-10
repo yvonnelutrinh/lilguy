@@ -22,7 +22,7 @@ function LilGuyCanvas({
   setHealth,
 }: LilGuyProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [playerState, setPlayerState] = useState(initialAnimation);
+  const [animation, setAnimation] = useState(initialAnimation);
   const [clickCount, setClickCount] = useState(0);
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState<string>("LilGuy"); 
@@ -57,9 +57,9 @@ function LilGuyCanvas({
     setClickCount(newCount);
 
     if (newCount >= 3) {
-      setPlayerState("angry");
+      setAnimation("angry");
       setTimeout(() => {
-        setPlayerState("idle");
+        setAnimation("idle");
         setClickCount(0);
       }, 3000);
     }
@@ -69,7 +69,7 @@ function LilGuyCanvas({
     const currentHealth = health ?? 100;
 
       if (currentHealth < 30) {
-        setPlayerState("sad");
+        setAnimation("sad");
         setPreviousHealth(currentHealth);
         return;
       }
@@ -82,12 +82,12 @@ function LilGuyCanvas({
 
   
       if (healthChange === 3 || healthChange === -3) {
-        setPlayerState("shocked");
+        setAnimation("shocked");
         setTimeout(() => {
-          setPlayerState("idle");
+          setAnimation("idle");
         }, 600);
       } else {
-        setPlayerState("idle");
+        setAnimation("idle");
       }
 
       setPreviousHealth(currentHealth);
@@ -158,9 +158,9 @@ function LilGuyCanvas({
       ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
       let position =
         Math.floor(gameFrame / staggerFrames) %
-        spriteAnimations[playerState].loc.length;
+        spriteAnimations[animation].loc.length;
       let frameX = spriteWidth * position;
-      let frameY = spriteAnimations[playerState].loc[position].y;
+      let frameY = spriteAnimations[animation].loc[position].y;
 
       ctx.drawImage(
         playerImage,
@@ -181,7 +181,7 @@ function LilGuyCanvas({
     playerImage.onload = () => {
       animate();
     };
-  }, [playerState, size]);
+  }, [animation, size]);
 
   const canvasClasses = `${
     size === "normal"
@@ -221,9 +221,9 @@ function LilGuyCanvas({
             <select
               id="animations"
               name="animations"
-              value={playerState}
+              value={animation}
               onChange={(e) =>
-                setPlayerState(
+                setAnimation(
                   e.target.value as
                     | "idle"
                     | "walk"
@@ -244,7 +244,7 @@ function LilGuyCanvas({
             </select> */}
           </div>
         )}
-
+{size === "normal" && (
         <div className="absolute top-6 w-full text-center">
           {isEditing ? (
             <input
@@ -265,8 +265,9 @@ function LilGuyCanvas({
             </span>
           )}
         </div>
+)}
       </div>
-      {size === "normal" ? <TextBox animation={playerState} setAnimation={setPlayerState} /> : null}
+      {size === "normal" ? <TextBox animation={animation} setAnimation={setAnimation} /> : null}
     </>
   );
 }
@@ -318,6 +319,7 @@ function LilGuy({
   health?: number;
   setHealth?: React.Dispatch<React.SetStateAction<number | undefined>>;
 }) {
+
   return (
     <LilGuyCanvas
       health={health}
@@ -331,7 +333,7 @@ function LilGuy({
 
 // LilGuy for widget
 function WidgetLilGuy() {
-  return <LilGuyCanvas size="widget" />;
+  return <LilGuyCanvas size="widget"/>;
 }
 
 // health bar as separate component for widget
@@ -339,7 +341,7 @@ function WidgetHealth({ health = 100 }: { health?: number }) {
   const [widgetHealth, setWidgetHealth] = useState<number | null>(null);
 
   useEffect(() => {
-    const stored = localStorage.getItem("weeklyAverage");
+    const stored = localStorage.getItem("modifiedHealth");
     if (stored) {
       setWidgetHealth(parseFloat(stored));
     } else {

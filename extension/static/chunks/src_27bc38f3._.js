@@ -478,7 +478,7 @@ var _s = __turbopack_context__.k.signature(), _s1 = __turbopack_context__.k.sign
 function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "normal", className = "", initialAnimation = "idle", health, setHealth }) {
     _s();
     const canvasRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(null);
-    const [playerState, setPlayerState] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(initialAnimation);
+    const [animation, setAnimation] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(initialAnimation);
     const [clickCount, setClickCount] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(0);
     const [isEditing, setIsEditing] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const [name, setName] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("LilGuy");
@@ -507,9 +507,9 @@ function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "nor
         const newCount = clickCount + 1;
         setClickCount(newCount);
         if (newCount >= 3) {
-            setPlayerState("angry");
+            setAnimation("angry");
             setTimeout(()=>{
-                setPlayerState("idle");
+                setAnimation("idle");
                 setClickCount(0);
             }, 3000);
         }
@@ -518,7 +518,7 @@ function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "nor
         "LilGuyCanvas.useEffect": ()=>{
             const currentHealth = health ?? 100;
             if (currentHealth < 30) {
-                setPlayerState("sad");
+                setAnimation("sad");
                 setPreviousHealth(currentHealth);
                 return;
             }
@@ -528,14 +528,14 @@ function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "nor
             if (currentHealth !== previousHealth) {
                 const healthChange = currentHealth - (previousHealth ?? 100);
                 if (healthChange === 3 || healthChange === -3) {
-                    setPlayerState("shocked");
+                    setAnimation("shocked");
                     setTimeout({
                         "LilGuyCanvas.useEffect": ()=>{
-                            setPlayerState("idle");
+                            setAnimation("idle");
                         }
                     }["LilGuyCanvas.useEffect"], 600);
                 } else {
-                    setPlayerState("idle");
+                    setAnimation("idle");
                 }
                 setPreviousHealth(currentHealth);
             }
@@ -620,9 +620,9 @@ function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "nor
             const animate = {
                 "LilGuyCanvas.useEffect.animate": ()=>{
                     ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-                    let position = Math.floor(gameFrame / staggerFrames) % spriteAnimations[playerState].loc.length;
+                    let position = Math.floor(gameFrame / staggerFrames) % spriteAnimations[animation].loc.length;
                     let frameX = spriteWidth * position;
-                    let frameY = spriteAnimations[playerState].loc[position].y;
+                    let frameY = spriteAnimations[animation].loc[position].y;
                     ctx.drawImage(playerImage, frameX, frameY, spriteWidth, spriteHeight, centerX, centerY, displayWidth, displayHeight);
                     gameFrame++;
                     requestAnimationFrame(animate);
@@ -635,7 +635,7 @@ function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "nor
             })["LilGuyCanvas.useEffect"];
         }
     }["LilGuyCanvas.useEffect"], [
-        playerState,
+        animation,
         size
     ]);
     const canvasClasses = `${size === "normal" ? "border border-black bg-gray-100 w-[100%] h-[auto] pb-4" : size === "widget" ? "w-full h-full" : "w-[100%] h-[auto]"} ${className}`;
@@ -674,7 +674,7 @@ function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "nor
                         lineNumber: 214,
                         columnNumber: 11
                     }, this),
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                    size === "normal" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: "absolute top-6 w-full text-center",
                         children: isEditing ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
                             type: "text",
@@ -709,17 +709,17 @@ function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "nor
                 columnNumber: 7
             }, this),
             size === "normal" ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$TextBox$2f$TextBox$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
-                animation: playerState,
-                setAnimation: setPlayerState
+                animation: animation,
+                setAnimation: setAnimation
             }, void 0, false, {
                 fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                lineNumber: 269,
+                lineNumber: 270,
                 columnNumber: 28
             }, this) : null
         ]
     }, void 0, true);
 }
-_s(LilGuyCanvas, "2i7qo9kWmVT486T2zaY3a6iMsy4=");
+_s(LilGuyCanvas, "lQ3xGENIqtonIvE+Lwyp7IRTswk=");
 _c = LilGuyCanvas;
 function HealthBar({ showLabel = true, className = "", health }) {
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -735,12 +735,12 @@ function HealthBar({ showLabel = true, className = "", health }) {
                     }
                 }, void 0, false, {
                     fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                    lineNumber: 291,
+                    lineNumber: 292,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                lineNumber: 290,
+                lineNumber: 291,
                 columnNumber: 7
             }, this),
             showLabel && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -751,13 +751,13 @@ function HealthBar({ showLabel = true, className = "", health }) {
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                lineNumber: 305,
+                lineNumber: 306,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-        lineNumber: 287,
+        lineNumber: 288,
         columnNumber: 5
     }, this);
 }
@@ -772,7 +772,7 @@ function LilGuy({ health = 100, setHealth }) {
         size: "normal"
     }, void 0, false, {
         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-        lineNumber: 322,
+        lineNumber: 324,
         columnNumber: 5
     }, this);
 }
@@ -783,7 +783,7 @@ function WidgetLilGuy() {
         size: "widget"
     }, void 0, false, {
         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-        lineNumber: 334,
+        lineNumber: 336,
         columnNumber: 10
     }, this);
 }
@@ -794,7 +794,7 @@ function WidgetHealth({ health = 100 }) {
     const [widgetHealth, setWidgetHealth] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "WidgetHealth.useEffect": ()=>{
-            const stored = localStorage.getItem("weeklyAverage");
+            const stored = localStorage.getItem("modifiedHealth");
             if (stored) {
                 setWidgetHealth(parseFloat(stored));
             } else {
@@ -807,7 +807,7 @@ function WidgetHealth({ health = 100 }) {
         className: "mb-2"
     }, void 0, false, {
         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-        lineNumber: 350,
+        lineNumber: 352,
         columnNumber: 10
     }, this);
 }
@@ -1483,12 +1483,29 @@ var _s = __turbopack_context__.k.signature();
 const ExtensionWidget = ({ onClose, onExpand })=>{
     _s();
     // consider: update mood based on health/productivity?
-    const [mood, setMood] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('happy');
+    // const [mood, setMood] = useState<'happy' | 'sad' | 'neutral'>('happy');
+    const [mood, setMood] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("neutral");
     // placeholder for preview
     const productiveTime = '3h 25m';
     const unproductiveTime = '1h 05m';
     const totalTime = '4h 30m';
     const productivityPercent = 76; // (3h 25m / 4h 30m) * 100
+    const name = localStorage.getItem("lilGuyName") || "LilGuy";
+    // example of changing moods with health value
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "ExtensionWidget.useEffect": ()=>{
+            const healthValue = parseInt(localStorage.getItem("modifiedHealth") || "0", 10);
+            if (healthValue > 81) {
+                setMood("ecstatic");
+            } else if (healthValue > 61) {
+                setMood("happy");
+            } else if (healthValue < 30) {
+                setMood("sad");
+            } else {
+                setMood("neutral");
+            }
+        }
+    }["ExtensionWidget.useEffect"], []);
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         className: "w-72 shadow-lg border-2 border-black",
         children: [
@@ -1500,25 +1517,25 @@ const ExtensionWidget = ({ onClose, onExpand })=>{
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                 className: "font-bold text-sm",
-                                children: "LilGuy"
+                                children: name
                             }, void 0, false, {
                                 fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                                lineNumber: 28,
-                                columnNumber: 21
+                                lineNumber: 51,
+                                columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                 className: "bg-white text-pixel-primary rounded-full px-2 py-0.5 text-xs",
                                 children: "LVL 2"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                                lineNumber: 29,
-                                columnNumber: 21
+                                lineNumber: 52,
+                                columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                        lineNumber: 27,
-                        columnNumber: 17
+                        lineNumber: 50,
+                        columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: "flex items-center gap-1",
@@ -1532,13 +1549,13 @@ const ExtensionWidget = ({ onClose, onExpand })=>{
                                     className: "h-3 w-3"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                                    lineNumber: 40,
-                                    columnNumber: 25
+                                    lineNumber: 63,
+                                    columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                                lineNumber: 34,
-                                columnNumber: 21
+                                lineNumber: 57,
+                                columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Button$2f$Button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
                                 size: "icon",
@@ -1549,25 +1566,25 @@ const ExtensionWidget = ({ onClose, onExpand })=>{
                                     className: "h-3 w-3"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                                    lineNumber: 48,
-                                    columnNumber: 25
+                                    lineNumber: 71,
+                                    columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                                lineNumber: 42,
-                                columnNumber: 21
+                                lineNumber: 65,
+                                columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                        lineNumber: 33,
-                        columnNumber: 17
+                        lineNumber: 56,
+                        columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                lineNumber: 26,
-                columnNumber: 13
+                lineNumber: 49,
+                columnNumber: 9
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "bg-white p-2 flex justify-between border-t border-gray-200",
@@ -1579,8 +1596,8 @@ const ExtensionWidget = ({ onClose, onExpand })=>{
                         children: "Placeholder"
                     }, void 0, false, {
                         fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                        lineNumber: 54,
-                        columnNumber: 17
+                        lineNumber: 77,
+                        columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Button$2f$Button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
                         size: "sm",
@@ -1589,8 +1606,8 @@ const ExtensionWidget = ({ onClose, onExpand })=>{
                         children: "Buttons"
                     }, void 0, false, {
                         fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                        lineNumber: 61,
-                        columnNumber: 17
+                        lineNumber: 80,
+                        columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Button$2f$Button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
                         size: "sm",
@@ -1599,29 +1616,29 @@ const ExtensionWidget = ({ onClose, onExpand })=>{
                         children: "We may use?"
                     }, void 0, false, {
                         fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                        lineNumber: 68,
-                        columnNumber: 17
+                        lineNumber: 83,
+                        columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                lineNumber: 53,
-                columnNumber: 13
+                lineNumber: 76,
+                columnNumber: 9
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "bg-white p-3 flex items-center gap-3 border-b border-dashed border-gray-300",
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                        className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["classNameMerge"])("w-12 h-12 flex items-center justify-center rounded-lg pixelated pixel-borders", mood === 'happy' ? 'bg-pixel-primary animate-bounce-slight' : mood === 'sad' ? 'bg-pixel-danger' : 'bg-pixel-warning'),
+                        className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["classNameMerge"])("w-12 h-12 flex items-center justify-center rounded-lg pixelated pixel-borders", mood === "happy" ? "bg-pixel-primary animate-bounce-slight" : mood === "sad" ? "bg-pixel-danger" : "bg-pixel-warning"),
                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$LilGuy$2f$LilGuy$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["WidgetLilGuy"], {}, void 0, false, {
                             fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                            lineNumber: 86,
-                            columnNumber: 21
+                            lineNumber: 100,
+                            columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                        lineNumber: 79,
-                        columnNumber: 17
+                        lineNumber: 90,
+                        columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: "flex-1",
@@ -1629,38 +1646,40 @@ const ExtensionWidget = ({ onClose, onExpand })=>{
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "text-xs font-bold",
                                 children: [
-                                    "LilGuy is ",
-                                    mood
+                                    name,
+                                    " is ",
+                                    mood,
+                                    "."
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                                lineNumber: 89,
-                                columnNumber: 21
+                                lineNumber: 103,
+                                columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "text-[10px] text-gray-500 mb-1",
-                                children: mood === 'happy' ? "You're doing great today!" : mood === 'sad' ? "Let's do some productive work!" : "Ready when you are!"
+                                children: mood === "happy" ? "You're doing great today!" : mood === "sad" ? "Let's do some productive work!" : mood === "ecstatic" ? "You're on fire!" : "Ready when you are!"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                                lineNumber: 90,
-                                columnNumber: 21
+                                lineNumber: 106,
+                                columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$LilGuy$2f$LilGuy$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["WidgetHealth"], {}, void 0, false, {
                                 fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                                lineNumber: 97,
-                                columnNumber: 21
+                                lineNumber: 115,
+                                columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                        lineNumber: 88,
-                        columnNumber: 17
+                        lineNumber: 102,
+                        columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                lineNumber: 78,
-                columnNumber: 13
+                lineNumber: 89,
+                columnNumber: 9
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "bg-gray-50 p-3",
@@ -1678,35 +1697,35 @@ const ExtensionWidget = ({ onClose, onExpand })=>{
                                                 className: "w-3 h-3"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                                                lineNumber: 106,
-                                                columnNumber: 29
+                                                lineNumber: 124,
+                                                columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                 children: "Productive"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                                                lineNumber: 107,
-                                                columnNumber: 29
+                                                lineNumber: 125,
+                                                columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                                        lineNumber: 105,
-                                        columnNumber: 25
+                                        lineNumber: 123,
+                                        columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                         className: "text-sm font-bold text-pixel-accent",
                                         children: productiveTime
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                                        lineNumber: 109,
-                                        columnNumber: 25
+                                        lineNumber: 127,
+                                        columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                                lineNumber: 104,
-                                columnNumber: 21
+                                lineNumber: 122,
+                                columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "bg-white p-2 border-1 border-black",
@@ -1718,41 +1737,41 @@ const ExtensionWidget = ({ onClose, onExpand })=>{
                                                 className: "w-3 h-3"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                                                lineNumber: 113,
-                                                columnNumber: 29
+                                                lineNumber: 133,
+                                                columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                 children: "Unproductive"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                                                lineNumber: 114,
-                                                columnNumber: 29
+                                                lineNumber: 134,
+                                                columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                                        lineNumber: 112,
-                                        columnNumber: 25
+                                        lineNumber: 132,
+                                        columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                         className: "text-sm font-bold text-pixel-danger",
                                         children: unproductiveTime
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                                        lineNumber: 116,
-                                        columnNumber: 25
+                                        lineNumber: 136,
+                                        columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                                lineNumber: 111,
-                                columnNumber: 21
+                                lineNumber: 131,
+                                columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                        lineNumber: 103,
-                        columnNumber: 17
+                        lineNumber: 121,
+                        columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: "bg-white p-2 border-1 border-black mb-2",
@@ -1762,8 +1781,8 @@ const ExtensionWidget = ({ onClose, onExpand })=>{
                                 children: "Currently on:"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                                lineNumber: 122,
-                                columnNumber: 21
+                                lineNumber: 144,
+                                columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "flex justify-between items-center",
@@ -1773,28 +1792,28 @@ const ExtensionWidget = ({ onClose, onExpand })=>{
                                         children: "github.com"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                                        lineNumber: 124,
-                                        columnNumber: 25
+                                        lineNumber: 146,
+                                        columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                         className: "text-[10px] bg-green-100 text-green-800 px-1.5 py-0.5 rounded",
                                         children: "Productive"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                                        lineNumber: 125,
-                                        columnNumber: 25
+                                        lineNumber: 147,
+                                        columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                                lineNumber: 123,
-                                columnNumber: 21
+                                lineNumber: 145,
+                                columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                        lineNumber: 121,
-                        columnNumber: 17
+                        lineNumber: 143,
+                        columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: "bg-pixel-primary bg-opacity-10 p-2 border-1 border-black flex items-center gap-2",
@@ -1803,8 +1822,8 @@ const ExtensionWidget = ({ onClose, onExpand })=>{
                                 className: "w-4 h-4 text-pixel-primary"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                                lineNumber: 133,
-                                columnNumber: 21
+                                lineNumber: 155,
+                                columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "flex-1",
@@ -1814,43 +1833,43 @@ const ExtensionWidget = ({ onClose, onExpand })=>{
                                         children: "Upcoming Break"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                                        lineNumber: 135,
-                                        columnNumber: 25
+                                        lineNumber: 157,
+                                        columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                         className: "text-xs font-medium",
                                         children: "In 25 minutes"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                                        lineNumber: 136,
-                                        columnNumber: 25
+                                        lineNumber: 158,
+                                        columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                                lineNumber: 134,
-                                columnNumber: 21
+                                lineNumber: 156,
+                                columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                        lineNumber: 132,
-                        columnNumber: 17
+                        lineNumber: 154,
+                        columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                lineNumber: 102,
-                columnNumber: 13
+                lineNumber: 120,
+                columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-        lineNumber: 24,
-        columnNumber: 9
+        lineNumber: 47,
+        columnNumber: 7
     }, this);
 };
-_s(ExtensionWidget, "T+zc+/3D6oaOIjwhI+PvPauTBbg=");
+_s(ExtensionWidget, "5uy6/B5crAz4IMGNbk+UnFf78Mg=");
 _c = ExtensionWidget;
 const __TURBOPACK__default__export__ = ExtensionWidget;
 var _c;
