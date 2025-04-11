@@ -168,6 +168,7 @@
     --ease-in: cubic-bezier(.4, 0, 1, 1);
     --ease-out: cubic-bezier(0, 0, .2, 1);
     --ease-in-out: cubic-bezier(.4, 0, .2, 1);
+    --animate-spin: spin 1s linear infinite;
     --default-transition-duration: .15s;
     --default-transition-timing-function: cubic-bezier(.4, 0, .2, 1);
     --default-font-family: var(--font-geist-sans);
@@ -436,6 +437,10 @@
 
   .bottom-5 {
     bottom: calc(var(--spacing) * 5);
+  }
+
+  .bottom-20 {
+    bottom: calc(var(--spacing) * 20);
   }
 
   .left-0 {
@@ -730,10 +735,6 @@
     height: calc(var(--spacing) * 12);
   }
 
-  .h-12\.5 {
-    height: calc(var(--spacing) * 12.5);
-  }
-
   .h-16 {
     height: calc(var(--spacing) * 16);
   }
@@ -756,10 +757,6 @@
 
   .h-\[auto\] {
     height: auto;
-  }
-
-  .h-\[max-content\] {
-    height: max-content;
   }
 
   .h-\[min-content\] {
@@ -854,20 +851,12 @@
     width: calc(var(--spacing) * 80);
   }
 
-  .w-\[40\%\] {
-    width: 40%;
-  }
-
-  .w-\[50\%\] {
-    width: 50%;
-  }
-
-  .w-\[50\] {
-    width: 50px;
-  }
-
   .w-\[80\%\] {
     width: 80%;
+  }
+
+  .w-\[90\%\] {
+    width: 90%;
   }
 
   .w-\[100\%\] {
@@ -888,10 +877,6 @@
 
   .w-\[400px\] {
     width: 400px;
-  }
-
-  .w-\[auto\] {
-    width: auto;
   }
 
   .w-full {
@@ -952,6 +937,10 @@
 
   .transform {
     transform: var(--tw-rotate-x) var(--tw-rotate-y) var(--tw-rotate-z) var(--tw-skew-x) var(--tw-skew-y);
+  }
+
+  .animate-spin {
+    animation: var(--animate-spin);
   }
 
   .cursor-default {
@@ -1245,6 +1234,11 @@
     border-width: 2px;
   }
 
+  .border-4 {
+    border-style: var(--tw-border-style);
+    border-width: 4px;
+  }
+
   .border-x {
     border-inline-style: var(--tw-border-style);
     border-inline-width: 1px;
@@ -1268,6 +1262,11 @@
   .border-t {
     border-top-style: var(--tw-border-style);
     border-top-width: 1px;
+  }
+
+  .border-t-4 {
+    border-top-style: var(--tw-border-style);
+    border-top-width: 4px;
   }
 
   .border-r {
@@ -1320,6 +1319,10 @@
 
   .border-gray-300 {
     border-color: var(--color-gray-300);
+  }
+
+  .border-gray-500 {
+    border-color: var(--color-gray-500);
   }
 
   .border-transparent {
@@ -2753,6 +2756,12 @@ body {
   syntax: "*";
   inherits: false;
   initial-value: 0;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @layer properties {
