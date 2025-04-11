@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/Button/Button";
 import { Input } from "@/components/ui/Input/Input";
 import { Slider } from "@/components/ui/Slider/Slider";
 import { CheckCircle, Circle, Edit, Save, Trash, Plus } from "lucide-react";
+import { useEmitEmotion } from '@/lib/emotionContext';
 
 // Mock data for goals
 const initialGoals = [
@@ -20,16 +21,9 @@ export interface Goal {
   progress: number;
 }
 
-interface GoalsProps {
-  health?: number;
-  setHealth: React.Dispatch<React.SetStateAction<number | undefined>>;
-}
+const Goals: React.FC= () => {
+  const emitEmotion = useEmitEmotion();
 
-const Goals: React.FC<GoalsProps> = ({
-  health,
-  setHealth,
-}) => {
-  // const [goals, setGoals] = useState<Goal[]>(initialGoals);
   const [goals, setGoals] = useState<Goal[]>(() => {
     const savedGoals = localStorage.getItem("goals");
     return savedGoals ? JSON.parse(savedGoals) : initialGoals;
@@ -83,41 +77,29 @@ const Goals: React.FC<GoalsProps> = ({
   //   updateLocalStorage(updatedGoals);
   // };
 
-const handleToggleComplete = (id: number) => {
-  const goalToToggle = goals.find((goal) => goal.id === id);
+  const handleToggleComplete = (id: number) => {
+    const goalToToggle = goals.find((goal) => goal.id === id);
 
-  if (!goalToToggle) return;
-
-  const updatedGoals = goals.map((goal) =>
-    goal.id === id
-      ? {
+    if (!goalToToggle) return;
+    const updatedGoals = goals.map((goal) =>
+      goal.id === id
+        ? {
           ...goal,
           completed: !goal.completed,
           progress: !goal.completed ? 100 : goal.progress,
         }
-      : goal
-  );
+        : goal
+    );
+    setGoals(updatedGoals);
+    updateLocalStorage(updatedGoals);
 
-  setGoals(updatedGoals);
-  updateLocalStorage(updatedGoals);
 
-      let goalHealth = parseFloat(localStorage.getItem("goalHealth") ?? "0");
-      if (goalToToggle.completed) {
-        goalHealth -= 3;
-      } else {
-        goalHealth += 3;
-      }
-
-      localStorage.setItem("goalHealth", goalHealth.toString());
-
-      const weeklyAverage = parseFloat(
-        localStorage.getItem("weeklyAverage") ?? "0"
-      );
-      const modifiedHealth = weeklyAverage + goalHealth;
-
-      localStorage.setItem("modifiedHealth", modifiedHealth.toString());
-      setHealth(modifiedHealth);
-};
+    if (goalToToggle.completed) {
+      emitEmotion("sad", 100, "goalUnfinished");
+    } else {
+      emitEmotion("happy", 100, "goalCompletion");
+    }
+  };
 
   const handleProgressChange = (id: number, newProgress: number) => {
     // setGoals(goals.map(goal =>
@@ -135,9 +117,9 @@ const handleToggleComplete = (id: number) => {
     setGoals(updatedGoals);
     updateLocalStorage(updatedGoals);
 
-      if (newProgress === 100) {
-        handleToggleComplete(id);
-      }
+    if (newProgress === 100) {
+      handleToggleComplete(id);
+    }
   };
 
   const startEditing = (goal: Goal) => {

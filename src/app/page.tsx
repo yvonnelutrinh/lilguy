@@ -6,52 +6,14 @@ import ProductivityMetrics from "@/components/ProductivityMetrics/ProductivityMe
 // import TextBox from "@/components/TextBox/TextBox"; // put in LilGuy instead
 import { Card, CardContent } from "@/components/ui/Card/Card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs/Tabs";
-import { useState, useEffect } from "react";
 import ExtensionWidget from "@/components/ExtensionWidget/ExtensionWidget";
 import Goals from "@/components/Goals/Goals"
 import SiteList from "@/components/SiteList/SiteList";
 
 export default function Home() {
-  const [health, setHealth] = useState<number | undefined>(undefined);
 
-useEffect(() => {
-  const storedModifiedHealth = localStorage.getItem("modifiedHealth");
-  const storedWeeklyAverage = localStorage.getItem("weeklyAverage");
 
-  if (storedModifiedHealth) {
-    setHealth(parseFloat(storedModifiedHealth));
-  } else if (storedWeeklyAverage) {
-    setHealth(parseFloat(storedWeeklyAverage));
-  }
-}, []);
 
-useEffect(() => {
-  const recalculateHealth = () => {
-    const weeklyAverage = parseFloat(
-      localStorage.getItem("weeklyAverage") ?? "0"
-    );
-    const goalHealth = parseFloat(localStorage.getItem("goalHealth") ?? "0");
-
-    const modifiedHealth = weeklyAverage + goalHealth;
-
-    localStorage.setItem("modifiedHealth", modifiedHealth.toString());
-    setHealth(modifiedHealth);
-  };
-
-  recalculateHealth();
-
-  const handleStorageChange = (e: StorageEvent) => {
-    if (e.key === "weeklyAverage" || e.key === "goalHealth") {
-      recalculateHealth();
-    }
-  };
-
-  window.addEventListener("storage", handleStorageChange);
-
-  return () => {
-    window.removeEventListener("storage", handleStorageChange);
-  };
-}, []);
 
   return (
     <>
@@ -67,11 +29,7 @@ useEffect(() => {
                   <div className="relative mb-4">
                     {/* <div className="grid grid-rows-[1.25rem_1fr_1.25rem] items-center justify-items-center p-8 pb-20 font-[family-name:var(--font-geist-sans)]"> */}
                     <main className="flex flex-col gap-[2rem] row-start-2 items-center sm:items-start">
-                      <LilGuy
-                        health={health}
-                        setHealth={setHealth}
-                      />
-                      {/* <TextBox health={health} setHealth={setHealth} /> */}
+                      <LilGuy/>
                     </main>
                     {/* </div> */}
                   </div>
@@ -98,10 +56,7 @@ useEffect(() => {
                 </TabsContent>
 
                 <TabsContent value="goals" className="mt-4">
-                  <Goals
-                    health={health}
-                    setHealth={setHealth}
-                  />
+                  <Goals/>
                 </TabsContent>
 
                 <TabsContent value="widget" className="mt-4">
