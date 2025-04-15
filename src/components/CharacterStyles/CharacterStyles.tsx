@@ -14,12 +14,11 @@ export default function CharacterStyles() {
   const [showNameInput, setShowNameInput] = useState(false);
   const [newName, setNewName] = useState("");
 
-  // helper function to safely set localStorage item
+  // helper: safely set localStorage item
   const setLocalStorageItem = (key: string, value: any) => {
     if (typeof window !== 'undefined') {
       localStorage.setItem(key, typeof value === 'object' || typeof value === 'number' ? JSON.stringify(value) : value);
-      
-      // Dispatch a custom event to notify other components of the change
+      // let other components know localStorage changed
       const event = new CustomEvent('localStorageChanged', { 
         detail: { key, value }
       });
@@ -27,7 +26,7 @@ export default function CharacterStyles() {
     }
   };
 
-  // helper function to safely get localStorage item
+  // helper: safely get localStorage item
   const getLocalStorageItem = (key: string, defaultValue: any) => {
     if (typeof window !== 'undefined') {
       const item = localStorage.getItem(key);
@@ -47,20 +46,19 @@ export default function CharacterStyles() {
     setNewName(storedName);
   }, []);
 
-  // function to change lilguy color
+  // change lilguy color and trigger idle animation
   const changeLilGuyColor = (color: LilGuyColor) => {
     setCurrentColor(color);
     setLocalStorageItem("lilGuyColor", color);
-    // Trigger an idle animation to refresh the character
     emitEmotion("idle", 100, "button");
   };
   
-  // function to change lilguy stage
+  // change lilguy stage and save to localStorage
   const changeStage = (stage: LilGuyStage) => {
     setCurrentStage(stage);
     setLocalStorageItem("lilGuyStage", stage);
     
-    // Trigger different animations based on stage changes
+    // trigger different animations based on stage changes
     switch(stage) {
       case 'egg':
         emitEmotion("idle", 100, "button");
@@ -76,13 +74,13 @@ export default function CharacterStyles() {
     }
   };
 
-  // function to save lilguy name
+  // save lilguy name
   const saveName = () => {
     if (newName.trim()) {
       setName(newName);
       setLocalStorageItem("lilGuyName", newName);
       setShowNameInput(false);
-      // Trigger a happy animation when name is updated
+      // trigger happy animation when name is updated
       emitEmotion("happy", 100, "button");
     }
   };
@@ -133,7 +131,7 @@ export default function CharacterStyles() {
         )}
       </div>
       
-      {/* animations section */}
+      {/* Animations */}
       <div className="mb-6">
         <h3 className="mb-2 text-lg font-semibold">Animations</h3>
         <div className="grid grid-cols-3 gap-2">
@@ -195,33 +193,29 @@ export default function CharacterStyles() {
         </div>
       </div>
       
-      {/* LilGuy Color selection */}
+      {/* LilGuy Color */}
       <div className="mb-6">
         <h3 className="mb-2 text-lg font-semibold">LilGuy Color</h3>
         <div className="flex flex-row gap-2 items-center mt-2">
           <span className="font-mono text-xs">LilGuy Color:</span>
-          {["green", "blue", "black", "pink", "brown"].map((color) => (
+          {['green', 'blue', 'black'].map((color) => (
             <button
               key={color}
               style={{
                 background:
-                  color === "green"
-                    ? "#4CAF50"
-                    : color === "blue"
-                    ? "#2196F3"
-                    : color === "black"
-                    ? "#333"
-                    : color === "pink"
-                    ? "#EC6BAE"
-                    : color === "brown"
-                    ? "#8B5C2A"
-                    : "#fff",
+                  color === 'green'
+                    ? '#4CAF50'
+                    : color === 'blue'
+                    ? '#2196F3'
+                    : color === 'black'
+                    ? '#333'
+                    : '#fff',
                 border:
                   currentColor === color
-                    ? "2px solid #FFD700"
-                    : "2px solid #222",
-                color: color === "black" || color === "brown" ? "#fff" : "#222",
-                fontWeight: currentColor === color ? "bold" : "normal",
+                    ? '2px solid #FFD700'
+                    : '2px solid #222',
+                color: color === 'black' ? '#fff' : '#222',
+                fontWeight: currentColor === color ? 'bold' : 'normal',
                 fontFamily: 'inherit',
                 padding: '0.3rem 0.7rem',
                 borderRadius: 4,

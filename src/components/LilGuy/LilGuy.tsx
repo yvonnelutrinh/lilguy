@@ -21,7 +21,7 @@ const setLocalStorageItem = (key: string, value: any) => {
   }
 };
 
-export type LilGuyColor = "green" | "blue" | "black" | "pink" | "brown";
+export type LilGuyColor = "green" | "blue" | "black";
 export type LilGuyAnimation = "idle" | "walk" | "happy" | "angry" | "sad" | "shocked" | "shake" | "hatch" | "roll";
 export type LilGuyStage = "normal" | "egg" | "angel" | "devil" | "hatchling";
 
@@ -35,17 +35,19 @@ interface LilGuyProps {
   setHealth?: React.Dispatch<React.SetStateAction<number | undefined>>;
 }
 
-function getSpriteSheetForStage(stage: LilGuyStage) {
+function getSpriteSheetForStageAndColor(stage: LilGuyStage, color: LilGuyColor) {
+  // Map to the correct sheet based on stage and color
+  const base = `/assets/sprites/sheets/${color}`;
   switch (stage) {
     case "angel":
-      return "/assets/sprites/sheets/lilguy_angel.png";
+      return `${base}/lilguy_angel_${color}.png`;
     case "devil":
-      return "/assets/sprites/sheets/lilguy_devil.png";
+      return `${base}/lilguy_devil_${color}.png`;
     case "egg":
-      return "/assets/sprites/sheets/lilguy_egg.png";
+      return `${base}/lilguy_egg_${color}.png`;
     case "normal":
     default:
-      return "/assets/sprites/sheets/lilguy_main.png";
+      return `${base}/lilguy_main_${color}.png`;
   }
 }
 
@@ -82,19 +84,42 @@ function LilGuyCanvas({
   const animRef = useRef<number | null>(null);
   const [animation, setAnimation] = useState<LilGuyAnimation>(controlledAnimation || initialAnimation);
   const [health, setHealth] = useState<number>(controlledHealth ?? 100);
-  const [lilGuyColor, setLilGuyColor] = useState<LilGuyColor>("green");
+  const [lilGuyColor, setLilGuyColor] = useState<LilGuyColor>(() => getLocalStorageItem('lilGuyColor', 'green'));
   const [lilGuyStage, setLilGuyStage] = useState<LilGuyStage>(controlledStage || "normal");
   const [message, setMessage] = useState<string>("");
   const [modifiedHealth, setModifiedHealth] = useState<number>();
   const [lilGuyName, setLilGuyName] = useState("LilGuy");
 
+  // Listen for color changes from localStorage
+  useEffect(() => {
+    const onStorageChange = (e: StorageEvent | CustomEvent) => {
+      let key, value;
+      if (e instanceof CustomEvent) {
+        key = e.detail.key;
+        value = e.detail.value;
+      } else {
+        key = e.key;
+        value = e.newValue;
+      }
+      if (key === 'lilGuyColor' && value) {
+        setLilGuyColor(value);
+      }
+    };
+    window.addEventListener('storage', onStorageChange);
+    window.addEventListener('localStorageChanged', onStorageChange as EventListener);
+    return () => {
+      window.removeEventListener('storage', onStorageChange);
+      window.removeEventListener('localStorageChanged', onStorageChange as EventListener);
+    };
+  }, []);
+
   // --- Sprite image ref ---
   const spriteImageRef = useRef<HTMLImageElement | null>(null);
   const lastSpriteSheetRef = useRef<string>("");
 
-  // --- Sprite loading effect: only runs when stage changes ---
+  // --- Sprite loading effect: runs when stage or color changes ---
   useEffect(() => {
-    const spriteSheetPath = getSpriteSheetForStage(lilGuyStage);
+    const spriteSheetPath = getSpriteSheetForStageAndColor(lilGuyStage, lilGuyColor);
     if (spriteSheetPath === lastSpriteSheetRef.current && spriteImageRef.current) {
       return;
     }
@@ -108,7 +133,7 @@ function LilGuyCanvas({
       spriteImageRef.current = null;
       console.error("Error loading sprite sheet asset:", spriteSheetPath);
     };
-  }, [lilGuyStage]);
+  }, [lilGuyStage, lilGuyColor]);
 
   // --- Animation loop: draws the correct frame from the sprite sheet ---
   useEffect(() => {
@@ -192,12 +217,6 @@ function LilGuyCanvas({
   useEffect(() => {
     if (controlledHealth !== undefined) setHealth(controlledHealth);
   }, [controlledHealth]);
-
-  // --- Dynamic color setting from buttons/localStorage ---
-  useEffect(() => {
-    const storedColor = getLocalStorageItem("lilGuyColor", "green");
-    setLilGuyColor(storedColor);
-  }, []);
 
   // Listen for emotion updates and update health bar if needed
   useListenToEmotions((emotionEvent: EmotionEvent) => {

@@ -3953,17 +3953,19 @@ const setLocalStorageItem = (key, value)=>{
         "TURBOPACK unreachable";
     }
 };
-function getSpriteSheetForStage(stage) {
+function getSpriteSheetForStageAndColor(stage, color) {
+    // Map to the correct sheet based on stage and color
+    const base = `/assets/sprites/sheets/${color}`;
     switch(stage){
         case "angel":
-            return "/assets/sprites/sheets/lilguy_angel.png";
+            return `${base}/lilguy_angel_${color}.png`;
         case "devil":
-            return "/assets/sprites/sheets/lilguy_devil.png";
+            return `${base}/lilguy_devil_${color}.png`;
         case "egg":
-            return "/assets/sprites/sheets/lilguy_egg.png";
+            return `${base}/lilguy_egg_${color}.png`;
         case "normal":
         default:
-            return "/assets/sprites/sheets/lilguy_main.png";
+            return `${base}/lilguy_main_${color}.png`;
     }
 }
 // --- Helper: get animation states for current stage ---
@@ -4025,17 +4027,39 @@ function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "nor
     const animRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useRef"])(null);
     const [animation, setAnimation] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(controlledAnimation || initialAnimation);
     const [health, setHealth] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(controlledHealth ?? 100);
-    const [lilGuyColor, setLilGuyColor] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])("green");
+    const [lilGuyColor, setLilGuyColor] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(()=>getLocalStorageItem('lilGuyColor', 'green'));
     const [lilGuyStage, setLilGuyStage] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(controlledStage || "normal");
     const [message, setMessage] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])("");
     const [modifiedHealth, setModifiedHealth] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])();
     const [lilGuyName, setLilGuyName] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])("LilGuy");
+    // Listen for color changes from localStorage
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
+        const onStorageChange = (e)=>{
+            let key, value;
+            if (e instanceof CustomEvent) {
+                key = e.detail.key;
+                value = e.detail.value;
+            } else {
+                key = e.key;
+                value = e.newValue;
+            }
+            if (key === 'lilGuyColor' && value) {
+                setLilGuyColor(value);
+            }
+        };
+        window.addEventListener('storage', onStorageChange);
+        window.addEventListener('localStorageChanged', onStorageChange);
+        return ()=>{
+            window.removeEventListener('storage', onStorageChange);
+            window.removeEventListener('localStorageChanged', onStorageChange);
+        };
+    }, []);
     // --- Sprite image ref ---
     const spriteImageRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useRef"])(null);
     const lastSpriteSheetRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useRef"])("");
-    // --- Sprite loading effect: only runs when stage changes ---
+    // --- Sprite loading effect: runs when stage or color changes ---
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
-        const spriteSheetPath = getSpriteSheetForStage(lilGuyStage);
+        const spriteSheetPath = getSpriteSheetForStageAndColor(lilGuyStage, lilGuyColor);
         if (spriteSheetPath === lastSpriteSheetRef.current && spriteImageRef.current) {
             return;
         }
@@ -4050,7 +4074,8 @@ function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "nor
             console.error("Error loading sprite sheet asset:", spriteSheetPath);
         };
     }, [
-        lilGuyStage
+        lilGuyStage,
+        lilGuyColor
     ]);
     // --- Animation loop: draws the correct frame from the sprite sheet ---
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
@@ -4135,11 +4160,6 @@ function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "nor
     }, [
         controlledHealth
     ]);
-    // --- Dynamic color setting from buttons/localStorage ---
-    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
-        const storedColor = getLocalStorageItem("lilGuyColor", "green");
-        setLilGuyColor(storedColor);
-    }, []);
     // Listen for emotion updates and update health bar if needed
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$emotionContext$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useListenToEmotions"])((emotionEvent)=>{
         setAnimation(emotionEvent.type);
@@ -4301,7 +4321,7 @@ function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "nor
                         children: lilGuyName
                     }, void 0, false, {
                         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                        lineNumber: 380,
+                        lineNumber: 399,
                         columnNumber: 11
                     }, this),
                     message && size === "normal" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4313,17 +4333,17 @@ function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "nor
                                 children: message
                             }, void 0, false, {
                                 fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                                lineNumber: 389,
+                                lineNumber: 408,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                            lineNumber: 388,
+                            lineNumber: 407,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                        lineNumber: 387,
+                        lineNumber: 406,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4334,7 +4354,7 @@ function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "nor
                                 ref: canvasRef
                             }, void 0, false, {
                                 fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                                lineNumber: 395,
+                                lineNumber: 414,
                                 columnNumber: 11
                             }, this),
                             showHealthBar && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4343,42 +4363,42 @@ function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "nor
                                     health: health
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                                    lineNumber: 399,
+                                    lineNumber: 418,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                                lineNumber: 398,
+                                lineNumber: 417,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                        lineNumber: 394,
+                        lineNumber: 413,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                lineNumber: 374,
+                lineNumber: 393,
                 columnNumber: 7
             }, this),
             showControls && size === "normal" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "w-full",
                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$LilGuyInteractor$2f$LilGuyInteractor$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
                     fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                    lineNumber: 406,
+                    lineNumber: 425,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                lineNumber: 405,
+                lineNumber: 424,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-        lineNumber: 370,
+        lineNumber: 389,
         columnNumber: 5
     }, this);
 }
@@ -4391,12 +4411,12 @@ function LilGuy() {
             showHealthBar: true
         }, void 0, false, {
             fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-            lineNumber: 417,
+            lineNumber: 436,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-        lineNumber: 416,
+        lineNumber: 435,
         columnNumber: 5
     }, this);
 }
@@ -4409,7 +4429,7 @@ function WidgetLilGuy(props) {
         ...props
     }, void 0, false, {
         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-        lineNumber: 428,
+        lineNumber: 447,
         columnNumber: 10
     }, this);
 }
@@ -5436,13 +5456,13 @@ function CharacterStyles() {
     const [name, setName] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])("");
     const [showNameInput, setShowNameInput] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(false);
     const [newName, setNewName] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])("");
-    // helper function to safely set localStorage item
+    // helper: safely set localStorage item
     const setLocalStorageItem = (key, value)=>{
         if ("TURBOPACK compile-time falsy", 0) {
             "TURBOPACK unreachable";
         }
     };
-    // helper function to safely get localStorage item
+    // helper: safely get localStorage item
     const getLocalStorageItem = (key, defaultValue)=>{
         if ("TURBOPACK compile-time falsy", 0) {
             "TURBOPACK unreachable";
@@ -5458,18 +5478,17 @@ function CharacterStyles() {
         setName(storedName);
         setNewName(storedName);
     }, []);
-    // function to change lilguy color
+    // change lilguy color and trigger idle animation
     const changeLilGuyColor = (color)=>{
         setCurrentColor(color);
         setLocalStorageItem("lilGuyColor", color);
-        // Trigger an idle animation to refresh the character
         emitEmotion("idle", 100, "button");
     };
-    // function to change lilguy stage
+    // change lilguy stage and save to localStorage
     const changeStage = (stage)=>{
         setCurrentStage(stage);
         setLocalStorageItem("lilGuyStage", stage);
-        // Trigger different animations based on stage changes
+        // trigger different animations based on stage changes
         switch(stage){
             case 'egg':
                 emitEmotion("idle", 100, "button");
@@ -5484,13 +5503,13 @@ function CharacterStyles() {
                 emitEmotion("idle", 100, "button");
         }
     };
-    // function to save lilguy name
+    // save lilguy name
     const saveName = ()=>{
         if (newName.trim()) {
             setName(newName);
             setLocalStorageItem("lilGuyName", newName);
             setShowNameInput(false);
-            // Trigger a happy animation when name is updated
+            // trigger happy animation when name is updated
             emitEmotion("happy", 100, "button");
         }
     };
@@ -5506,7 +5525,7 @@ function CharacterStyles() {
                         children: "Character Name"
                     }, void 0, false, {
                         fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                        lineNumber: 94,
+                        lineNumber: 92,
                         columnNumber: 9
                     }, this),
                     showNameInput ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5521,7 +5540,7 @@ function CharacterStyles() {
                                 maxLength: 15
                             }, void 0, false, {
                                 fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                                lineNumber: 97,
+                                lineNumber: 95,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -5530,7 +5549,7 @@ function CharacterStyles() {
                                 children: "Save"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                                lineNumber: 105,
+                                lineNumber: 103,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -5542,13 +5561,13 @@ function CharacterStyles() {
                                 children: "Cancel"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                                lineNumber: 111,
+                                lineNumber: 109,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                        lineNumber: 96,
+                        lineNumber: 94,
                         columnNumber: 11
                     }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: "flex items-center gap-2",
@@ -5558,7 +5577,7 @@ function CharacterStyles() {
                                 children: name
                             }, void 0, false, {
                                 fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                                lineNumber: 123,
+                                lineNumber: 121,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -5567,19 +5586,19 @@ function CharacterStyles() {
                                 children: "Edit"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                                lineNumber: 126,
+                                lineNumber: 124,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                        lineNumber: 122,
+                        lineNumber: 120,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                lineNumber: 93,
+                lineNumber: 91,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5590,7 +5609,7 @@ function CharacterStyles() {
                         children: "Animations"
                     }, void 0, false, {
                         fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                        lineNumber: 138,
+                        lineNumber: 136,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5603,7 +5622,7 @@ function CharacterStyles() {
                                     children: "Shake"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                                    lineNumber: 142,
+                                    lineNumber: 140,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -5612,7 +5631,7 @@ function CharacterStyles() {
                                     children: "Hatch"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                                    lineNumber: 148,
+                                    lineNumber: 146,
                                     columnNumber: 15
                                 }, this)
                             ]
@@ -5624,7 +5643,7 @@ function CharacterStyles() {
                                     children: "Idle"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                                    lineNumber: 157,
+                                    lineNumber: 155,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -5633,7 +5652,7 @@ function CharacterStyles() {
                                     children: "Walk"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                                    lineNumber: 163,
+                                    lineNumber: 161,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -5642,7 +5661,7 @@ function CharacterStyles() {
                                     children: "Happy"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                                    lineNumber: 169,
+                                    lineNumber: 167,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -5651,7 +5670,7 @@ function CharacterStyles() {
                                     children: "Angry"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                                    lineNumber: 175,
+                                    lineNumber: 173,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -5660,7 +5679,7 @@ function CharacterStyles() {
                                     children: "Sad"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                                    lineNumber: 181,
+                                    lineNumber: 179,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -5669,20 +5688,20 @@ function CharacterStyles() {
                                     children: "Shocked"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                                    lineNumber: 187,
+                                    lineNumber: 185,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true)
                     }, void 0, false, {
                         fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                        lineNumber: 139,
+                        lineNumber: 137,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                lineNumber: 137,
+                lineNumber: 135,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5693,7 +5712,7 @@ function CharacterStyles() {
                         children: "LilGuy Color"
                     }, void 0, false, {
                         fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                        lineNumber: 200,
+                        lineNumber: 198,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5704,21 +5723,19 @@ function CharacterStyles() {
                                 children: "LilGuy Color:"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                                lineNumber: 202,
+                                lineNumber: 200,
                                 columnNumber: 11
                             }, this),
                             [
-                                "green",
-                                "blue",
-                                "black",
-                                "pink",
-                                "brown"
+                                'green',
+                                'blue',
+                                'black'
                             ].map((color)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                     style: {
-                                        background: color === "green" ? "#4CAF50" : color === "blue" ? "#2196F3" : color === "black" ? "#333" : color === "pink" ? "#EC6BAE" : color === "brown" ? "#8B5C2A" : "#fff",
-                                        border: currentColor === color ? "2px solid #FFD700" : "2px solid #222",
-                                        color: color === "black" || color === "brown" ? "#fff" : "#222",
-                                        fontWeight: currentColor === color ? "bold" : "normal",
+                                        background: color === 'green' ? '#4CAF50' : color === 'blue' ? '#2196F3' : color === 'black' ? '#333' : '#fff',
+                                        border: currentColor === color ? '2px solid #FFD700' : '2px solid #222',
+                                        color: color === 'black' ? '#fff' : '#222',
+                                        fontWeight: currentColor === color ? 'bold' : 'normal',
                                         fontFamily: 'inherit',
                                         padding: '0.3rem 0.7rem',
                                         borderRadius: 4,
@@ -5733,19 +5750,19 @@ function CharacterStyles() {
                                     children: color.charAt(0).toUpperCase() + color.slice(1)
                                 }, color, false, {
                                     fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                                    lineNumber: 204,
+                                    lineNumber: 202,
                                     columnNumber: 13
                                 }, this))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                        lineNumber: 201,
+                        lineNumber: 199,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                lineNumber: 199,
+                lineNumber: 197,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5756,7 +5773,7 @@ function CharacterStyles() {
                         children: "Evolution Stage"
                     }, void 0, false, {
                         fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                        lineNumber: 248,
+                        lineNumber: 242,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5768,7 +5785,7 @@ function CharacterStyles() {
                                 children: "Egg"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                                lineNumber: 250,
+                                lineNumber: 244,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -5777,7 +5794,7 @@ function CharacterStyles() {
                                 children: "Normal"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                                lineNumber: 256,
+                                lineNumber: 250,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -5786,7 +5803,7 @@ function CharacterStyles() {
                                 children: "Angel"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                                lineNumber: 262,
+                                lineNumber: 256,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -5795,25 +5812,25 @@ function CharacterStyles() {
                                 children: "Devil"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                                lineNumber: 268,
+                                lineNumber: 262,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                        lineNumber: 249,
+                        lineNumber: 243,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                lineNumber: 247,
+                lineNumber: 241,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-        lineNumber: 91,
+        lineNumber: 89,
         columnNumber: 5
     }, this);
 }

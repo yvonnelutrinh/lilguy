@@ -1,7 +1,7 @@
 // This file contains fallback sprite data for when actual sprite files can't be loaded
 // Only used as a last resort when proper sprite images aren't available
 
-import { LilGuyColor } from './LilGuy';
+import { LilGuyColor } from '../../components/LilGuy/LilGuy';
 
 // Helper to check if we're in a browser environment
 const isBrowser = typeof window !== 'undefined' && typeof document !== 'undefined';

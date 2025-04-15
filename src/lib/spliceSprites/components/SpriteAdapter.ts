@@ -1,5 +1,5 @@
 // This helper file adapts sprite frame calculations specific to different colored sprites
-import { LilGuyAnimation, LilGuyColor, LilGuyStage } from './LilGuy';
+import { LilGuyAnimation, LilGuyColor, LilGuyStage } from '../../components/LilGuy/LilGuy';
 
 // For blue sprites, we need to map the animations from the provided sprite sheet
 export const getBlueAnimationOverrides = (animation: LilGuyAnimation): LilGuyAnimation => {
