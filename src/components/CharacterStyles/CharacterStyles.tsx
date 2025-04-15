@@ -137,42 +137,61 @@ export default function CharacterStyles() {
       <div className="mb-6">
         <h3 className="mb-2 text-lg font-semibold">Animations</h3>
         <div className="grid grid-cols-3 gap-2">
-          <button
-            onClick={() => emitEmotion("idle", 100, "button")}
-            className="pixel-button beige text-pixel-sm whitespace-nowrap"
-          >
-            Idle
-          </button>
-          <button
-            onClick={() => emitEmotion("walk", 100, "button")}
-            className="pixel-button text-pixel-sm whitespace-nowrap"
-          >
-            Walk
-          </button>
-          <button
-            onClick={() => emitEmotion("happy", 100, "button")}
-            className="pixel-button green text-pixel-sm whitespace-nowrap"
-          >
-            Happy
-          </button>
-          <button
-            onClick={() => emitEmotion("angry", 100, "button")}
-            className="pixel-button contrast text-pixel-sm whitespace-nowrap"
-          >
-            Angry
-          </button>
-          <button
-            onClick={() => emitEmotion("sad", 100, "button")}
-            className="pixel-button pink text-pixel-sm whitespace-nowrap"
-          >
-            Sad
-          </button>
-          <button
-            onClick={() => emitEmotion("shocked", 100, "button")}
-            className="pixel-button contrast text-pixel-sm whitespace-nowrap"
-          >
-            Shocked
-          </button>
+          {currentStage === 'egg' ? (
+            <>
+              <button
+                onClick={() => emitEmotion("shake", 100, "button")}
+                className="pixel-button beige text-pixel-sm whitespace-nowrap"
+              >
+                Shake
+              </button>
+              <button
+                onClick={() => emitEmotion("hatch", 100, "button")}
+                className="pixel-button green text-pixel-sm whitespace-nowrap"
+              >
+                Hatch
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={() => emitEmotion("idle", 100, "button")}
+                className="pixel-button beige text-pixel-sm whitespace-nowrap"
+              >
+                Idle
+              </button>
+              <button
+                onClick={() => emitEmotion("walk", 100, "button")}
+                className="pixel-button text-pixel-sm whitespace-nowrap"
+              >
+                Walk
+              </button>
+              <button
+                onClick={() => emitEmotion("happy", 100, "button")}
+                className="pixel-button green text-pixel-sm whitespace-nowrap"
+              >
+                Happy
+              </button>
+              <button
+                onClick={() => emitEmotion("angry", 100, "button")}
+                className="pixel-button contrast text-pixel-sm whitespace-nowrap"
+              >
+                Angry
+              </button>
+              <button
+                onClick={() => emitEmotion("sad", 100, "button")}
+                className="pixel-button pink text-pixel-sm whitespace-nowrap"
+              >
+                Sad
+              </button>
+              <button
+                onClick={() => emitEmotion("shocked", 100, "button")}
+                className="pixel-button contrast text-pixel-sm whitespace-nowrap"
+              >
+                Shocked
+              </button>
+            </>
+          )}
         </div>
       </div>
       

@@ -22,7 +22,7 @@ const setLocalStorageItem = (key: string, value: any) => {
 };
 
 export type LilGuyColor = "green" | "blue" | "black" | "pink" | "brown";
-export type LilGuyAnimation = "idle" | "walk" | "happy" | "angry" | "sad" | "shocked" | "shake" | "hatch";
+export type LilGuyAnimation = "idle" | "walk" | "happy" | "angry" | "sad" | "shocked" | "shake" | "hatch" | "roll";
 export type LilGuyStage = "normal" | "egg" | "angel" | "devil" | "hatchling";
 
 interface LilGuyProps {
@@ -35,65 +35,213 @@ interface LilGuyProps {
   setHealth?: React.Dispatch<React.SetStateAction<number | undefined>>;
 }
 
+function getSpriteSheetForStage(stage: LilGuyStage) {
+  switch (stage) {
+    case "angel":
+      return "/assets/sprites/sheets/lilguy_angel.png";
+    case "devil":
+      return "/assets/sprites/sheets/lilguy_devil.png";
+    case "egg":
+      return "/assets/sprites/sheets/lilguy_egg.png";
+    case "normal":
+    default:
+      return "/assets/sprites/sheets/lilguy_main.png";
+  }
+}
+
+// --- Helper: get animation states for current stage ---
+function getAnimationStates(stage: LilGuyStage) {
+  if (stage === "egg") {
+    return [
+      { name: "idle", frames: 6, row: 0 },
+      { name: "hatch", frames: 6, row: 1 },
+    ];
+  }
+  return [
+    { name: "idle", frames: 6, row: 0 },
+    { name: "walk", frames: 5, row: 1 },
+    { name: "happy", frames: 6, row: 2 },
+    { name: "angry", frames: 5, row: 3 },
+    { name: "sad", frames: 5, row: 4 },
+    { name: "shocked", frames: 4, row: 5 },
+    { name: "shake", frames: 4, row: 6 },
+  ];
+}
+
 function LilGuyCanvas({
   showControls = false,
   showHealthBar = false,
   size = "normal",
   className = "",
   initialAnimation = "idle",
-}: LilGuyProps) {
+  health: controlledHealth,
+  stage: controlledStage,
+  animation: controlledAnimation,
+}: LilGuyProps & { stage?: LilGuyStage; animation?: LilGuyAnimation }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const animRef = useRef<number | null>(null);
-  const [animation, setAnimation] = useState<LilGuyAnimation>(initialAnimation);
-  const [health, setHealth] = useState<number>();
+  const [animation, setAnimation] = useState<LilGuyAnimation>(controlledAnimation || initialAnimation);
+  const [health, setHealth] = useState<number>(controlledHealth ?? 100);
   const [lilGuyColor, setLilGuyColor] = useState<LilGuyColor>("green");
-  const [lilGuyStage, setLilGuyStage] = useState<LilGuyStage>("normal");
+  const [lilGuyStage, setLilGuyStage] = useState<LilGuyStage>(controlledStage || "normal");
   const [message, setMessage] = useState<string>("");
   const [modifiedHealth, setModifiedHealth] = useState<number>();
   const [lilGuyName, setLilGuyName] = useState("LilGuy");
 
-  // listen for emotion updates
-  useListenToEmotions((emotionEvent: EmotionEvent) => {
-    if (emotionEvent.type === "walk" || emotionEvent.type === "idle" || 
-        emotionEvent.type === "happy" || emotionEvent.type === "angry" || 
-        emotionEvent.type === "sad" || emotionEvent.type === "shocked") {
-      
-      setAnimation(emotionEvent.type);
-      
-      if (emotionEvent.source === "goalCompletion") {
-        // if health is low, give a bigger boost for completing goals
-        setModifiedHealth((prevHealth) => {
-          const currentHealth = prevHealth || 0;
-          let boost = 0;
-          if (currentHealth < 30) {
-            boost = 15;
-          } else if (currentHealth < 60) {
-            boost = 10;
-          } else {
-            boost = 5;
-          }
-          const newHealth = Math.min(100, currentHealth + boost);
-          setLocalStorageItem("modifiedHealth", newHealth); 
-          return newHealth;
-        });
-        setMessage("Great job on completing that goal!");
-      } else if (emotionEvent.source === "goalUnfinished") {
-        setModifiedHealth((prevHealth) => {
-          const newHealth = Math.max(0, (prevHealth || 0) - 5);
-          setLocalStorageItem("modifiedHealth", newHealth);
-          return newHealth;
-        });
-        setMessage("Don't worry, you can try again!");
-      } else if (emotionEvent.source === "goodProgress") {
-        setModifiedHealth((prevHealth) => {
-          const newHealth = Math.min(100, (prevHealth || 0) + 2);
-          setLocalStorageItem("modifiedHealth", newHealth);
-          return newHealth;
-        });
-        setMessage("Making good progress!");
+  // --- Sprite image ref ---
+  const spriteImageRef = useRef<HTMLImageElement | null>(null);
+  const lastSpriteSheetRef = useRef<string>("");
+
+  // --- Sprite loading effect: only runs when stage changes ---
+  useEffect(() => {
+    const spriteSheetPath = getSpriteSheetForStage(lilGuyStage);
+    if (spriteSheetPath === lastSpriteSheetRef.current && spriteImageRef.current) {
+      return;
+    }
+    lastSpriteSheetRef.current = spriteSheetPath;
+    const img = new window.Image();
+    img.src = spriteSheetPath;
+    img.onload = () => {
+      spriteImageRef.current = img;
+    };
+    img.onerror = () => {
+      spriteImageRef.current = null;
+      console.error("Error loading sprite sheet asset:", spriteSheetPath);
+    };
+  }, [lilGuyStage]);
+
+  // --- Animation loop: draws the correct frame from the sprite sheet ---
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    let gameFrame = 0;
+    let running = true;
+    const spriteWidth = 500;
+    const spriteHeight = 500;
+    let scale = size === "widget" ? 0.25 * 0.4 : 0.25;
+    const displayWidth = spriteWidth * scale;
+    const displayHeight = spriteHeight * scale;
+    const CANVAS_WIDTH = canvas.width = size === "widget" ? 48 : 400;
+    const CANVAS_HEIGHT = canvas.height = size === "widget" ? 48 : 250;
+    const centerX = (CANVAS_WIDTH - displayWidth) / 2;
+    const centerY = (CANVAS_HEIGHT - displayHeight) / 2;
+    // Get animation states for the current stage
+    const animationStates = getAnimationStates(lilGuyStage);
+    const spriteAnimations: Record<string, { loc: { x: number; y: number }[] }> = {};
+    animationStates.forEach((state) => {
+      const frames = { loc: [] as { x: number; y: number }[] };
+      for (let j = 0; j < state.frames; j++) {
+        const positionX = j * spriteWidth;
+        const positionY = state.row * spriteHeight;
+        frames.loc.push({ x: positionX, y: positionY });
       }
+      spriteAnimations[state.name] = frames;
+    });
+    const staggerFrames = 8; // adjust for speed
+    function draw() {
+      ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+      ctx.save();
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = "rgba(0,0,0,0)";
+      ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+      ctx.restore();
+      const animFrames = spriteAnimations[animation]?.loc.length || 1;
+      const position = Math.floor(gameFrame / staggerFrames) % animFrames;
+      let frameX = spriteAnimations[animation]?.loc[position]?.x || 0;
+      let frameY = spriteAnimations[animation]?.loc[position]?.y || 0;
+      const imgToDraw = spriteImageRef.current;
+      if (imgToDraw) {
+        ctx.drawImage(
+          imgToDraw,
+          frameX,
+          frameY,
+          spriteWidth,
+          spriteHeight,
+          centerX,
+          centerY,
+          displayWidth,
+          displayHeight
+        );
+      } else {
+        ctx.fillStyle = 'black';
+        ctx.font = '16px Arial';
+        ctx.fillText('Loading...', CANVAS_WIDTH/2 - 30, CANVAS_HEIGHT/2);
+      }
+      gameFrame++;
+      if (running) animRef.current = requestAnimationFrame(draw);
+    }
+    draw();
+    return () => {
+      running = false;
+      if (animRef.current) cancelAnimationFrame(animRef.current);
+    };
+  }, [animation, size, lilGuyStage]);
+
+  // --- Health bar dynamic update ---
+  useEffect(() => {
+    // Only set from localStorage if not controlled
+    if (controlledHealth === undefined) {
+      const storedHealth = getLocalStorageItem("health", 100);
+      setHealth(Number(storedHealth));
+    }
+  }, [controlledHealth]);
+
+  // --- Sync health state with controlledHealth prop ---
+  useEffect(() => {
+    if (controlledHealth !== undefined) setHealth(controlledHealth);
+  }, [controlledHealth]);
+
+  // --- Dynamic color setting from buttons/localStorage ---
+  useEffect(() => {
+    const storedColor = getLocalStorageItem("lilGuyColor", "green");
+    setLilGuyColor(storedColor);
+  }, []);
+
+  // Listen for emotion updates and update health bar if needed
+  useListenToEmotions((emotionEvent: EmotionEvent) => {
+    setAnimation(emotionEvent.type);
+    if (emotionEvent.health !== undefined) {
+      setHealth(emotionEvent.health);
+      setLocalStorageItem("health", emotionEvent.health);
     }
   });
+
+  // --- Listen for health and color changes via custom/localStorage events ---
+  useEffect(() => {
+    function handleCustomStorageChange(e: any) {
+      const { key, value } = e.detail || {};
+      if (key === "lilGuyColor") {
+        setLilGuyColor(value as LilGuyColor);
+      } else if (key === "lilGuyStage") {
+        setLilGuyStage(value as LilGuyStage);
+      } else if (key === "lilGuyName") {
+        setLilGuyName(value);
+      } else if (key === "health") {
+        setHealth(Number(value));
+      }
+    }
+
+    function handleStorageChange(e: StorageEvent) {
+      if (e.key === "lilGuyColor") {
+        setLilGuyColor((e.newValue || "green") as LilGuyColor);
+      } else if (e.key === "lilGuyStage") {
+        setLilGuyStage((e.newValue || "normal") as LilGuyStage);
+      } else if (e.key === "lilGuyName") {
+        setLilGuyName(e.newValue || "LilGuy");
+      } else if (e.key === "health") {
+        setHealth(Number(e.newValue || 100));
+      }
+    }
+
+    window.addEventListener("localStorageChanged", handleCustomStorageChange as any);
+    window.addEventListener("storage", handleStorageChange);
+    return () => {
+      window.removeEventListener("localStorageChanged", handleCustomStorageChange as any);
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
 
   useEffect(() => {
     // Health updates
@@ -203,198 +351,15 @@ function LilGuyCanvas({
     };
   }, []);
 
-  // Draw LilGuy on canvas
   useEffect(() => {
-    // handle extreme health
-    if (modifiedHealth !== undefined) {
-      if (modifiedHealth <= 30) {
-        setAnimation("sad");
-      } else if (modifiedHealth >= 80) {
-        setAnimation("happy");
-      }
-    }
-    
-    // for extreme health values, override the stage
-    if (modifiedHealth !== undefined) {
-      if (modifiedHealth <= 20) {
-        if (lilGuyStage !== "devil") {
-          setLilGuyStage("devil");
-          setLocalStorageItem("lilGuyStage", "devil");
-        }
-      } else if (modifiedHealth >= 90) {
-        if (lilGuyStage !== "angel") {
-          setLilGuyStage("angel");
-          setLocalStorageItem("lilGuyStage", "angel");
-        }
-      }
-    }
-  }, [modifiedHealth, lilGuyStage]);
-
-  // Respond to health changes
+    if (controlledHealth !== undefined) setHealth(controlledHealth);
+  }, [controlledHealth]);
   useEffect(() => {
-    if (health === undefined) return;
-
-    setLocalStorageItem("health", health);
-
-    if (health < 40) {
-      setAnimation("sad");
-    }
-
-    if (health > 90) {
-      setAnimation("happy");
-    }
-  }, [health]);
-
-  // main canvas drawing function
+    if (controlledStage) setLilGuyStage(controlledStage);
+  }, [controlledStage]);
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    let CANVAS_WIDTH: number, CANVAS_HEIGHT: number;
-
-    if (size === "widget") {
-      CANVAS_WIDTH = canvas.width = 48;
-      CANVAS_HEIGHT = canvas.height = 48;
-    } else {
-      CANVAS_WIDTH = canvas.width = 400;
-      CANVAS_HEIGHT = canvas.height = 250;
-    }
-
-    // Remove white flash: fill with transparent before drawing
-    ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-    ctx.save();
-    ctx.globalAlpha = 1;
-    ctx.fillStyle = "rgba(0,0,0,0)"; // transparent fill
-    ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-    ctx.restore();
-
-    // create and load the sprite image
-    const playerImage = new Image();
-    let imageLoaded = false;
-    let recoloredImage: HTMLImageElement | null = null;
-
-    // Palette swap integration
-    import("./SpriteManager").then(({ recolorSpriteImage }) => {
-      playerImage.src = `/lilguy_3.png`;
-      playerImage.onload = () => {
-        imageLoaded = true;
-        // Only recolor if not black (default sprite is black)
-        if (lilGuyColor !== "black") {
-          recolorSpriteImage(playerImage, lilGuyColor as any, (img: HTMLImageElement) => {
-            recoloredImage = img;
-            if (animRef.current) {
-              cancelAnimationFrame(animRef.current);
-            }
-            animRef.current = requestAnimationFrame(animate);
-          });
-        } else {
-          recoloredImage = null;
-          if (animRef.current) {
-            cancelAnimationFrame(animRef.current);
-          }
-          animRef.current = requestAnimationFrame(animate);
-        }
-      };
-      playerImage.onerror = () => {
-        console.error("Error loading basic sprite");
-      };
-    });
-
-    // Define our animation function
-    function animate() {
-      if (!ctx) return;
-      ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-      ctx.save();
-      ctx.globalAlpha = 1;
-      ctx.fillStyle = "rgba(0,0,0,0)";
-      ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-      ctx.restore();
-
-      if (imageLoaded) {
-        const position = Math.floor(gameFrame / staggerFrames) % 5;
-        if (!spriteAnimations[animation]) {
-          return;
-        }
-        let frameX = spriteAnimations[animation].loc[position]
-          ? spriteAnimations[animation].loc[position].x
-          : 0;
-        let frameY = spriteAnimations[animation].loc[position]
-          ? spriteAnimations[animation].loc[position].y
-          : 0;
-        const imgToDraw = recoloredImage || playerImage;
-        ctx.drawImage(
-          imgToDraw,
-          frameX,
-          frameY,
-          spriteWidth,
-          spriteHeight,
-          centerX,
-          centerY,
-          displayWidth,
-          displayHeight
-        );
-      } else {
-        ctx.fillStyle = 'black';
-        ctx.font = '16px Arial';
-        ctx.fillText('Loading...', CANVAS_WIDTH/2 - 30, CANVAS_HEIGHT/2);
-      }
-      gameFrame++;
-      animRef.current = requestAnimationFrame(animate);
-    }
-    const spriteWidth = 500;
-    const spriteHeight = 500;
-    let gameFrame = 0;
-    const staggerFrames = 5;
-
-    let scale;
-    if (size === "widget") {
-      scale = 0.25 * 0.4;
-    } else {
-      scale = 0.25;
-    }
-
-    const displayWidth = spriteWidth * scale;
-    const displayHeight = spriteHeight * scale;
-    const centerX = (CANVAS_WIDTH - displayWidth) / 2;
-    const centerY = (CANVAS_HEIGHT - displayHeight) / 2;
-
-    const spriteAnimations: Record<
-      string,
-      { loc: { x: number; y: number }[] }
-    > = {};
-
-    const animationStates = [
-      { name: "idle", frames: 6 },
-      { name: "walk", frames: 5 },
-      { name: "happy", frames: 6 },
-      { name: "angry", frames: 5 },
-      { name: "sad", frames: 5 },
-      { name: "shocked", frames: 4 },
-      { name: "shake", frames: 4 },
-      { name: "hatch", frames: 4 },
-    ];
-
-    // set up animation frames
-    animationStates.forEach((state, index) => {
-      const frames = {
-        loc: [] as { x: number; y: number }[],
-      };
-      for (let j = 0; j < state.frames; j++) {
-        const positionX = j * spriteWidth;
-        const positionY = index * spriteHeight;
-        frames.loc.push({ x: positionX, y: positionY });
-      }
-      spriteAnimations[state.name] = frames;
-    });
-
-    return () => {
-      if (animRef.current) {
-        cancelAnimationFrame(animRef.current);
-      }
-    };
-  }, [animation, size, lilGuyColor, lilGuyStage]);
+    if (controlledAnimation) setAnimation(controlledAnimation);
+  }, [controlledAnimation]);
 
   const canvasClasses = `${size === "normal"
     ? "border-2 border-black bg-transparent pixelated w-[100%] h-[auto] pb-4 relative shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
@@ -430,8 +395,8 @@ function LilGuyCanvas({
           <canvas className={canvasClasses} ref={canvasRef} />
           
           {showHealthBar && (
-            <div className="absolute bottom-4 left-0 right-0 w-[80%] mx-auto">
-              <HealthBar health={modifiedHealth || 0} />
+            <div className="absolute bottom-4 left-0 right-0 w-[80%] mx-auto flex flex-col items-center">
+              <HealthBar health={health} />
             </div>
           )}
         </div>
@@ -458,8 +423,9 @@ function LilGuy() {
 }
 
 // LilGuy for widget
-function WidgetLilGuy() {
-  return <LilGuyCanvas size="widget" showHealthBar={false} />;
+function WidgetLilGuy(props: { health?: number; stage?: LilGuyStage; animation?: LilGuyAnimation }) {
+  // Always hide health bar in the canvas for widget
+  return <LilGuyCanvas size="widget" showHealthBar={false} {...props} />;
 }
 
 export { LilGuy, WidgetLilGuy };

@@ -1825,13 +1825,27 @@ var _s = __turbopack_context__.k.signature();
 ;
 ;
 function useEmitEmotion() {
-    return (type, intensity, source)=>{
+    // Accepts optional health parameter for emotion events
+    return (type, intensity, source, health)=>{
         __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$emotionEventBus$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].publish('emotion', {
             type,
             intensity,
             source,
-            timestamp: Date.now()
+            timestamp: Date.now(),
+            ...health !== undefined ? {
+                health
+            } : {}
         });
+        // Persist animation to localStorage for widget sync
+        if ("TURBOPACK compile-time truthy", 1) {
+            localStorage.setItem('lilGuyAnimation', type);
+            window.dispatchEvent(new CustomEvent('localStorageChanged', {
+                detail: {
+                    key: 'lilGuyAnimation',
+                    value: type
+                }
+            }));
+        }
     };
 }
 function useListenToEmotions(callback) {
@@ -2074,6 +2088,19 @@ const setLocalStorageItem = (key, value)=>{
         localStorage.setItem(key, typeof value === 'object' ? JSON.stringify(value) : value);
     }
 };
+// Helper: Get and set health from localStorage
+const getHealth = ()=>{
+    if ("TURBOPACK compile-time truthy", 1) {
+        const h = localStorage.getItem('health');
+        return h ? parseInt(h, 10) : 100;
+    }
+    "TURBOPACK unreachable";
+};
+const setHealth = (value)=>{
+    if ("TURBOPACK compile-time truthy", 1) {
+        localStorage.setItem('health', value.toString());
+    }
+};
 // Mock data for goals
 const initialGoals = [
     {
@@ -2116,7 +2143,7 @@ const CheckIcon = ()=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$proje
                     strokeWidth: "2"
                 }, void 0, false, {
                     fileName: "[project]/src/components/Goals/Goals.tsx",
-                    lineNumber: 42,
+                    lineNumber: 56,
                     columnNumber: 7
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("rect", {
@@ -2127,7 +2154,7 @@ const CheckIcon = ()=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$proje
                     fill: "currentColor"
                 }, void 0, false, {
                     fileName: "[project]/src/components/Goals/Goals.tsx",
-                    lineNumber: 43,
+                    lineNumber: 57,
                     columnNumber: 7
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("rect", {
@@ -2138,7 +2165,7 @@ const CheckIcon = ()=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$proje
                     fill: "currentColor"
                 }, void 0, false, {
                     fileName: "[project]/src/components/Goals/Goals.tsx",
-                    lineNumber: 44,
+                    lineNumber: 58,
                     columnNumber: 7
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("rect", {
@@ -2149,7 +2176,7 @@ const CheckIcon = ()=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$proje
                     fill: "currentColor"
                 }, void 0, false, {
                     fileName: "[project]/src/components/Goals/Goals.tsx",
-                    lineNumber: 45,
+                    lineNumber: 59,
                     columnNumber: 7
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("rect", {
@@ -2160,18 +2187,18 @@ const CheckIcon = ()=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$proje
                     fill: "currentColor"
                 }, void 0, false, {
                     fileName: "[project]/src/components/Goals/Goals.tsx",
-                    lineNumber: 46,
+                    lineNumber: 60,
                     columnNumber: 7
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/src/components/Goals/Goals.tsx",
-            lineNumber: 41,
+            lineNumber: 55,
             columnNumber: 5
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/components/Goals/Goals.tsx",
-        lineNumber: 40,
+        lineNumber: 54,
         columnNumber: 3
     }, this);
 _c = CheckIcon;
@@ -2194,17 +2221,17 @@ const EmptyCheckIcon = ()=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$
                 strokeWidth: "2"
             }, void 0, false, {
                 fileName: "[project]/src/components/Goals/Goals.tsx",
-                lineNumber: 54,
+                lineNumber: 68,
                 columnNumber: 7
             }, this)
         }, void 0, false, {
             fileName: "[project]/src/components/Goals/Goals.tsx",
-            lineNumber: 53,
+            lineNumber: 67,
             columnNumber: 5
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/components/Goals/Goals.tsx",
-        lineNumber: 52,
+        lineNumber: 66,
         columnNumber: 3
     }, this);
 _c1 = EmptyCheckIcon;
@@ -2226,7 +2253,7 @@ const EditIcon = ()=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$projec
                     fill: "currentColor"
                 }, void 0, false, {
                     fileName: "[project]/src/components/Goals/Goals.tsx",
-                    lineNumber: 62,
+                    lineNumber: 76,
                     columnNumber: 7
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("rect", {
@@ -2237,7 +2264,7 @@ const EditIcon = ()=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$projec
                     fill: "white"
                 }, void 0, false, {
                     fileName: "[project]/src/components/Goals/Goals.tsx",
-                    lineNumber: 63,
+                    lineNumber: 77,
                     columnNumber: 7
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("rect", {
@@ -2248,7 +2275,7 @@ const EditIcon = ()=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$projec
                     fill: "currentColor"
                 }, void 0, false, {
                     fileName: "[project]/src/components/Goals/Goals.tsx",
-                    lineNumber: 64,
+                    lineNumber: 78,
                     columnNumber: 7
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("rect", {
@@ -2259,7 +2286,7 @@ const EditIcon = ()=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$projec
                     fill: "currentColor"
                 }, void 0, false, {
                     fileName: "[project]/src/components/Goals/Goals.tsx",
-                    lineNumber: 65,
+                    lineNumber: 79,
                     columnNumber: 7
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("rect", {
@@ -2270,7 +2297,7 @@ const EditIcon = ()=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$projec
                     fill: "currentColor"
                 }, void 0, false, {
                     fileName: "[project]/src/components/Goals/Goals.tsx",
-                    lineNumber: 66,
+                    lineNumber: 80,
                     columnNumber: 7
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("rect", {
@@ -2281,7 +2308,7 @@ const EditIcon = ()=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$projec
                     fill: "currentColor"
                 }, void 0, false, {
                     fileName: "[project]/src/components/Goals/Goals.tsx",
-                    lineNumber: 67,
+                    lineNumber: 81,
                     columnNumber: 7
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("rect", {
@@ -2292,7 +2319,7 @@ const EditIcon = ()=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$projec
                     fill: "currentColor"
                 }, void 0, false, {
                     fileName: "[project]/src/components/Goals/Goals.tsx",
-                    lineNumber: 68,
+                    lineNumber: 82,
                     columnNumber: 7
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("rect", {
@@ -2303,18 +2330,18 @@ const EditIcon = ()=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$projec
                     fill: "currentColor"
                 }, void 0, false, {
                     fileName: "[project]/src/components/Goals/Goals.tsx",
-                    lineNumber: 69,
+                    lineNumber: 83,
                     columnNumber: 7
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/src/components/Goals/Goals.tsx",
-            lineNumber: 61,
+            lineNumber: 75,
             columnNumber: 5
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/components/Goals/Goals.tsx",
-        lineNumber: 60,
+        lineNumber: 74,
         columnNumber: 3
     }, this);
 _c2 = EditIcon;
@@ -2336,7 +2363,7 @@ const TrashIcon = ()=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$proje
                     fill: "currentColor"
                 }, void 0, false, {
                     fileName: "[project]/src/components/Goals/Goals.tsx",
-                    lineNumber: 77,
+                    lineNumber: 91,
                     columnNumber: 7
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("rect", {
@@ -2347,7 +2374,7 @@ const TrashIcon = ()=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$proje
                     fill: "currentColor"
                 }, void 0, false, {
                     fileName: "[project]/src/components/Goals/Goals.tsx",
-                    lineNumber: 78,
+                    lineNumber: 92,
                     columnNumber: 7
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("rect", {
@@ -2358,7 +2385,7 @@ const TrashIcon = ()=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$proje
                     fill: "currentColor"
                 }, void 0, false, {
                     fileName: "[project]/src/components/Goals/Goals.tsx",
-                    lineNumber: 79,
+                    lineNumber: 93,
                     columnNumber: 7
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("rect", {
@@ -2369,7 +2396,7 @@ const TrashIcon = ()=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$proje
                     fill: "currentColor"
                 }, void 0, false, {
                     fileName: "[project]/src/components/Goals/Goals.tsx",
-                    lineNumber: 80,
+                    lineNumber: 94,
                     columnNumber: 7
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("rect", {
@@ -2380,7 +2407,7 @@ const TrashIcon = ()=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$proje
                     fill: "currentColor"
                 }, void 0, false, {
                     fileName: "[project]/src/components/Goals/Goals.tsx",
-                    lineNumber: 81,
+                    lineNumber: 95,
                     columnNumber: 7
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("rect", {
@@ -2391,18 +2418,18 @@ const TrashIcon = ()=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$proje
                     fill: "currentColor"
                 }, void 0, false, {
                     fileName: "[project]/src/components/Goals/Goals.tsx",
-                    lineNumber: 82,
+                    lineNumber: 96,
                     columnNumber: 7
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/src/components/Goals/Goals.tsx",
-            lineNumber: 76,
+            lineNumber: 90,
             columnNumber: 5
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/components/Goals/Goals.tsx",
-        lineNumber: 75,
+        lineNumber: 89,
         columnNumber: 3
     }, this);
 _c3 = TrashIcon;
@@ -2424,7 +2451,7 @@ const PlusIcon = ()=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$projec
                     fill: "currentColor"
                 }, void 0, false, {
                     fileName: "[project]/src/components/Goals/Goals.tsx",
-                    lineNumber: 90,
+                    lineNumber: 104,
                     columnNumber: 7
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("rect", {
@@ -2435,7 +2462,7 @@ const PlusIcon = ()=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$projec
                     fill: "currentColor"
                 }, void 0, false, {
                     fileName: "[project]/src/components/Goals/Goals.tsx",
-                    lineNumber: 91,
+                    lineNumber: 105,
                     columnNumber: 7
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("rect", {
@@ -2446,7 +2473,7 @@ const PlusIcon = ()=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$projec
                     fill: "currentColor"
                 }, void 0, false, {
                     fileName: "[project]/src/components/Goals/Goals.tsx",
-                    lineNumber: 92,
+                    lineNumber: 106,
                     columnNumber: 7
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("rect", {
@@ -2457,18 +2484,18 @@ const PlusIcon = ()=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$projec
                     fill: "currentColor"
                 }, void 0, false, {
                     fileName: "[project]/src/components/Goals/Goals.tsx",
-                    lineNumber: 93,
+                    lineNumber: 107,
                     columnNumber: 7
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/src/components/Goals/Goals.tsx",
-            lineNumber: 89,
+            lineNumber: 103,
             columnNumber: 5
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/components/Goals/Goals.tsx",
-        lineNumber: 88,
+        lineNumber: 102,
         columnNumber: 3
     }, this);
 _c4 = PlusIcon;
@@ -2490,7 +2517,7 @@ const SaveIcon = ()=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$projec
                     fill: "currentColor"
                 }, void 0, false, {
                     fileName: "[project]/src/components/Goals/Goals.tsx",
-                    lineNumber: 101,
+                    lineNumber: 115,
                     columnNumber: 7
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("rect", {
@@ -2501,7 +2528,7 @@ const SaveIcon = ()=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$projec
                     fill: "white"
                 }, void 0, false, {
                     fileName: "[project]/src/components/Goals/Goals.tsx",
-                    lineNumber: 102,
+                    lineNumber: 116,
                     columnNumber: 7
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("rect", {
@@ -2512,24 +2539,32 @@ const SaveIcon = ()=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$projec
                     fill: "currentColor"
                 }, void 0, false, {
                     fileName: "[project]/src/components/Goals/Goals.tsx",
-                    lineNumber: 103,
+                    lineNumber: 117,
                     columnNumber: 7
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/src/components/Goals/Goals.tsx",
-            lineNumber: 100,
+            lineNumber: 114,
             columnNumber: 5
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/components/Goals/Goals.tsx",
-        lineNumber: 99,
+        lineNumber: 113,
         columnNumber: 3
     }, this);
 _c5 = SaveIcon;
 const Goals = ()=>{
     _s();
     const emitEmotion = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$emotionContext$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEmitEmotion"])();
+    // Helper: Emit emotion and update health
+    const emitEmotionWithHealth = (type, intensity, source, delta)=>{
+        const prevHealth = getHealth();
+        let newHealth = prevHealth + delta;
+        newHealth = Math.max(0, Math.min(100, newHealth));
+        setHealth(newHealth);
+        emitEmotion(type, intensity, source, newHealth);
+    };
     const [goals, setGoals] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])({
         "Goals.useState": ()=>{
             const savedGoals = getLocalStorageItem("goals", initialGoals);
@@ -2542,6 +2577,7 @@ const Goals = ()=>{
     const updateLocalStorage = (updatedGoals)=>{
         setLocalStorageItem("goals", updatedGoals);
     };
+    const lastProgressRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])({});
     const handleAddGoal = ()=>{
         if (newGoalTitle.trim() === "") return;
         const newGoal = {
@@ -2557,15 +2593,15 @@ const Goals = ()=>{
         setGoals(updatedGoals);
         updateLocalStorage(updatedGoals);
         setNewGoalTitle("");
-        // Emit a happy emotion when adding a new goal
-        emitEmotion("happy", 50, "newGoal");
+        // Emit a happy emotion and increase health when adding a new goal
+        emitEmotionWithHealth("happy", 50, "newGoal", 5);
     };
     const handleRemoveGoal = (id)=>{
         const updatedGoals = goals.filter((goal)=>goal.id !== id);
         setGoals(updatedGoals);
         updateLocalStorage(updatedGoals);
-        // Emit a sad emotion when removing a goal
-        emitEmotion("sad", 30, "removeGoal");
+        // Emit a sad emotion and decrease health when removing a goal
+        emitEmotionWithHealth("sad", 30, "removeGoal", -10);
     };
     const handleToggleComplete = (id)=>{
         const updatedGoals = goals.map((goal)=>goal.id === id ? {
@@ -2574,26 +2610,38 @@ const Goals = ()=>{
             } : goal);
         // Find the toggled goal
         const toggledGoal = updatedGoals.find((g)=>g.id === id);
-        // Emit appropriate emotion based on completion state
+        // Emit appropriate emotion and health change based on completion state
         if (toggledGoal?.completed) {
-            emitEmotion("happy", 80, "completeGoal");
+            emitEmotionWithHealth("happy", 80, "completeGoal", 10);
+        } else {
+            emitEmotionWithHealth("sad", 30, "uncompleteGoal", -5);
         }
         setGoals(updatedGoals);
         updateLocalStorage(updatedGoals);
     };
     const handleProgressChange = (id, progress)=>{
+        // Get previous progress or default to 0
+        const prev = lastProgressRef.current[id] ?? goals.find((g)=>g.id === id)?.progress ?? 0;
         const updatedGoals = goals.map((goal)=>goal.id === id ? {
                 ...goal,
                 progress
             } : goal);
         setGoals(updatedGoals);
         updateLocalStorage(updatedGoals);
-        // Determine emotion based on progress
-        if (progress === 100) {
-            emitEmotion("happy", 100, "completedProgress");
-        } else if (progress >= 50) {
-            emitEmotion("happy", 50, "goodProgress");
+        // Calculate delta
+        const delta = progress - prev;
+        let healthDelta = 0;
+        if (delta > 0) {
+            // Always increase health when progress increases
+            healthDelta = delta >= 50 ? 10 : delta >= 10 ? 3 : 1;
+            emitEmotionWithHealth("happy", delta >= 50 ? 100 : 50, "progressUp", healthDelta);
+        } else if (delta < 0) {
+            // Decrease health when progress decreases
+            healthDelta = delta <= -50 ? -10 : delta <= -10 ? -3 : -1;
+            emitEmotionWithHealth("sad", delta <= -50 ? 100 : 50, "progressDown", healthDelta);
         }
+        // Save latest progress
+        lastProgressRef.current[id] = progress;
     };
     const startEditing = (goal)=>{
         setEditingId(goal.id);
@@ -2628,12 +2676,12 @@ const Goals = ()=>{
                             className: "w-full"
                         }, void 0, false, {
                             fileName: "[project]/src/components/Goals/Goals.tsx",
-                            lineNumber: 210,
+                            lineNumber: 240,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/components/Goals/Goals.tsx",
-                        lineNumber: 209,
+                        lineNumber: 239,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Button$2f$Button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -2642,7 +2690,7 @@ const Goals = ()=>{
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(PlusIcon, {}, void 0, false, {
                                 fileName: "[project]/src/components/Goals/Goals.tsx",
-                                lineNumber: 218,
+                                lineNumber: 248,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2650,19 +2698,19 @@ const Goals = ()=>{
                                 children: "ADD"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Goals/Goals.tsx",
-                                lineNumber: 219,
+                                lineNumber: 249,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/Goals/Goals.tsx",
-                        lineNumber: 217,
+                        lineNumber: 247,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/Goals/Goals.tsx",
-                lineNumber: 208,
+                lineNumber: 238,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2672,7 +2720,7 @@ const Goals = ()=>{
                     children: "No goals yet. Add your first goal above!"
                 }, void 0, false, {
                     fileName: "[project]/src/components/Goals/Goals.tsx",
-                    lineNumber: 225,
+                    lineNumber: 255,
                     columnNumber: 11
                 }, this) : goals.map((goal)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$SimpleContainer$2f$SimpleContainer$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SimpleItem"], {
                         backgroundColor: goal.completed ? "var(--pixel-green-light)" : "white",
@@ -2688,16 +2736,16 @@ const Goals = ()=>{
                                                 className: "flex-shrink-0",
                                                 children: goal.completed ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(CheckIcon, {}, void 0, false, {
                                                     fileName: "[project]/src/components/Goals/Goals.tsx",
-                                                    lineNumber: 241,
+                                                    lineNumber: 271,
                                                     columnNumber: 23
                                                 }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(EmptyCheckIcon, {}, void 0, false, {
                                                     fileName: "[project]/src/components/Goals/Goals.tsx",
-                                                    lineNumber: 243,
+                                                    lineNumber: 273,
                                                     columnNumber: 23
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Goals/Goals.tsx",
-                                                lineNumber: 236,
+                                                lineNumber: 266,
                                                 columnNumber: 19
                                             }, this),
                                             editingId === goal.id ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Input$2f$Input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
@@ -2706,20 +2754,20 @@ const Goals = ()=>{
                                                 className: "w-full"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Goals/Goals.tsx",
-                                                lineNumber: 248,
+                                                lineNumber: 278,
                                                 columnNumber: 21
                                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                 className: `text-sm ${goal.completed ? "line-through text-gray-500" : ""}`,
                                                 children: goal.title
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Goals/Goals.tsx",
-                                                lineNumber: 254,
+                                                lineNumber: 284,
                                                 columnNumber: 21
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/Goals/Goals.tsx",
-                                        lineNumber: 235,
+                                        lineNumber: 265,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2731,12 +2779,12 @@ const Goals = ()=>{
                                                 className: "pixel-button pixel-button-success flex-shrink-0 whitespace-nowrap",
                                                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(SaveIcon, {}, void 0, false, {
                                                     fileName: "[project]/src/components/Goals/Goals.tsx",
-                                                    lineNumber: 271,
+                                                    lineNumber: 301,
                                                     columnNumber: 23
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Goals/Goals.tsx",
-                                                lineNumber: 266,
+                                                lineNumber: 296,
                                                 columnNumber: 21
                                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Button$2f$Button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
                                                 onClick: ()=>startEditing(goal),
@@ -2744,12 +2792,12 @@ const Goals = ()=>{
                                                 className: "pixel-button pixel-button-secondary flex-shrink-0 whitespace-nowrap",
                                                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(EditIcon, {}, void 0, false, {
                                                     fileName: "[project]/src/components/Goals/Goals.tsx",
-                                                    lineNumber: 279,
+                                                    lineNumber: 309,
                                                     columnNumber: 23
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Goals/Goals.tsx",
-                                                lineNumber: 274,
+                                                lineNumber: 304,
                                                 columnNumber: 21
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Button$2f$Button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -2758,24 +2806,24 @@ const Goals = ()=>{
                                                 className: "pixel-button pixel-button-danger flex-shrink-0 whitespace-nowrap",
                                                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(TrashIcon, {}, void 0, false, {
                                                     fileName: "[project]/src/components/Goals/Goals.tsx",
-                                                    lineNumber: 287,
+                                                    lineNumber: 317,
                                                     columnNumber: 21
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Goals/Goals.tsx",
-                                                lineNumber: 282,
+                                                lineNumber: 312,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/Goals/Goals.tsx",
-                                        lineNumber: 264,
+                                        lineNumber: 294,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/Goals/Goals.tsx",
-                                lineNumber: 234,
+                                lineNumber: 264,
                                 columnNumber: 15
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2792,12 +2840,12 @@ const Goals = ()=>{
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/Goals/Goals.tsx",
-                                            lineNumber: 294,
+                                            lineNumber: 324,
                                             columnNumber: 19
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/Goals/Goals.tsx",
-                                        lineNumber: 293,
+                                        lineNumber: 323,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2810,12 +2858,12 @@ const Goals = ()=>{
                                             }
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/Goals/Goals.tsx",
-                                            lineNumber: 297,
+                                            lineNumber: 327,
                                             columnNumber: 19
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/Goals/Goals.tsx",
-                                        lineNumber: 296,
+                                        lineNumber: 326,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Slider$2f$Slider$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Slider"], {
@@ -2830,34 +2878,34 @@ const Goals = ()=>{
                                         disabled: goal.completed
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/Goals/Goals.tsx",
-                                        lineNumber: 308,
+                                        lineNumber: 338,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/Goals/Goals.tsx",
-                                lineNumber: 292,
+                                lineNumber: 322,
                                 columnNumber: 15
                             }, this)
                         ]
                     }, goal.id, true, {
                         fileName: "[project]/src/components/Goals/Goals.tsx",
-                        lineNumber: 230,
+                        lineNumber: 260,
                         columnNumber: 13
                     }, this))
             }, void 0, false, {
                 fileName: "[project]/src/components/Goals/Goals.tsx",
-                lineNumber: 223,
+                lineNumber: 253,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/Goals/Goals.tsx",
-        lineNumber: 202,
+        lineNumber: 232,
         columnNumber: 5
     }, this);
 };
-_s(Goals, "YT4nxkoHCItfOASbUhe5rjysLks=", false, function() {
+_s(Goals, "Ia7BgBWuxH6eeINTjXoclaSBGcQ=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$emotionContext$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEmitEmotion"]
     ];
@@ -3265,6 +3313,68 @@ const SiteList = ()=>{
     const [newWebsite, setNewWebsite] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('');
     const [category, setCategory] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('neutral');
     const [filter, setFilter] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('all');
+    const [localhostSeconds, setLocalhostSeconds] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])({
+        "SiteList.useState": ()=>parseInt(localStorage.getItem('localhost_seconds') || '0', 10)
+    }["SiteList.useState"]);
+    // Add localhost to websites if not present
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "SiteList.useEffect": ()=>{
+            if (!websites.some({
+                "SiteList.useEffect": (site)=>site.name === 'localhost'
+            }["SiteList.useEffect"])) {
+                setWebsites({
+                    "SiteList.useEffect": (ws)=>[
+                            ...ws,
+                            {
+                                id: Math.max(0, ...ws.map({
+                                    "SiteList.useEffect": (w)=>w.id
+                                }["SiteList.useEffect"])) + 1,
+                                name: 'localhost',
+                                category: 'productive',
+                                timeSpent: 0
+                            }
+                        ]
+                }["SiteList.useEffect"]);
+            }
+        }
+    }["SiteList.useEffect"], [
+        websites
+    ]);
+    // Timer for localhost
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "SiteList.useEffect": ()=>{
+            if (window.location.hostname !== 'localhost') return;
+            let seconds = localhostSeconds;
+            let timer = setInterval({
+                "SiteList.useEffect.timer": ()=>{
+                    seconds += 1;
+                    setLocalhostSeconds(seconds);
+                    localStorage.setItem('localhost_seconds', seconds.toString());
+                    // Update websites state
+                    setWebsites({
+                        "SiteList.useEffect.timer": (ws)=>ws.map({
+                                "SiteList.useEffect.timer": (site)=>site.name === 'localhost' ? {
+                                        ...site,
+                                        timeSpent: Math.floor(seconds / 60)
+                                    } : site
+                            }["SiteList.useEffect.timer"])
+                    }["SiteList.useEffect.timer"]);
+                    if (seconds % 30 === 0) {
+                        // Increment health and log
+                        const health = parseInt(localStorage.getItem('health') || '100', 10);
+                        const newHealth = Math.min(100, health + 1);
+                        localStorage.setItem('health', newHealth.toString());
+                        console.log('[WebsiteTracker] +1 health for 30s on localhost. Action: productive. New health:', newHealth);
+                    }
+                }
+            }["SiteList.useEffect.timer"], 1000);
+            return ({
+                "SiteList.useEffect": ()=>clearInterval(timer)
+            })["SiteList.useEffect"];
+        }
+    }["SiteList.useEffect"], [
+        localhostSeconds
+    ]);
     const handleAddWebsite = ()=>{
         if (newWebsite.trim() === '') return;
         const websiteExists = websites.some((site)=>site.name === newWebsite.trim());
@@ -3314,12 +3424,12 @@ const SiteList = ()=>{
                             className: "w-full"
                         }, void 0, false, {
                             fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                            lineNumber: 90,
+                            lineNumber: 122,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                        lineNumber: 89,
+                        lineNumber: 121,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Select$2f$Select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Select"], {
@@ -3332,12 +3442,12 @@ const SiteList = ()=>{
                                     placeholder: "Category"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                    lineNumber: 102,
+                                    lineNumber: 134,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                lineNumber: 101,
+                                lineNumber: 133,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Select$2f$Select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectContent"], {
@@ -3348,7 +3458,7 @@ const SiteList = ()=>{
                                             children: "Category"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                            lineNumber: 106,
+                                            lineNumber: 138,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Select$2f$Select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -3356,7 +3466,7 @@ const SiteList = ()=>{
                                             children: "Productive"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                            lineNumber: 107,
+                                            lineNumber: 139,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Select$2f$Select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -3364,7 +3474,7 @@ const SiteList = ()=>{
                                             children: "Unproductive"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                            lineNumber: 108,
+                                            lineNumber: 140,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Select$2f$Select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -3372,24 +3482,24 @@ const SiteList = ()=>{
                                             children: "Neutral"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                            lineNumber: 109,
+                                            lineNumber: 141,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                    lineNumber: 105,
+                                    lineNumber: 137,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                lineNumber: 104,
+                                lineNumber: 136,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                        lineNumber: 97,
+                        lineNumber: 129,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Button$2f$Button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -3398,7 +3508,7 @@ const SiteList = ()=>{
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(PlusIcon, {}, void 0, false, {
                                 fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                lineNumber: 114,
+                                lineNumber: 146,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3406,19 +3516,19 @@ const SiteList = ()=>{
                                 children: "ADD"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                lineNumber: 115,
+                                lineNumber: 147,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                        lineNumber: 113,
+                        lineNumber: 145,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                lineNumber: 88,
+                lineNumber: 120,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3428,7 +3538,7 @@ const SiteList = ()=>{
                         children: "Filter:"
                     }, void 0, false, {
                         fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                        lineNumber: 120,
+                        lineNumber: 152,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3441,7 +3551,7 @@ const SiteList = ()=>{
                                 children: "All"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                lineNumber: 122,
+                                lineNumber: 154,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Button$2f$Button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -3452,7 +3562,7 @@ const SiteList = ()=>{
                                 children: "Productive"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                lineNumber: 129,
+                                lineNumber: 161,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Button$2f$Button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -3463,7 +3573,7 @@ const SiteList = ()=>{
                                 children: "Unproductive"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                lineNumber: 137,
+                                lineNumber: 169,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Button$2f$Button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -3474,19 +3584,19 @@ const SiteList = ()=>{
                                 children: "Neutral"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                lineNumber: 145,
+                                lineNumber: 177,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                        lineNumber: 121,
+                        lineNumber: 153,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                lineNumber: 119,
+                lineNumber: 151,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3496,7 +3606,7 @@ const SiteList = ()=>{
                     children: "No websites in this category"
                 }, void 0, false, {
                     fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                    lineNumber: 158,
+                    lineNumber: 190,
                     columnNumber: 11
                 }, this) : filteredWebsites.map((website)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$SimpleContainer$2f$SimpleContainer$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SimpleItem"], {
                         backgroundColor: website.category === 'productive' ? 'rgba(16, 185, 129, 0.1)' : website.category === 'unproductive' ? 'rgba(239, 68, 68, 0.1)' : 'rgba(245, 158, 11, 0.1)',
@@ -3511,7 +3621,7 @@ const SiteList = ()=>{
                                             children: website.name
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                            lineNumber: 173,
+                                            lineNumber: 205,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3522,13 +3632,13 @@ const SiteList = ()=>{
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                            lineNumber: 174,
+                                            lineNumber: 206,
                                             columnNumber: 19
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                    lineNumber: 172,
+                                    lineNumber: 204,
                                     columnNumber: 17
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3542,12 +3652,12 @@ const SiteList = ()=>{
                                                     className: "w-[140px] h-8 text-xs bg-white",
                                                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Select$2f$Select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectValue"], {}, void 0, false, {
                                                         fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                                        lineNumber: 187,
+                                                        lineNumber: 219,
                                                         columnNumber: 23
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                                    lineNumber: 186,
+                                                    lineNumber: 218,
                                                     columnNumber: 21
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Select$2f$Select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectContent"], {
@@ -3558,7 +3668,7 @@ const SiteList = ()=>{
                                                             children: "Productive"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                                            lineNumber: 190,
+                                                            lineNumber: 222,
                                                             columnNumber: 23
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Select$2f$Select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -3566,7 +3676,7 @@ const SiteList = ()=>{
                                                             children: "Unproductive"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                                            lineNumber: 191,
+                                                            lineNumber: 223,
                                                             columnNumber: 23
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Select$2f$Select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -3574,19 +3684,19 @@ const SiteList = ()=>{
                                                             children: "Neutral"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                                            lineNumber: 192,
+                                                            lineNumber: 224,
                                                             columnNumber: 23
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                                    lineNumber: 189,
+                                                    lineNumber: 221,
                                                     columnNumber: 21
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                            lineNumber: 179,
+                                            lineNumber: 211,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Button$2f$Button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -3598,44 +3708,44 @@ const SiteList = ()=>{
                                                 className: "h-4 w-4"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                                lineNumber: 201,
+                                                lineNumber: 233,
                                                 columnNumber: 21
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                            lineNumber: 195,
+                                            lineNumber: 227,
                                             columnNumber: 19
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                    lineNumber: 178,
+                                    lineNumber: 210,
                                     columnNumber: 17
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                            lineNumber: 171,
+                            lineNumber: 203,
                             columnNumber: 15
                         }, this)
                     }, website.id, false, {
                         fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                        lineNumber: 163,
+                        lineNumber: 195,
                         columnNumber: 13
                     }, this))
             }, void 0, false, {
                 fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                lineNumber: 156,
+                lineNumber: 188,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/SiteList/SiteList.tsx",
-        lineNumber: 82,
+        lineNumber: 114,
         columnNumber: 5
     }, this);
 };
-_s(SiteList, "SnxvazACMC99jZeq8buool/orOk=");
+_s(SiteList, "3ty+iqboDOg9zdXa93FnrkCEjAw=");
 _c1 = SiteList;
 const __TURBOPACK__default__export__ = SiteList;
 var _c, _c1;
@@ -3796,6 +3906,27 @@ var _s = __turbopack_context__.k.signature();
 function LilGuyInteractor() {
     _s();
     const emitEmotion = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$emotionContext$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEmitEmotion"])();
+    // --- Helper: Get and set health from localStorage ---
+    const getHealth = ()=>{
+        if ("TURBOPACK compile-time truthy", 1) {
+            const h = localStorage.getItem('health');
+            return h ? parseInt(h, 10) : 100;
+        }
+        "TURBOPACK unreachable";
+    };
+    const setHealth = (value)=>{
+        if ("TURBOPACK compile-time truthy", 1) {
+            localStorage.setItem('health', value.toString());
+        }
+    };
+    // --- Helper: Emit emotion and update health ---
+    const emitEmotionWithHealth = (type, intensity, source, delta)=>{
+        const prevHealth = getHealth();
+        let newHealth = prevHealth + delta;
+        newHealth = Math.max(0, Math.min(100, newHealth));
+        setHealth(newHealth);
+        emitEmotion(type, intensity, source, newHealth);
+    };
     const [text, setText] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
     const [message, setMessage] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
     const textRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])("");
@@ -3897,23 +4028,23 @@ function LilGuyInteractor() {
                                 children: "|"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/LilGuyInteractor/LilGuyInteractor.tsx",
-                                lineNumber: 110,
+                                lineNumber: 133,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/LilGuyInteractor/LilGuyInteractor.tsx",
-                        lineNumber: 108,
+                        lineNumber: 131,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/components/LilGuyInteractor/LilGuyInteractor.tsx",
-                    lineNumber: 107,
+                    lineNumber: 130,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/LilGuyInteractor/LilGuyInteractor.tsx",
-                lineNumber: 106,
+                lineNumber: 129,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$styled$2d$jsx$2f$style$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -3928,7 +4059,7 @@ function LilGuyInteractor() {
                         children: "Actions"
                     }, void 0, false, {
                         fileName: "[project]/src/components/LilGuyInteractor/LilGuyInteractor.tsx",
-                        lineNumber: 135,
+                        lineNumber: 158,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3937,9 +4068,9 @@ function LilGuyInteractor() {
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                 onClick: ()=>{
                                     if (buttonText === "Walk") {
-                                        emitEmotion("walk", 100, "button");
+                                        emitEmotionWithHealth("walk", 100, "button", -5);
                                     } else {
-                                        emitEmotion("idle", 100, "button");
+                                        emitEmotionWithHealth("idle", 100, "button", 5);
                                     }
                                     setButtonText((prev)=>prev === "Walk" ? "Chill" : "Walk");
                                 },
@@ -3947,34 +4078,34 @@ function LilGuyInteractor() {
                                 children: buttonText
                             }, void 0, false, {
                                 fileName: "[project]/src/components/LilGuyInteractor/LilGuyInteractor.tsx",
-                                lineNumber: 137,
+                                lineNumber: 160,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                                onClick: ()=>emitEmotion("happy", 100, "button"),
+                                onClick: ()=>emitEmotionWithHealth("happy", 100, "button", 5),
                                 className: "jsx-1b521f0484efe7c7" + " " + "flex-1 px-3 py-2 pixel-button green text-pixel-sm whitespace-nowrap",
                                 children: "Pet"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/LilGuyInteractor/LilGuyInteractor.tsx",
-                                lineNumber: 151,
+                                lineNumber: 174,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/LilGuyInteractor/LilGuyInteractor.tsx",
-                        lineNumber: 136,
+                        lineNumber: 159,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/LilGuyInteractor/LilGuyInteractor.tsx",
-                lineNumber: 134,
+                lineNumber: 157,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/LilGuyInteractor/LilGuyInteractor.tsx",
-        lineNumber: 105,
+        lineNumber: 128,
         columnNumber: 5
     }, this);
 }
@@ -4025,63 +4156,258 @@ const setLocalStorageItem = (key, value)=>{
         localStorage.setItem(key, typeof value === 'object' || typeof value === 'number' ? JSON.stringify(value) : value);
     }
 };
-function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "normal", className = "", initialAnimation = "idle" }) {
+function getSpriteSheetForStage(stage) {
+    switch(stage){
+        case "angel":
+            return "/assets/sprites/sheets/lilguy_angel.png";
+        case "devil":
+            return "/assets/sprites/sheets/lilguy_devil.png";
+        case "egg":
+            return "/assets/sprites/sheets/lilguy_egg.png";
+        case "normal":
+        default:
+            return "/assets/sprites/sheets/lilguy_main.png";
+    }
+}
+// --- Helper: get animation states for current stage ---
+function getAnimationStates(stage) {
+    if (stage === "egg") {
+        return [
+            {
+                name: "idle",
+                frames: 6,
+                row: 0
+            },
+            {
+                name: "hatch",
+                frames: 6,
+                row: 1
+            }
+        ];
+    }
+    return [
+        {
+            name: "idle",
+            frames: 6,
+            row: 0
+        },
+        {
+            name: "walk",
+            frames: 5,
+            row: 1
+        },
+        {
+            name: "happy",
+            frames: 6,
+            row: 2
+        },
+        {
+            name: "angry",
+            frames: 5,
+            row: 3
+        },
+        {
+            name: "sad",
+            frames: 5,
+            row: 4
+        },
+        {
+            name: "shocked",
+            frames: 4,
+            row: 5
+        },
+        {
+            name: "shake",
+            frames: 4,
+            row: 6
+        }
+    ];
+}
+function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "normal", className = "", initialAnimation = "idle", health: controlledHealth, stage: controlledStage, animation: controlledAnimation }) {
     _s();
     const canvasRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(null);
     const animRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(null);
-    const [animation, setAnimation] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(initialAnimation);
-    const [health, setHealth] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])();
+    const [animation, setAnimation] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(controlledAnimation || initialAnimation);
+    const [health, setHealth] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(controlledHealth ?? 100);
     const [lilGuyColor, setLilGuyColor] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("green");
-    const [lilGuyStage, setLilGuyStage] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("normal");
+    const [lilGuyStage, setLilGuyStage] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(controlledStage || "normal");
     const [message, setMessage] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
     const [modifiedHealth, setModifiedHealth] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])();
     const [lilGuyName, setLilGuyName] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("LilGuy");
-    // listen for emotion updates
+    // --- Sprite image ref ---
+    const spriteImageRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(null);
+    const lastSpriteSheetRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])("");
+    // --- Sprite loading effect: only runs when stage changes ---
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "LilGuyCanvas.useEffect": ()=>{
+            const spriteSheetPath = getSpriteSheetForStage(lilGuyStage);
+            if (spriteSheetPath === lastSpriteSheetRef.current && spriteImageRef.current) {
+                return;
+            }
+            lastSpriteSheetRef.current = spriteSheetPath;
+            const img = new window.Image();
+            img.src = spriteSheetPath;
+            img.onload = ({
+                "LilGuyCanvas.useEffect": ()=>{
+                    spriteImageRef.current = img;
+                }
+            })["LilGuyCanvas.useEffect"];
+            img.onerror = ({
+                "LilGuyCanvas.useEffect": ()=>{
+                    spriteImageRef.current = null;
+                    console.error("Error loading sprite sheet asset:", spriteSheetPath);
+                }
+            })["LilGuyCanvas.useEffect"];
+        }
+    }["LilGuyCanvas.useEffect"], [
+        lilGuyStage
+    ]);
+    // --- Animation loop: draws the correct frame from the sprite sheet ---
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "LilGuyCanvas.useEffect": ()=>{
+            const canvas = canvasRef.current;
+            if (!canvas) return;
+            const ctx = canvas.getContext("2d");
+            if (!ctx) return;
+            let gameFrame = 0;
+            let running = true;
+            const spriteWidth = 500;
+            const spriteHeight = 500;
+            let scale = size === "widget" ? 0.25 * 0.4 : 0.25;
+            const displayWidth = spriteWidth * scale;
+            const displayHeight = spriteHeight * scale;
+            const CANVAS_WIDTH = canvas.width = size === "widget" ? 48 : 400;
+            const CANVAS_HEIGHT = canvas.height = size === "widget" ? 48 : 250;
+            const centerX = (CANVAS_WIDTH - displayWidth) / 2;
+            const centerY = (CANVAS_HEIGHT - displayHeight) / 2;
+            // Get animation states for the current stage
+            const animationStates = getAnimationStates(lilGuyStage);
+            const spriteAnimations = {};
+            animationStates.forEach({
+                "LilGuyCanvas.useEffect": (state)=>{
+                    const frames = {
+                        loc: []
+                    };
+                    for(let j = 0; j < state.frames; j++){
+                        const positionX = j * spriteWidth;
+                        const positionY = state.row * spriteHeight;
+                        frames.loc.push({
+                            x: positionX,
+                            y: positionY
+                        });
+                    }
+                    spriteAnimations[state.name] = frames;
+                }
+            }["LilGuyCanvas.useEffect"]);
+            const staggerFrames = 8; // adjust for speed
+            function draw() {
+                ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+                ctx.save();
+                ctx.globalAlpha = 1;
+                ctx.fillStyle = "rgba(0,0,0,0)";
+                ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+                ctx.restore();
+                const animFrames = spriteAnimations[animation]?.loc.length || 1;
+                const position = Math.floor(gameFrame / staggerFrames) % animFrames;
+                let frameX = spriteAnimations[animation]?.loc[position]?.x || 0;
+                let frameY = spriteAnimations[animation]?.loc[position]?.y || 0;
+                const imgToDraw = spriteImageRef.current;
+                if (imgToDraw) {
+                    ctx.drawImage(imgToDraw, frameX, frameY, spriteWidth, spriteHeight, centerX, centerY, displayWidth, displayHeight);
+                } else {
+                    ctx.fillStyle = 'black';
+                    ctx.font = '16px Arial';
+                    ctx.fillText('Loading...', CANVAS_WIDTH / 2 - 30, CANVAS_HEIGHT / 2);
+                }
+                gameFrame++;
+                if (running) animRef.current = requestAnimationFrame(draw);
+            }
+            draw();
+            return ({
+                "LilGuyCanvas.useEffect": ()=>{
+                    running = false;
+                    if (animRef.current) cancelAnimationFrame(animRef.current);
+                }
+            })["LilGuyCanvas.useEffect"];
+        }
+    }["LilGuyCanvas.useEffect"], [
+        animation,
+        size,
+        lilGuyStage
+    ]);
+    // --- Health bar dynamic update ---
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "LilGuyCanvas.useEffect": ()=>{
+            // Only set from localStorage if not controlled
+            if (controlledHealth === undefined) {
+                const storedHealth = getLocalStorageItem("health", 100);
+                setHealth(Number(storedHealth));
+            }
+        }
+    }["LilGuyCanvas.useEffect"], [
+        controlledHealth
+    ]);
+    // --- Sync health state with controlledHealth prop ---
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "LilGuyCanvas.useEffect": ()=>{
+            if (controlledHealth !== undefined) setHealth(controlledHealth);
+        }
+    }["LilGuyCanvas.useEffect"], [
+        controlledHealth
+    ]);
+    // --- Dynamic color setting from buttons/localStorage ---
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "LilGuyCanvas.useEffect": ()=>{
+            const storedColor = getLocalStorageItem("lilGuyColor", "green");
+            setLilGuyColor(storedColor);
+        }
+    }["LilGuyCanvas.useEffect"], []);
+    // Listen for emotion updates and update health bar if needed
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$emotionContext$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useListenToEmotions"])({
         "LilGuyCanvas.useListenToEmotions": (emotionEvent)=>{
-            if (emotionEvent.type === "walk" || emotionEvent.type === "idle" || emotionEvent.type === "happy" || emotionEvent.type === "angry" || emotionEvent.type === "sad" || emotionEvent.type === "shocked") {
-                setAnimation(emotionEvent.type);
-                if (emotionEvent.source === "goalCompletion") {
-                    // if health is low, give a bigger boost for completing goals
-                    setModifiedHealth({
-                        "LilGuyCanvas.useListenToEmotions": (prevHealth)=>{
-                            const currentHealth = prevHealth || 0;
-                            let boost = 0;
-                            if (currentHealth < 30) {
-                                boost = 15;
-                            } else if (currentHealth < 60) {
-                                boost = 10;
-                            } else {
-                                boost = 5;
-                            }
-                            const newHealth = Math.min(100, currentHealth + boost);
-                            setLocalStorageItem("modifiedHealth", newHealth);
-                            return newHealth;
-                        }
-                    }["LilGuyCanvas.useListenToEmotions"]);
-                    setMessage("Great job on completing that goal!");
-                } else if (emotionEvent.source === "goalUnfinished") {
-                    setModifiedHealth({
-                        "LilGuyCanvas.useListenToEmotions": (prevHealth)=>{
-                            const newHealth = Math.max(0, (prevHealth || 0) - 5);
-                            setLocalStorageItem("modifiedHealth", newHealth);
-                            return newHealth;
-                        }
-                    }["LilGuyCanvas.useListenToEmotions"]);
-                    setMessage("Don't worry, you can try again!");
-                } else if (emotionEvent.source === "goodProgress") {
-                    setModifiedHealth({
-                        "LilGuyCanvas.useListenToEmotions": (prevHealth)=>{
-                            const newHealth = Math.min(100, (prevHealth || 0) + 2);
-                            setLocalStorageItem("modifiedHealth", newHealth);
-                            return newHealth;
-                        }
-                    }["LilGuyCanvas.useListenToEmotions"]);
-                    setMessage("Making good progress!");
-                }
+            setAnimation(emotionEvent.type);
+            if (emotionEvent.health !== undefined) {
+                setHealth(emotionEvent.health);
+                setLocalStorageItem("health", emotionEvent.health);
             }
         }
     }["LilGuyCanvas.useListenToEmotions"]);
+    // --- Listen for health and color changes via custom/localStorage events ---
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "LilGuyCanvas.useEffect": ()=>{
+            function handleCustomStorageChange(e) {
+                const { key, value } = e.detail || {};
+                if (key === "lilGuyColor") {
+                    setLilGuyColor(value);
+                } else if (key === "lilGuyStage") {
+                    setLilGuyStage(value);
+                } else if (key === "lilGuyName") {
+                    setLilGuyName(value);
+                } else if (key === "health") {
+                    setHealth(Number(value));
+                }
+            }
+            function handleStorageChange(e) {
+                if (e.key === "lilGuyColor") {
+                    setLilGuyColor(e.newValue || "green");
+                } else if (e.key === "lilGuyStage") {
+                    setLilGuyStage(e.newValue || "normal");
+                } else if (e.key === "lilGuyName") {
+                    setLilGuyName(e.newValue || "LilGuy");
+                } else if (e.key === "health") {
+                    setHealth(Number(e.newValue || 100));
+                }
+            }
+            window.addEventListener("localStorageChanged", handleCustomStorageChange);
+            window.addEventListener("storage", handleStorageChange);
+            return ({
+                "LilGuyCanvas.useEffect": ()=>{
+                    window.removeEventListener("localStorageChanged", handleCustomStorageChange);
+                    window.removeEventListener("storage", handleStorageChange);
+                }
+            })["LilGuyCanvas.useEffect"];
+        }
+    }["LilGuyCanvas.useEffect"], []);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "LilGuyCanvas.useEffect": ()=>{
             // Health updates
@@ -4191,216 +4517,26 @@ function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "nor
             })["LilGuyCanvas.useEffect"];
         }
     }["LilGuyCanvas.useEffect"], []);
-    // Draw LilGuy on canvas
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "LilGuyCanvas.useEffect": ()=>{
-            // handle extreme health
-            if (modifiedHealth !== undefined) {
-                if (modifiedHealth <= 30) {
-                    setAnimation("sad");
-                } else if (modifiedHealth >= 80) {
-                    setAnimation("happy");
-                }
-            }
-            // for extreme health values, override the stage
-            if (modifiedHealth !== undefined) {
-                if (modifiedHealth <= 20) {
-                    if (lilGuyStage !== "devil") {
-                        setLilGuyStage("devil");
-                        setLocalStorageItem("lilGuyStage", "devil");
-                    }
-                } else if (modifiedHealth >= 90) {
-                    if (lilGuyStage !== "angel") {
-                        setLilGuyStage("angel");
-                        setLocalStorageItem("lilGuyStage", "angel");
-                    }
-                }
-            }
+            if (controlledHealth !== undefined) setHealth(controlledHealth);
         }
     }["LilGuyCanvas.useEffect"], [
-        modifiedHealth,
-        lilGuyStage
+        controlledHealth
     ]);
-    // Respond to health changes
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "LilGuyCanvas.useEffect": ()=>{
-            if (health === undefined) return;
-            setLocalStorageItem("health", health);
-            if (health < 40) {
-                setAnimation("sad");
-            }
-            if (health > 90) {
-                setAnimation("happy");
-            }
+            if (controlledStage) setLilGuyStage(controlledStage);
         }
     }["LilGuyCanvas.useEffect"], [
-        health
+        controlledStage
     ]);
-    // main canvas drawing function
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "LilGuyCanvas.useEffect": ()=>{
-            const canvas = canvasRef.current;
-            if (!canvas) return;
-            const ctx = canvas.getContext("2d");
-            if (!ctx) return;
-            let CANVAS_WIDTH, CANVAS_HEIGHT;
-            if (size === "widget") {
-                CANVAS_WIDTH = canvas.width = 48;
-                CANVAS_HEIGHT = canvas.height = 48;
-            } else {
-                CANVAS_WIDTH = canvas.width = 400;
-                CANVAS_HEIGHT = canvas.height = 250;
-            }
-            // Remove white flash: fill with transparent before drawing
-            ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-            ctx.save();
-            ctx.globalAlpha = 1;
-            ctx.fillStyle = "rgba(0,0,0,0)"; // transparent fill
-            ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-            ctx.restore();
-            // create and load the sprite image
-            const playerImage = new Image();
-            let imageLoaded = false;
-            let recoloredImage = null;
-            // Palette swap integration
-            __turbopack_context__.r("[project]/src/components/LilGuy/SpriteManager.ts [app-client] (ecmascript, async loader)")(__turbopack_context__.i).then({
-                "LilGuyCanvas.useEffect": ({ recolorSpriteImage })=>{
-                    playerImage.src = `/lilguy_3.png`;
-                    playerImage.onload = ({
-                        "LilGuyCanvas.useEffect": ()=>{
-                            imageLoaded = true;
-                            // Only recolor if not black (default sprite is black)
-                            if (lilGuyColor !== "black") {
-                                recolorSpriteImage(playerImage, lilGuyColor, {
-                                    "LilGuyCanvas.useEffect": (img)=>{
-                                        recoloredImage = img;
-                                        if (animRef.current) {
-                                            cancelAnimationFrame(animRef.current);
-                                        }
-                                        animRef.current = requestAnimationFrame(animate);
-                                    }
-                                }["LilGuyCanvas.useEffect"]);
-                            } else {
-                                recoloredImage = null;
-                                if (animRef.current) {
-                                    cancelAnimationFrame(animRef.current);
-                                }
-                                animRef.current = requestAnimationFrame(animate);
-                            }
-                        }
-                    })["LilGuyCanvas.useEffect"];
-                    playerImage.onerror = ({
-                        "LilGuyCanvas.useEffect": ()=>{
-                            console.error("Error loading basic sprite");
-                        }
-                    })["LilGuyCanvas.useEffect"];
-                }
-            }["LilGuyCanvas.useEffect"]);
-            // Define our animation function
-            function animate() {
-                if (!ctx) return;
-                ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-                ctx.save();
-                ctx.globalAlpha = 1;
-                ctx.fillStyle = "rgba(0,0,0,0)";
-                ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-                ctx.restore();
-                if (imageLoaded) {
-                    const position = Math.floor(gameFrame / staggerFrames) % 5;
-                    if (!spriteAnimations[animation]) {
-                        return;
-                    }
-                    let frameX = spriteAnimations[animation].loc[position] ? spriteAnimations[animation].loc[position].x : 0;
-                    let frameY = spriteAnimations[animation].loc[position] ? spriteAnimations[animation].loc[position].y : 0;
-                    const imgToDraw = recoloredImage || playerImage;
-                    ctx.drawImage(imgToDraw, frameX, frameY, spriteWidth, spriteHeight, centerX, centerY, displayWidth, displayHeight);
-                } else {
-                    ctx.fillStyle = 'black';
-                    ctx.font = '16px Arial';
-                    ctx.fillText('Loading...', CANVAS_WIDTH / 2 - 30, CANVAS_HEIGHT / 2);
-                }
-                gameFrame++;
-                animRef.current = requestAnimationFrame(animate);
-            }
-            const spriteWidth = 500;
-            const spriteHeight = 500;
-            let gameFrame = 0;
-            const staggerFrames = 5;
-            let scale;
-            if (size === "widget") {
-                scale = 0.25 * 0.4;
-            } else {
-                scale = 0.25;
-            }
-            const displayWidth = spriteWidth * scale;
-            const displayHeight = spriteHeight * scale;
-            const centerX = (CANVAS_WIDTH - displayWidth) / 2;
-            const centerY = (CANVAS_HEIGHT - displayHeight) / 2;
-            const spriteAnimations = {};
-            const animationStates = [
-                {
-                    name: "idle",
-                    frames: 6
-                },
-                {
-                    name: "walk",
-                    frames: 5
-                },
-                {
-                    name: "happy",
-                    frames: 6
-                },
-                {
-                    name: "angry",
-                    frames: 5
-                },
-                {
-                    name: "sad",
-                    frames: 5
-                },
-                {
-                    name: "shocked",
-                    frames: 4
-                },
-                {
-                    name: "shake",
-                    frames: 4
-                },
-                {
-                    name: "hatch",
-                    frames: 4
-                }
-            ];
-            // set up animation frames
-            animationStates.forEach({
-                "LilGuyCanvas.useEffect": (state, index)=>{
-                    const frames = {
-                        loc: []
-                    };
-                    for(let j = 0; j < state.frames; j++){
-                        const positionX = j * spriteWidth;
-                        const positionY = index * spriteHeight;
-                        frames.loc.push({
-                            x: positionX,
-                            y: positionY
-                        });
-                    }
-                    spriteAnimations[state.name] = frames;
-                }
-            }["LilGuyCanvas.useEffect"]);
-            return ({
-                "LilGuyCanvas.useEffect": ()=>{
-                    if (animRef.current) {
-                        cancelAnimationFrame(animRef.current);
-                    }
-                }
-            })["LilGuyCanvas.useEffect"];
+            if (controlledAnimation) setAnimation(controlledAnimation);
         }
     }["LilGuyCanvas.useEffect"], [
-        animation,
-        size,
-        lilGuyColor,
-        lilGuyStage
+        controlledAnimation
     ]);
     const canvasClasses = `${size === "normal" ? "border-2 border-black bg-transparent pixelated w-[100%] h-[auto] pb-4 relative shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]" : "w-[48px] h-[48px] relative pixelated border-2 border-black"} ${className}`;
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4415,7 +4551,7 @@ function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "nor
                         children: lilGuyName
                     }, void 0, false, {
                         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                        lineNumber: 415,
+                        lineNumber: 380,
                         columnNumber: 11
                     }, this),
                     message && size === "normal" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4427,17 +4563,17 @@ function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "nor
                                 children: message
                             }, void 0, false, {
                                 fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                                lineNumber: 424,
+                                lineNumber: 389,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                            lineNumber: 423,
+                            lineNumber: 388,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                        lineNumber: 422,
+                        lineNumber: 387,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4448,55 +4584,55 @@ function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "nor
                                 ref: canvasRef
                             }, void 0, false, {
                                 fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                                lineNumber: 430,
+                                lineNumber: 395,
                                 columnNumber: 11
                             }, this),
                             showHealthBar && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                className: "absolute bottom-4 left-0 right-0 w-[80%] mx-auto",
+                                className: "absolute bottom-4 left-0 right-0 w-[80%] mx-auto flex flex-col items-center",
                                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$HealthBar$2f$HealthBar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["HealthBar"], {
-                                    health: modifiedHealth || 0
+                                    health: health
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                                    lineNumber: 434,
+                                    lineNumber: 399,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                                lineNumber: 433,
+                                lineNumber: 398,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                        lineNumber: 429,
+                        lineNumber: 394,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                lineNumber: 409,
+                lineNumber: 374,
                 columnNumber: 7
             }, this),
             showControls && size === "normal" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "w-full",
                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$LilGuyInteractor$2f$LilGuyInteractor$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
                     fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                    lineNumber: 441,
+                    lineNumber: 406,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                lineNumber: 440,
+                lineNumber: 405,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-        lineNumber: 405,
+        lineNumber: 370,
         columnNumber: 5
     }, this);
 }
-_s(LilGuyCanvas, "DloTXgzkvSdfbFrSbVbfPAL+3fs=", false, function() {
+_s(LilGuyCanvas, "CwkcNFkZwiYjUaGrjUlI1J6ABg8=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$emotionContext$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useListenToEmotions"]
     ];
@@ -4511,24 +4647,26 @@ function LilGuy() {
             showHealthBar: true
         }, void 0, false, {
             fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-            lineNumber: 452,
+            lineNumber: 417,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-        lineNumber: 451,
+        lineNumber: 416,
         columnNumber: 5
     }, this);
 }
 _c1 = LilGuy;
 // LilGuy for widget
-function WidgetLilGuy() {
+function WidgetLilGuy(props) {
+    // Always hide health bar in the canvas for widget
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(LilGuyCanvas, {
         size: "widget",
-        showHealthBar: false
+        showHealthBar: false,
+        ...props
     }, void 0, false, {
         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-        lineNumber: 462,
+        lineNumber: 428,
         columnNumber: 10
     }, this);
 }
@@ -5042,7 +5180,7 @@ const BellIcon = ()=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$projec
         columnNumber: 3
     }, this);
 _c3 = BellIcon;
-const ExtensionWidget = ({ onClose, onExpand })=>{
+const ExtensionWidget = ({ onClose, onExpand, activeTab })=>{
     _s();
     // TODO: update mood based on health/productivity?
     const [mood, setMood] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("neutral");
@@ -5067,6 +5205,141 @@ const ExtensionWidget = ({ onClose, onExpand })=>{
             }
         }
     }["ExtensionWidget.useEffect"], []);
+    const [localhostSeconds, setLocalhostSeconds] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(0);
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "ExtensionWidget.useEffect": ()=>{
+            // Only track if on localhost
+            const isLocalhost = window.location.hostname === 'localhost';
+            if (!isLocalhost) return;
+            // Track seconds spent on site in localStorage
+            let timer;
+            let seconds = parseInt(localStorage.getItem('productive_seconds') || '0', 10);
+            setLocalhostSeconds(seconds);
+            function saveSeconds(val) {
+                localStorage.setItem('productive_seconds', val.toString());
+                setLocalhostSeconds(val);
+            }
+            function incrementHealth() {
+                const health = parseInt(localStorage.getItem('health') || '100', 10);
+                const newHealth = Math.min(100, health + 1); // +1 for every 30s
+                localStorage.setItem('health', newHealth.toString());
+                window.dispatchEvent(new CustomEvent('localStorageChanged', {
+                    detail: {
+                        key: 'health',
+                        value: newHealth
+                    }
+                }));
+                console.log('[WebsiteTracker] +1 health for 30s on localhost. New health:', newHealth);
+            }
+            timer = setInterval({
+                "ExtensionWidget.useEffect": ()=>{
+                    seconds += 1;
+                    saveSeconds(seconds);
+                    if (seconds % 30 === 0) {
+                        incrementHealth();
+                    }
+                }
+            }["ExtensionWidget.useEffect"], 1000);
+            return ({
+                "ExtensionWidget.useEffect": ()=>clearInterval(timer)
+            })["ExtensionWidget.useEffect"];
+        }
+    }["ExtensionWidget.useEffect"], []);
+    // --- Widget LilGuy State ---
+    const getWidgetState = ()=>({
+            health: parseInt(localStorage.getItem('health') || '100', 10),
+            stage: localStorage.getItem('lilGuyStage') || 'normal',
+            animation: localStorage.getItem('lilGuyAnimation') || 'idle'
+        });
+    const [widgetHealth, setWidgetHealth] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])({
+        "ExtensionWidget.useState": ()=>getWidgetState().health
+    }["ExtensionWidget.useState"]);
+    const [widgetStage, setWidgetStage] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])({
+        "ExtensionWidget.useState": ()=>getWidgetState().stage
+    }["ExtensionWidget.useState"]);
+    const [widgetAnimation, setWidgetAnimation] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])({
+        "ExtensionWidget.useState": ()=>getWidgetState().animation
+    }["ExtensionWidget.useState"]);
+    // On mount (widget open), always pull latest state
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "ExtensionWidget.useEffect": ()=>{
+            const { health, stage, animation } = getWidgetState();
+            setWidgetHealth(health);
+            setWidgetStage(stage);
+            setWidgetAnimation(animation);
+        }
+    }["ExtensionWidget.useEffect"], [
+        activeTab
+    ]);
+    // Listen for health/stage/animation changes from anywhere
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "ExtensionWidget.useEffect": ()=>{
+            function updateFromStorage() {
+                const { health, stage, animation } = getWidgetState();
+                setWidgetHealth(health);
+                setWidgetStage(stage);
+                setWidgetAnimation(animation);
+            }
+            window.addEventListener('storage', updateFromStorage);
+            window.addEventListener('localStorageChanged', updateFromStorage);
+            return ({
+                "ExtensionWidget.useEffect": ()=>{
+                    window.removeEventListener('storage', updateFromStorage);
+                    window.removeEventListener('localStorageChanged', updateFromStorage);
+                }
+            })["ExtensionWidget.useEffect"];
+        }
+    }["ExtensionWidget.useEffect"], []);
+    // --- Pet/Walk Button Handlers ---
+    const handlePet = ()=>{
+        const health = parseInt(localStorage.getItem('health') || '100', 10);
+        const newHealth = Math.min(100, health + 1);
+        localStorage.setItem('health', newHealth.toString());
+        setWidgetHealth(newHealth);
+        setWidgetAnimation('happy');
+        window.dispatchEvent(new CustomEvent('localStorageChanged', {
+            detail: {
+                key: 'health',
+                value: newHealth
+            }
+        }));
+        console.log('[Widget] Pet action: +1 health. New health:', newHealth);
+    };
+    const handleWalk = ()=>{
+        const health = parseInt(localStorage.getItem('health') || '100', 10);
+        const newHealth = Math.max(0, health - 1);
+        localStorage.setItem('health', newHealth.toString());
+        setWidgetHealth(newHealth);
+        setWidgetAnimation('walk');
+        window.dispatchEvent(new CustomEvent('localStorageChanged', {
+            detail: {
+                key: 'health',
+                value: newHealth
+            }
+        }));
+        console.log('[Widget] Walk action: -1 health. New health:', newHealth);
+    };
+    const websiteTrackers = [
+        {
+            url: 'localhost',
+            label: 'Localhost',
+            type: 'productive',
+            seconds: localhostSeconds
+        },
+        // Example static items:
+        {
+            url: 'github.com',
+            label: 'GitHub',
+            type: 'productive',
+            seconds: 0
+        },
+        {
+            url: 'netflix.com',
+            label: 'Netflix',
+            type: 'unproductive',
+            seconds: 0
+        }
+    ];
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$PixelWindow$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
         title: `${name} - LVL 2`,
         className: "w-72",
@@ -5081,24 +5354,26 @@ const ExtensionWidget = ({ onClose, onExpand })=>{
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                 className: "pixel-button green flex-1 text-xs py-1 whitespace-nowrap",
+                                onClick: handlePet,
                                 children: "Pet"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                                lineNumber: 112,
+                                lineNumber: 213,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                 className: "pixel-button contrast flex-1 text-xs py-1 whitespace-nowrap",
-                                children: "Focus"
+                                onClick: handleWalk,
+                                children: "Walk"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                                lineNumber: 115,
+                                lineNumber: 216,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                        lineNumber: 111,
+                        lineNumber: 212,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -5106,18 +5381,18 @@ const ExtensionWidget = ({ onClose, onExpand })=>{
                         onClick: onExpand,
                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(SettingsIcon, {}, void 0, false, {
                             fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                            lineNumber: 123,
+                            lineNumber: 224,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                        lineNumber: 119,
+                        lineNumber: 220,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                lineNumber: 110,
+                lineNumber: 211,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5125,14 +5400,18 @@ const ExtensionWidget = ({ onClose, onExpand })=>{
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["classNameMerge"])("w-12 h-12 flex items-center justify-center rounded-lg pixelated border-2 border-black", mood === "happy" ? "bg-pixel-primary animate-bounce-slight" : mood === "sad" ? "bg-pixel-danger" : "bg-pixel-warning"),
-                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$LilGuy$2f$LilGuy$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["WidgetLilGuy"], {}, void 0, false, {
+                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$LilGuy$2f$LilGuy$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["WidgetLilGuy"], {
+                            health: widgetHealth,
+                            stage: widgetStage,
+                            animation: widgetAnimation
+                        }, void 0, false, {
                             fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                            lineNumber: 139,
+                            lineNumber: 240,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                        lineNumber: 129,
+                        lineNumber: 230,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5148,7 +5427,7 @@ const ExtensionWidget = ({ onClose, onExpand })=>{
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                                lineNumber: 142,
+                                lineNumber: 247,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5156,24 +5435,34 @@ const ExtensionWidget = ({ onClose, onExpand })=>{
                                 children: mood === "happy" ? "You're doing great today!" : mood === "sad" ? "Let's do some productive work!" : mood === "ecstatic" ? "You're on fire!" : "Ready when you are!"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                                lineNumber: 145,
+                                lineNumber: 250,
                                 columnNumber: 11
                             }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$HealthBar$2f$HealthBar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["WidgetHealth"], {}, void 0, false, {
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "mt-2",
+                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$HealthBar$2f$HealthBar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["HealthBar"], {
+                                    health: widgetHealth,
+                                    showLabel: false
+                                }, void 0, false, {
+                                    fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
+                                    lineNumber: 260,
+                                    columnNumber: 13
+                                }, this)
+                            }, void 0, false, {
                                 fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                                lineNumber: 154,
+                                lineNumber: 259,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                        lineNumber: 141,
+                        lineNumber: 246,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                lineNumber: 128,
+                lineNumber: 229,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5190,20 +5479,20 @@ const ExtensionWidget = ({ onClose, onExpand })=>{
                                         children: [
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(ClockIcon, {}, void 0, false, {
                                                 fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                                                lineNumber: 163,
+                                                lineNumber: 270,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                 children: "Productive"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                                                lineNumber: 164,
+                                                lineNumber: 271,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                                        lineNumber: 162,
+                                        lineNumber: 269,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5211,13 +5500,13 @@ const ExtensionWidget = ({ onClose, onExpand })=>{
                                         children: productiveTime
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                                        lineNumber: 166,
+                                        lineNumber: 273,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                                lineNumber: 161,
+                                lineNumber: 268,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5228,20 +5517,20 @@ const ExtensionWidget = ({ onClose, onExpand })=>{
                                         children: [
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(ClockIcon, {}, void 0, false, {
                                                 fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                                                lineNumber: 172,
+                                                lineNumber: 279,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                 children: "Unproductive"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                                                lineNumber: 173,
+                                                lineNumber: 280,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                                        lineNumber: 171,
+                                        lineNumber: 278,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5249,19 +5538,19 @@ const ExtensionWidget = ({ onClose, onExpand })=>{
                                         children: unproductiveTime
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                                        lineNumber: 175,
+                                        lineNumber: 282,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                                lineNumber: 170,
+                                lineNumber: 277,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                        lineNumber: 160,
+                        lineNumber: 267,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5272,7 +5561,7 @@ const ExtensionWidget = ({ onClose, onExpand })=>{
                                 children: "Currently on:"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                                lineNumber: 183,
+                                lineNumber: 290,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5283,7 +5572,7 @@ const ExtensionWidget = ({ onClose, onExpand })=>{
                                         children: "github.com"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                                        lineNumber: 185,
+                                        lineNumber: 292,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -5291,19 +5580,19 @@ const ExtensionWidget = ({ onClose, onExpand })=>{
                                         children: "Productive"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                                        lineNumber: 186,
+                                        lineNumber: 293,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                                lineNumber: 184,
+                                lineNumber: 291,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                        lineNumber: 182,
+                        lineNumber: 289,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5311,7 +5600,7 @@ const ExtensionWidget = ({ onClose, onExpand })=>{
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(BellIcon, {}, void 0, false, {
                                 fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                                lineNumber: 194,
+                                lineNumber: 301,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5322,7 +5611,7 @@ const ExtensionWidget = ({ onClose, onExpand })=>{
                                         children: "Upcoming Break"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                                        lineNumber: 196,
+                                        lineNumber: 303,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5330,35 +5619,95 @@ const ExtensionWidget = ({ onClose, onExpand })=>{
                                         children: "In 25 minutes"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                                        lineNumber: 197,
+                                        lineNumber: 304,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                                lineNumber: 195,
+                                lineNumber: 302,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                        lineNumber: 193,
+                        lineNumber: 300,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-                lineNumber: 159,
+                lineNumber: 266,
+                columnNumber: 7
+            }, this),
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                className: "bg-white p-3 border-t border-dashed border-gray-300",
+                children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "text-xs font-bold mb-2",
+                        children: "Website Tracker"
+                    }, void 0, false, {
+                        fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
+                        lineNumber: 311,
+                        columnNumber: 9
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "flex flex-col gap-2",
+                        children: websiteTrackers.map((site)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: `flex items-center gap-2 text-xs ${site.type === 'productive' ? 'text-green-700' : site.type === 'unproductive' ? 'text-red-700' : 'text-gray-700'}`,
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                        className: "font-mono w-24 truncate",
+                                        children: site.url
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
+                                        lineNumber: 315,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                        className: "flex-1",
+                                        children: site.label
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
+                                        lineNumber: 316,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                        children: [
+                                            Math.floor(site.seconds / 60),
+                                            ":",
+                                            (site.seconds % 60).toString().padStart(2, '0')
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
+                                        lineNumber: 317,
+                                        columnNumber: 15
+                                    }, this)
+                                ]
+                            }, site.url, true, {
+                                fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
+                                lineNumber: 314,
+                                columnNumber: 13
+                            }, this))
+                    }, void 0, false, {
+                        fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
+                        lineNumber: 312,
+                        columnNumber: 9
+                    }, this)
+                ]
+            }, void 0, true, {
+                fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
+                lineNumber: 310,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
-        lineNumber: 103,
+        lineNumber: 204,
         columnNumber: 5
     }, this);
 };
-_s(ExtensionWidget, "5uy6/B5crAz4IMGNbk+UnFf78Mg=");
+_s(ExtensionWidget, "3DbN01NoZ2ytdm9vTEZ105Ba7gg=");
 _c4 = ExtensionWidget;
 const __TURBOPACK__default__export__ = ExtensionWidget;
 var _c, _c1, _c2, _c3, _c4;
@@ -5568,63 +5917,86 @@ function CharacterStyles() {
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: "grid grid-cols-3 gap-2",
-                        children: [
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                                onClick: ()=>emitEmotion("idle", 100, "button"),
-                                className: "pixel-button beige text-pixel-sm whitespace-nowrap",
-                                children: "Idle"
-                            }, void 0, false, {
-                                fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                                lineNumber: 140,
-                                columnNumber: 11
-                            }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                                onClick: ()=>emitEmotion("walk", 100, "button"),
-                                className: "pixel-button text-pixel-sm whitespace-nowrap",
-                                children: "Walk"
-                            }, void 0, false, {
-                                fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                                lineNumber: 146,
-                                columnNumber: 11
-                            }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                                onClick: ()=>emitEmotion("happy", 100, "button"),
-                                className: "pixel-button green text-pixel-sm whitespace-nowrap",
-                                children: "Happy"
-                            }, void 0, false, {
-                                fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                                lineNumber: 152,
-                                columnNumber: 11
-                            }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                                onClick: ()=>emitEmotion("angry", 100, "button"),
-                                className: "pixel-button contrast text-pixel-sm whitespace-nowrap",
-                                children: "Angry"
-                            }, void 0, false, {
-                                fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                                lineNumber: 158,
-                                columnNumber: 11
-                            }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                                onClick: ()=>emitEmotion("sad", 100, "button"),
-                                className: "pixel-button pink text-pixel-sm whitespace-nowrap",
-                                children: "Sad"
-                            }, void 0, false, {
-                                fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                                lineNumber: 164,
-                                columnNumber: 11
-                            }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                                onClick: ()=>emitEmotion("shocked", 100, "button"),
-                                className: "pixel-button contrast text-pixel-sm whitespace-nowrap",
-                                children: "Shocked"
-                            }, void 0, false, {
-                                fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                                lineNumber: 170,
-                                columnNumber: 11
-                            }, this)
-                        ]
-                    }, void 0, true, {
+                        children: currentStage === 'egg' ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
+                            children: [
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                    onClick: ()=>emitEmotion("shake", 100, "button"),
+                                    className: "pixel-button beige text-pixel-sm whitespace-nowrap",
+                                    children: "Shake"
+                                }, void 0, false, {
+                                    fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
+                                    lineNumber: 142,
+                                    columnNumber: 15
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                    onClick: ()=>emitEmotion("hatch", 100, "button"),
+                                    className: "pixel-button green text-pixel-sm whitespace-nowrap",
+                                    children: "Hatch"
+                                }, void 0, false, {
+                                    fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
+                                    lineNumber: 148,
+                                    columnNumber: 15
+                                }, this)
+                            ]
+                        }, void 0, true) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
+                            children: [
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                    onClick: ()=>emitEmotion("idle", 100, "button"),
+                                    className: "pixel-button beige text-pixel-sm whitespace-nowrap",
+                                    children: "Idle"
+                                }, void 0, false, {
+                                    fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
+                                    lineNumber: 157,
+                                    columnNumber: 15
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                    onClick: ()=>emitEmotion("walk", 100, "button"),
+                                    className: "pixel-button text-pixel-sm whitespace-nowrap",
+                                    children: "Walk"
+                                }, void 0, false, {
+                                    fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
+                                    lineNumber: 163,
+                                    columnNumber: 15
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                    onClick: ()=>emitEmotion("happy", 100, "button"),
+                                    className: "pixel-button green text-pixel-sm whitespace-nowrap",
+                                    children: "Happy"
+                                }, void 0, false, {
+                                    fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
+                                    lineNumber: 169,
+                                    columnNumber: 15
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                    onClick: ()=>emitEmotion("angry", 100, "button"),
+                                    className: "pixel-button contrast text-pixel-sm whitespace-nowrap",
+                                    children: "Angry"
+                                }, void 0, false, {
+                                    fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
+                                    lineNumber: 175,
+                                    columnNumber: 15
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                    onClick: ()=>emitEmotion("sad", 100, "button"),
+                                    className: "pixel-button pink text-pixel-sm whitespace-nowrap",
+                                    children: "Sad"
+                                }, void 0, false, {
+                                    fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
+                                    lineNumber: 181,
+                                    columnNumber: 15
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                    onClick: ()=>emitEmotion("shocked", 100, "button"),
+                                    className: "pixel-button contrast text-pixel-sm whitespace-nowrap",
+                                    children: "Shocked"
+                                }, void 0, false, {
+                                    fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
+                                    lineNumber: 187,
+                                    columnNumber: 15
+                                }, this)
+                            ]
+                        }, void 0, true)
+                    }, void 0, false, {
                         fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
                         lineNumber: 139,
                         columnNumber: 9
@@ -5643,7 +6015,7 @@ function CharacterStyles() {
                         children: "LilGuy Color"
                     }, void 0, false, {
                         fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                        lineNumber: 181,
+                        lineNumber: 200,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5654,7 +6026,7 @@ function CharacterStyles() {
                                 children: "LilGuy Color:"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                                lineNumber: 183,
+                                lineNumber: 202,
                                 columnNumber: 11
                             }, this),
                             [
@@ -5683,19 +6055,19 @@ function CharacterStyles() {
                                     children: color.charAt(0).toUpperCase() + color.slice(1)
                                 }, color, false, {
                                     fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                                    lineNumber: 185,
+                                    lineNumber: 204,
                                     columnNumber: 13
                                 }, this))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                        lineNumber: 182,
+                        lineNumber: 201,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                lineNumber: 180,
+                lineNumber: 199,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5706,7 +6078,7 @@ function CharacterStyles() {
                         children: "Evolution Stage"
                     }, void 0, false, {
                         fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                        lineNumber: 229,
+                        lineNumber: 248,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5718,7 +6090,7 @@ function CharacterStyles() {
                                 children: "Egg"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                                lineNumber: 231,
+                                lineNumber: 250,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -5727,7 +6099,7 @@ function CharacterStyles() {
                                 children: "Normal"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                                lineNumber: 237,
+                                lineNumber: 256,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -5736,7 +6108,7 @@ function CharacterStyles() {
                                 children: "Angel"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                                lineNumber: 243,
+                                lineNumber: 262,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -5745,19 +6117,19 @@ function CharacterStyles() {
                                 children: "Devil"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                                lineNumber: 249,
+                                lineNumber: 268,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                        lineNumber: 230,
+                        lineNumber: 249,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                lineNumber: 228,
+                lineNumber: 247,
                 columnNumber: 7
             }, this)
         ]
@@ -5959,7 +6331,9 @@ function Home() {
                                                 }, this),
                                                 activeTab === 'widget' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                     className: "flex justify-center py-6",
-                                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ExtensionWidget$2f$ExtensionWidget$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
+                                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ExtensionWidget$2f$ExtensionWidget$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
+                                                        activeTab: activeTab
+                                                    }, void 0, false, {
                                                         fileName: "[project]/src/app/page.tsx",
                                                         lineNumber: 110,
                                                         columnNumber: 23

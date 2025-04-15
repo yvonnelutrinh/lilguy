@@ -107,7 +107,7 @@ export default function Home() {
                   {activeTab === 'goals' && <Goals />}
                   {activeTab === 'widget' && (
                     <div className="flex justify-center py-6">
-                      <ExtensionWidget />
+                      <ExtensionWidget activeTab={activeTab} />
                     </div>
                   )}
                 </div>

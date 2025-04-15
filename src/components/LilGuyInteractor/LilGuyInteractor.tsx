@@ -10,6 +10,29 @@ type LilGuyStage = 'egg' | 'normal' | 'angel' | 'devil';
 export default function LilGuyInteractor() {
   const emitEmotion = useEmitEmotion();
 
+  // --- Helper: Get and set health from localStorage ---
+  const getHealth = () => {
+    if (typeof window !== 'undefined') {
+      const h = localStorage.getItem('health');
+      return h ? parseInt(h, 10) : 100;
+    }
+    return 100;
+  };
+  const setHealth = (value: number) => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('health', value.toString());
+    }
+  };
+
+  // --- Helper: Emit emotion and update health ---
+  const emitEmotionWithHealth = (type: string, intensity: number, source: string, delta: number) => {
+    const prevHealth = getHealth();
+    let newHealth = prevHealth + delta;
+    newHealth = Math.max(0, Math.min(100, newHealth));
+    setHealth(newHealth);
+    emitEmotion(type as any, intensity, source, newHealth);
+  };
+
   const [text, setText] = useState("");
   const [message, setMessage] = useState<string>("");
   const textRef = useRef("");
@@ -137,9 +160,9 @@ export default function LilGuyInteractor() {
           <button
             onClick={() => {
               if (buttonText === "Walk") {
-                emitEmotion("walk", 100, "button")
+                emitEmotionWithHealth("walk", 100, "button", -5)
               } else {
-                emitEmotion("idle", 100, "button")
+                emitEmotionWithHealth("idle", 100, "button", 5)
               }
               setButtonText((prev) => (prev === "Walk" ? "Chill" : "Walk"));
             }}
@@ -149,7 +172,7 @@ export default function LilGuyInteractor() {
           </button>
 
           <button
-            onClick={() => emitEmotion("happy", 100, "button")}
+            onClick={() => emitEmotionWithHealth("happy", 100, "button", 5)}
             className="flex-1 px-3 py-2 pixel-button green text-pixel-sm whitespace-nowrap"
           >
             Pet

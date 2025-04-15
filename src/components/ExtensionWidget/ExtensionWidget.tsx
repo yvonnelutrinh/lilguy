@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/Button/Button';
 import { classNameMerge } from '@/lib/utils';
 import { Bell, Clock, X, Settings } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
-import { WidgetHealth } from '../HealthBar/HealthBar';
+import { HealthBar } from '../HealthBar/HealthBar';
 import { WidgetLilGuy } from '../LilGuy/LilGuy';
 import PixelWindow from '../ui/PixelWindow';
 
@@ -65,9 +65,10 @@ const BellIcon = () => (
 interface WidgetProps {
   onClose?: () => void;
   onExpand?: () => void;
+  activeTab: string;
 }
 
-const ExtensionWidget: React.FC<WidgetProps> = ({ onClose, onExpand }) => {
+const ExtensionWidget: React.FC<WidgetProps> = ({ onClose, onExpand, activeTab }) => {
   // TODO: update mood based on health/productivity?
   const [mood, setMood] = useState<
     "happy" | "sad" | "neutral" | "ecstatic"
@@ -98,6 +99,106 @@ const ExtensionWidget: React.FC<WidgetProps> = ({ onClose, onExpand }) => {
     }
   }, []);
 
+  const [localhostSeconds, setLocalhostSeconds] = useState(0);
+  useEffect(() => {
+    // Only track if on localhost
+    const isLocalhost = window.location.hostname === 'localhost';
+    if (!isLocalhost) return;
+
+    // Track seconds spent on site in localStorage
+    let timer: NodeJS.Timeout;
+    let seconds = parseInt(localStorage.getItem('productive_seconds') || '0', 10);
+    setLocalhostSeconds(seconds);
+
+    function saveSeconds(val: number) {
+      localStorage.setItem('productive_seconds', val.toString());
+      setLocalhostSeconds(val);
+    }
+
+    function incrementHealth() {
+      const health = parseInt(localStorage.getItem('health') || '100', 10);
+      const newHealth = Math.min(100, health + 1); // +1 for every 30s
+      localStorage.setItem('health', newHealth.toString());
+      window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'health', value: newHealth } }));
+      console.log('[WebsiteTracker] +1 health for 30s on localhost. New health:', newHealth);
+    }
+
+    timer = setInterval(() => {
+      seconds += 1;
+      saveSeconds(seconds);
+      if (seconds % 30 === 0) { // 30 seconds for demo
+        incrementHealth();
+      }
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  // --- Widget LilGuy State ---
+  const getWidgetState = () => ({
+    health: parseInt(localStorage.getItem('health') || '100', 10),
+    stage: localStorage.getItem('lilGuyStage') || 'normal',
+    animation: localStorage.getItem('lilGuyAnimation') || 'idle',
+  });
+  const [widgetHealth, setWidgetHealth] = useState(() => getWidgetState().health);
+  const [widgetStage, setWidgetStage] = useState(() => getWidgetState().stage);
+  const [widgetAnimation, setWidgetAnimation] = useState(() => getWidgetState().animation);
+
+  // On mount (widget open), always pull latest state
+  useEffect(() => {
+    const { health, stage, animation } = getWidgetState();
+    setWidgetHealth(health);
+    setWidgetStage(stage);
+    setWidgetAnimation(animation);
+  }, [activeTab]);
+
+  // Listen for health/stage/animation changes from anywhere
+  useEffect(() => {
+    function updateFromStorage() {
+      const { health, stage, animation } = getWidgetState();
+      setWidgetHealth(health);
+      setWidgetStage(stage);
+      setWidgetAnimation(animation);
+    }
+    window.addEventListener('storage', updateFromStorage);
+    window.addEventListener('localStorageChanged', updateFromStorage as any);
+    return () => {
+      window.removeEventListener('storage', updateFromStorage);
+      window.removeEventListener('localStorageChanged', updateFromStorage as any);
+    };
+  }, []);
+
+  // --- Pet/Walk Button Handlers ---
+  const handlePet = () => {
+    const health = parseInt(localStorage.getItem('health') || '100', 10);
+    const newHealth = Math.min(100, health + 1);
+    localStorage.setItem('health', newHealth.toString());
+    setWidgetHealth(newHealth);
+    setWidgetAnimation('happy');
+    window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'health', value: newHealth } }));
+    console.log('[Widget] Pet action: +1 health. New health:', newHealth);
+  };
+  const handleWalk = () => {
+    const health = parseInt(localStorage.getItem('health') || '100', 10);
+    const newHealth = Math.max(0, health - 1);
+    localStorage.setItem('health', newHealth.toString());
+    setWidgetHealth(newHealth);
+    setWidgetAnimation('walk');
+    window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'health', value: newHealth } }));
+    console.log('[Widget] Walk action: -1 health. New health:', newHealth);
+  };
+
+  const websiteTrackers = [
+    {
+      url: 'localhost',
+      label: 'Localhost',
+      type: 'productive',
+      seconds: localhostSeconds,
+    },
+    // Example static items:
+    { url: 'github.com', label: 'GitHub', type: 'productive', seconds: 0 },
+    { url: 'netflix.com', label: 'Netflix', type: 'unproductive', seconds: 0 },
+  ];
 
   return (
     <PixelWindow
@@ -109,11 +210,11 @@ const ExtensionWidget: React.FC<WidgetProps> = ({ onClose, onExpand }) => {
       {/* Buttons */}
       <div className="bg-white p-2 flex items-center gap-2">
         <div className="flex-1 flex gap-2">
-          <button className="pixel-button green flex-1 text-xs py-1 whitespace-nowrap">
+          <button className="pixel-button green flex-1 text-xs py-1 whitespace-nowrap" onClick={handlePet}>
             Pet
           </button>
-          <button className="pixel-button contrast flex-1 text-xs py-1 whitespace-nowrap">
-            Focus
+          <button className="pixel-button contrast flex-1 text-xs py-1 whitespace-nowrap" onClick={handleWalk}>
+            Walk
           </button>
         </div>
         <button
@@ -136,7 +237,11 @@ const ExtensionWidget: React.FC<WidgetProps> = ({ onClose, onExpand }) => {
                 : "bg-pixel-warning"
           )}
         >
-          <WidgetLilGuy />
+          <WidgetLilGuy 
+            health={widgetHealth} 
+            stage={widgetStage as any} 
+            animation={widgetAnimation as any} 
+          />
         </div>
         <div className="flex-1">
           <div className="text-xs font-bold">
@@ -151,7 +256,9 @@ const ExtensionWidget: React.FC<WidgetProps> = ({ onClose, onExpand }) => {
                   ? "You're on fire!"
                   : "Ready when you are!"}
           </div>
-          <WidgetHealth />
+          <div className="mt-2">
+            <HealthBar health={widgetHealth} showLabel={false} />
+          </div>
         </div>
       </div>
 
@@ -196,6 +303,20 @@ const ExtensionWidget: React.FC<WidgetProps> = ({ onClose, onExpand }) => {
             <div className="text-[10px] text-gray-500">Upcoming Break</div>
             <div className="text-xs font-medium">In 25 minutes</div>
           </div>
+        </div>
+      </div>
+
+      {/* Website Tracker UI */}
+      <div className="bg-white p-3 border-t border-dashed border-gray-300">
+        <div className="text-xs font-bold mb-2">Website Tracker</div>
+        <div className="flex flex-col gap-2">
+          {websiteTrackers.map((site) => (
+            <div key={site.url} className={`flex items-center gap-2 text-xs ${site.type === 'productive' ? 'text-green-700' : site.type === 'unproductive' ? 'text-red-700' : 'text-gray-700'}`}>
+              <span className="font-mono w-24 truncate">{site.url}</span>
+              <span className="flex-1">{site.label}</span>
+              <span>{Math.floor(site.seconds / 60)}:{(site.seconds % 60).toString().padStart(2, '0')}</span>
+            </div>
+          ))}
         </div>
       </div>
     </PixelWindow>

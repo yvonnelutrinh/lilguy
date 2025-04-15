@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Button } from "@/components/ui/Button/Button";
 import { Input } from "@/components/ui/Input/Input";
 import { Slider } from "@/components/ui/Slider/Slider";
@@ -18,6 +18,20 @@ const getLocalStorageItem = (key: string, defaultValue: any) => {
 const setLocalStorageItem = (key: string, value: any) => {
   if (typeof window !== 'undefined') {
     localStorage.setItem(key, typeof value === 'object' ? JSON.stringify(value) : value);
+  }
+};
+
+// Helper: Get and set health from localStorage
+const getHealth = () => {
+  if (typeof window !== 'undefined') {
+    const h = localStorage.getItem('health');
+    return h ? parseInt(h, 10) : 100;
+  }
+  return 100;
+};
+const setHealth = (value: number) => {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('health', value.toString());
   }
 };
 
@@ -108,6 +122,15 @@ const SaveIcon = () => (
 const Goals: React.FC= () => {
   const emitEmotion = useEmitEmotion();
 
+  // Helper: Emit emotion and update health
+  const emitEmotionWithHealth = (type: string, intensity: number, source: string, delta: number) => {
+    const prevHealth = getHealth();
+    let newHealth = prevHealth + delta;
+    newHealth = Math.max(0, Math.min(100, newHealth));
+    setHealth(newHealth);
+    emitEmotion(type as any, intensity, source, newHealth);
+  };
+
   const [goals, setGoals] = useState<Goal[]>(() => {
     const savedGoals = getLocalStorageItem("goals", initialGoals);
     return savedGoals;
@@ -119,6 +142,8 @@ const Goals: React.FC= () => {
   const updateLocalStorage = (updatedGoals: Goal[]) => {
     setLocalStorageItem("goals", updatedGoals);
   };
+
+  const lastProgressRef = useRef<{ [id: number]: number }>({});
 
   const handleAddGoal = () => {
     if (newGoalTitle.trim() === "") return;
@@ -134,50 +159,56 @@ const Goals: React.FC= () => {
     setGoals(updatedGoals);
     updateLocalStorage(updatedGoals);
     setNewGoalTitle("");
-    
-    // Emit a happy emotion when adding a new goal
-    emitEmotion("happy", 50, "newGoal");
+    // Emit a happy emotion and increase health when adding a new goal
+    emitEmotionWithHealth("happy", 50, "newGoal", 5);
   };
 
   const handleRemoveGoal = (id: number) => {
     const updatedGoals = goals.filter((goal) => goal.id !== id);
     setGoals(updatedGoals);
     updateLocalStorage(updatedGoals);
-    
-    // Emit a sad emotion when removing a goal
-    emitEmotion("sad", 30, "removeGoal");
+    // Emit a sad emotion and decrease health when removing a goal
+    emitEmotionWithHealth("sad", 30, "removeGoal", -10);
   };
 
   const handleToggleComplete = (id: number) => {
     const updatedGoals = goals.map((goal) =>
       goal.id === id ? { ...goal, completed: !goal.completed } : goal
     );
-    
     // Find the toggled goal
     const toggledGoal = updatedGoals.find(g => g.id === id);
-    
-    // Emit appropriate emotion based on completion state
+    // Emit appropriate emotion and health change based on completion state
     if (toggledGoal?.completed) {
-      emitEmotion("happy", 80, "completeGoal");
+      emitEmotionWithHealth("happy", 80, "completeGoal", 10);
+    } else {
+      emitEmotionWithHealth("sad", 30, "uncompleteGoal", -5);
     }
-    
     setGoals(updatedGoals);
     updateLocalStorage(updatedGoals);
   };
 
   const handleProgressChange = (id: number, progress: number) => {
+    // Get previous progress or default to 0
+    const prev = lastProgressRef.current[id] ?? goals.find(g => g.id === id)?.progress ?? 0;
     const updatedGoals = goals.map((goal) =>
       goal.id === id ? { ...goal, progress } : goal
     );
     setGoals(updatedGoals);
     updateLocalStorage(updatedGoals);
-    
-    // Determine emotion based on progress
-    if (progress === 100) {
-      emitEmotion("happy", 100, "completedProgress");
-    } else if (progress >= 50) {
-      emitEmotion("happy", 50, "goodProgress");
+    // Calculate delta
+    const delta = progress - prev;
+    let healthDelta = 0;
+    if (delta > 0) {
+      // Always increase health when progress increases
+      healthDelta = delta >= 50 ? 10 : delta >= 10 ? 3 : 1;
+      emitEmotionWithHealth("happy", delta >= 50 ? 100 : 50, "progressUp", healthDelta);
+    } else if (delta < 0) {
+      // Decrease health when progress decreases
+      healthDelta = delta <= -50 ? -10 : delta <= -10 ? -3 : -1;
+      emitEmotionWithHealth("sad", delta <= -50 ? 100 : 50, "progressDown", healthDelta);
     }
+    // Save latest progress
+    lastProgressRef.current[id] = progress;
   };
 
   const startEditing = (goal: Goal) => {
@@ -191,7 +222,6 @@ const Goals: React.FC= () => {
     const updatedGoals = goals.map((goal) =>
       goal.id === editingId ? { ...goal, title: editTitle.trim() } : goal
     );
-    
     setGoals(updatedGoals);
     updateLocalStorage(updatedGoals);
     setEditingId(null);

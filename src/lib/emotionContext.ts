@@ -4,13 +4,20 @@ import eventBus, { EmotionEvent, EventCallback } from './emotionEventBus';
 import { LilGuyAnimation } from '@/components/LilGuy/LilGuy';
 
 export function useEmitEmotion() {
-  return (type: LilGuyAnimation, intensity: number, source: string) => {
+  // Accepts optional health parameter for emotion events
+  return (type: LilGuyAnimation, intensity: number, source: string, health?: number) => {
     eventBus.publish<EmotionEvent>('emotion', {
       type,
       intensity,
       source,
-      timestamp: Date.now()
+      timestamp: Date.now(),
+      ...(health !== undefined ? { health } : {})
     });
+    // Persist animation to localStorage for widget sync
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('lilGuyAnimation', type);
+      window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'lilGuyAnimation', value: type } }));
+    }
   };
 }
 
