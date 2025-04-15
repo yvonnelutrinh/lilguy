@@ -3,6 +3,7 @@ import { useListenToEmotions } from "@/lib/emotionContext";
 import { useEffect, useRef, useState } from "react";
 import LilGuyInteractor from "../LilGuyInteractor/LilGuyInteractor";
 import { HealthBar } from "../HealthBar/HealthBar";
+import { User } from "@clerk/nextjs/server";
 
 
 export type LilGuyAnimation = "idle" | "walk" | "happy" | "angry" | "sad" | "shocked";
@@ -24,13 +25,13 @@ function LilGuyCanvas({
   initialAnimation = "idle",
 }: LilGuyProps) {
   const [health, setHealth] = useState<number>(() => {
-    const storedHealth = localStorage.getItem("modifiedHealth");
+    const storedHealth = window?.localStorage?.getItem("modifiedHealth");
     return storedHealth ? JSON.parse(storedHealth) : 55;
   });
 
   useEffect(() => {
-    const storedModifiedHealth = localStorage.getItem("modifiedHealth");
-    const storedWeeklyAverage = localStorage.getItem("weeklyAverage");
+    const storedModifiedHealth = window?.localStorage?.getItem("modifiedHealth");
+    const storedWeeklyAverage = window?.localStorage?.getItem("weeklyAverage");
 
     if (storedModifiedHealth) {
       setHealth(parseFloat(storedModifiedHealth));
@@ -41,7 +42,7 @@ function LilGuyCanvas({
 
   useEffect(() => {
     const recalculateHealth = () => {
-      localStorage.setItem("modifiedHealth", health.toString());
+      window?.localStorage?.setItem("modifiedHealth", health.toString());
     };
 
     recalculateHealth();
@@ -119,7 +120,7 @@ function LilGuyCanvas({
   });
 
   useEffect(() => {
-    const storedName = localStorage.getItem("lilGuyName");
+    const storedName = window?.localStorage?.getItem("lilGuyName");
     if (storedName) {
       setName(storedName);
     }
@@ -129,7 +130,7 @@ function LilGuyCanvas({
   };
   const handleNameBlur = () => {
     setIsEditing(false);
-    localStorage.setItem("lilGuyName", name);
+    window?.localStorage?.setItem("lilGuyName", name);
   };
   const handleNameKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -339,8 +340,15 @@ function LilGuyCanvas({
   );
 }
 
+interface LGProps {
+  user?: User;
+}
+
 // LilGuy for web app
-function LilGuy() {
+function LilGuy({user}:LGProps) {
+
+  console.log(user)
+
   return (
     <LilGuyCanvas
       showControls={true}
