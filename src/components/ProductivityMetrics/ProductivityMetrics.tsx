@@ -1,4 +1,3 @@
-
 import { useEffect } from 'react';
 import {
     LineChart,
@@ -11,6 +10,13 @@ import {
     Legend
 } from 'recharts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/Card/Card";
+
+// Helper function to safely set localStorage item
+const setLocalStorageItem = (key: string, value: any) => {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem(key, typeof value === 'object' || typeof value === 'number' ? JSON.stringify(value) : value);
+  }
+};
 
 // placeholder data for tracking metrics
 const weekData = [
@@ -27,6 +33,58 @@ interface ProductivityMetricsProps {
     className?: string;
 }
 
+// Pixel Icon components for metrics
+const ClockIcon = () => (
+  <div className="w-6 h-6 flex items-center justify-center">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="pixelated">
+      <rect x="8" y="2" width="8" height="2" fill="currentColor" />
+      <rect x="6" y="4" width="2" height="2" fill="currentColor" />
+      <rect x="16" y="4" width="2" height="2" fill="currentColor" />
+      <rect x="4" y="6" width="2" height="2" fill="currentColor" />
+      <rect x="18" y="6" width="2" height="2" fill="currentColor" />
+      <rect x="4" y="16" width="2" height="2" fill="currentColor" />
+      <rect x="18" y="16" width="2" height="2" fill="currentColor" />
+      <rect x="6" y="18" width="2" height="2" fill="currentColor" />
+      <rect x="16" y="18" width="2" height="2" fill="currentColor" />
+      <rect x="8" y="20" width="8" height="2" fill="currentColor" />
+      <rect x="2" y="8" width="2" height="8" fill="currentColor" />
+      <rect x="20" y="8" width="2" height="8" fill="currentColor" />
+      <rect x="10" y="10" width="2" height="6" fill="currentColor" />
+      <rect x="12" y="8" width="2" height="2" fill="currentColor" />
+    </svg>
+  </div>
+);
+
+const ChartIcon = () => (
+  <div className="w-6 h-6 flex items-center justify-center">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="pixelated">
+      <rect x="4" y="4" width="16" height="2" fill="currentColor" />
+      <rect x="4" y="8" width="4" height="2" fill="currentColor" />
+      <rect x="4" y="12" width="8" height="2" fill="currentColor" />
+      <rect x="4" y="16" width="12" height="2" fill="currentColor" />
+      <rect x="20" y="20" width="2" height="2" fill="currentColor" />
+      <rect x="2" y="2" width="2" height="20" fill="currentColor" />
+      <rect x="2" y="20" width="18" height="2" fill="currentColor" />
+    </svg>
+  </div>
+);
+
+const TrophyIcon = () => (
+  <div className="w-6 h-6 flex items-center justify-center">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="pixelated">
+      <rect x="8" y="2" width="8" height="2" fill="currentColor" />
+      <rect x="6" y="4" width="12" height="2" fill="currentColor" />
+      <rect x="4" y="6" width="4" height="2" fill="currentColor" />
+      <rect x="16" y="6" width="4" height="2" fill="currentColor" />
+      <rect x="2" y="8" width="4" height="6" fill="currentColor" />
+      <rect x="18" y="8" width="4" height="6" fill="currentColor" />
+      <rect x="6" y="14" width="12" height="2" fill="currentColor" />
+      <rect x="8" y="16" width="8" height="2" fill="currentColor" />
+      <rect x="10" y="18" width="4" height="4" fill="currentColor" />
+    </svg>
+  </div>
+);
+
 const ProductivityMetrics: React.FC<ProductivityMetricsProps> = ({ className }) => {
     // calculate today's productive time
     const todayData = weekData[new Date().getDay() === 0 ? 6 : new Date().getDay() - 1];
@@ -36,7 +94,7 @@ const ProductivityMetrics: React.FC<ProductivityMetricsProps> = ({ className }) 
     const weeklyAverage = weekData.reduce((sum, day) => sum + day.productive, 0) / weekData.length;
 
     useEffect(() => {
-        localStorage.setItem("weeklyAverage", JSON.stringify(weeklyAverage));
+        setLocalStorageItem("weeklyAverage", weeklyAverage);
     }, [weeklyAverage]);
 
     // calculate streak (consecutive days above 60% productivity)
@@ -52,81 +110,107 @@ const ProductivityMetrics: React.FC<ProductivityMetricsProps> = ({ className }) 
     return (
         <div className={className}>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                <Card className="pixel-container">
-                    <CardHeader className="pb-2">
-                        <CardTitle className="text-sm">Today</CardTitle>
-                        <CardDescription>Productive Time</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">{todayProductiveHours.toFixed(1)}h</div>
-                        <div className="text-xs text-muted-foreground">
-                            {todayData.productive}% of your time
+                <div className="pixel-window">
+                    <div className="pixel-window-header bg-pixel-blue">
+                        <div className="flex items-center gap-2">
+                            <ClockIcon />
+                            <div className="text-pixel-sm">TODAY</div>
                         </div>
-                        <div className="w-full mt-2 progress-pixel">
+                        <div className="pixel-window-controls">
+                            <div className="pixel-window-button"></div>
+                            <div className="pixel-window-button"></div>
+                            <div className="pixel-window-button"></div>
+                        </div>
+                    </div>
+                    <div className="pixel-window-content">
+                        <div className="text-xl font-bold mb-1">{todayProductiveHours.toFixed(1)}h</div>
+                        <div className="text-pixel-sm text-gray-600 mb-3">
+                            {todayData.productive}% productive time
+                        </div>
+                        <div className="w-full pixel-progress">
                             <div
-                                className="fill"
+                                className="pixel-progress-fill"
                                 style={{
                                     width: `${todayData.productive}%`,
-                                    '--fill-color': todayData.productive > 60 ? '#10B981' : todayData.productive > 30 ? '#F59E0B' : '#EF4444'
-                                } as React.CSSProperties}
+                                    backgroundColor: todayData.productive > 60 ? 'var(--pixel-green)' : todayData.productive > 30 ? '#F59E0B' : '#EF4444'
+                                }}
                             />
                         </div>
-                    </CardContent>
-                </Card>
+                    </div>
+                </div>
 
-                <Card className="pixel-container">
-                    <CardHeader className="pb-2">
-                        <CardTitle className="text-sm">Weekly Average</CardTitle>
-                        <CardDescription>Productivity Score</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">{weeklyAverage.toFixed(1)}%</div>
-                        <div className="text-xs text-muted-foreground">
-                            {weeklyAverage > 70 ? 'Excellent!' : weeklyAverage > 50 ? 'Good' : 'Needs improvement'}
+                <div className="pixel-window">
+                    <div className="pixel-window-header bg-pixel-green">
+                        <div className="flex items-center gap-2">
+                            <ChartIcon />
+                            <div className="text-pixel-sm">WEEKLY AVERAGE</div>
                         </div>
-                        <div className="w-full mt-2 progress-pixel">
+                        <div className="pixel-window-controls">
+                            <div className="pixel-window-button"></div>
+                            <div className="pixel-window-button"></div>
+                            <div className="pixel-window-button"></div>
+                        </div>
+                    </div>
+                    <div className="pixel-window-content">
+                        <div className="text-xl font-bold mb-1">{weeklyAverage.toFixed(1)}%</div>
+                        <div className="text-pixel-sm text-gray-600 mb-3">
+                            {weeklyAverage > 70 ? 'EXCELLENT!' : weeklyAverage > 50 ? 'GOOD' : 'NEEDS WORK'}
+                        </div>
+                        <div className="w-full pixel-progress">
                             <div
-                                className="fill"
+                                className="pixel-progress-fill"
                                 style={{
                                     width: `${weeklyAverage}%`,
-                                    '--fill-color': weeklyAverage > 60 ? '#10B981' : weeklyAverage > 30 ? '#F59E0B' : '#EF4444'
-                                } as React.CSSProperties}
+                                    backgroundColor: weeklyAverage > 60 ? 'var(--pixel-green)' : weeklyAverage > 30 ? '#F59E0B' : '#EF4444'
+                                }}
                             />
                         </div>
-                    </CardContent>
-                </Card>
+                    </div>
+                </div>
 
-                <Card className="pixel-container">
-                    <CardHeader className="pb-2">
-                        <CardTitle className="text-sm">Productive Streak</CardTitle>
-                        <CardDescription>Consecutive Days</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">{streak} days</div>
-                        <div className="text-xs text-muted-foreground">
-                            {streak > 5 ? 'Amazing streak!' : streak > 2 ? 'Keep it up!' : 'Start a streak!'}
+                <div className="pixel-window">
+                    <div className="pixel-window-header bg-pixel-teal">
+                        <div className="flex items-center gap-2">
+                            <TrophyIcon />
+                            <div className="text-pixel-sm">STREAK</div>
                         </div>
-                        <div className="flex mt-2 gap-1">
+                        <div className="pixel-window-controls">
+                            <div className="pixel-window-button"></div>
+                            <div className="pixel-window-button"></div>
+                            <div className="pixel-window-button"></div>
+                        </div>
+                    </div>
+                    <div className="pixel-window-content">
+                        <div className="text-xl font-bold mb-1">{streak} days</div>
+                        <div className="text-pixel-sm text-gray-600 mb-3">
+                            {streak > 5 ? 'AMAZING STREAK!' : streak > 2 ? 'KEEP IT UP!' : 'START A STREAK!'}
+                        </div>
+                        <div className="flex mt-2 gap-1 segmented-progress">
                             {Array(7).fill(0).map((_, i) => (
                                 <div
                                     key={i}
-                                    className="h-2 flex-1 border border-black"
+                                    className={`segment ${i < streak ? 'filled' : ''}`}
                                     style={{
-                                        backgroundColor: i < streak ? '#10B981' : '#e1e1e1'
+                                        backgroundColor: i < streak ? 'var(--pixel-green)' : '#e1e1e1'
                                     }}
                                 />
                             ))}
                         </div>
-                    </CardContent>
-                </Card>
+                    </div>
+                </div>
             </div>
 
             {/* Productivity Graph */}
-            <Card className="pixel-container">
-                <CardHeader>
-                    <CardTitle className="text-base">Weekly Productivity</CardTitle>
-                </CardHeader>
-                <CardContent>
+            <div className="pixel-window">
+                <div className="pixel-window-header bg-pixel-beige">
+                    <div className="text-pixel-sm text-black">WEEKLY PRODUCTIVITY</div>
+                    <div className="pixel-window-controls">
+                        <div className="pixel-window-button"></div>
+                        <div className="pixel-window-button"></div>
+                        <div className="pixel-window-button"></div>
+                    </div>
+                </div>
+                <div className="pixel-window-content">
                     <div className="h-64">
                         <GraphContainer width="100%" height="100%">
                             <LineChart
@@ -144,29 +228,38 @@ const ProductivityMetrics: React.FC<ProductivityMetricsProps> = ({ className }) 
                                 <Tooltip
                                     contentStyle={{
                                         border: '.0625rem solid black',
-                                        fontSize: '1rem'
+                                        fontSize: '0.7rem',
+                                        fontFamily: "'Press Start 2P', monospace",
+                                        padding: '8px'
                                     }}
                                 />
-                                <Legend />
-                                <Line
-                                    type="monotone"
-                                    dataKey="productive"
-                                    stroke="#10B981"
-                                    strokeWidth={2}
-                                    name="Productive %"
+                                <Legend 
+                                    wrapperStyle={{
+                                        fontFamily: "'Press Start 2P', monospace",
+                                        fontSize: '0.7rem'
+                                    }}
                                 />
                                 <Line
-                                    type="monotone"
+                                    type="stepAfter"
+                                    dataKey="productive"
+                                    stroke="var(--pixel-green)"
+                                    strokeWidth={2}
+                                    name="Productive %"
+                                    dot={{ strokeWidth: 2, r: 4 }}
+                                />
+                                <Line
+                                    type="stepAfter"
                                     dataKey="unproductive"
                                     stroke="#EF4444"
                                     strokeWidth={2}
                                     name="Unproductive %"
+                                    dot={{ strokeWidth: 2, r: 4 }}
                                 />
                             </LineChart>
                         </GraphContainer>
                     </div>
-                </CardContent>
-            </Card>
+                </div>
+            </div>
         </div>
     );
 };

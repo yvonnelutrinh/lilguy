@@ -1,0 +1,343 @@
+/* Pixel Art Theme for LilGuy Dashboard */
+
+:root {
+  /* Color Palette */
+  --pixel-teal: #5ebdb2;
+  --pixel-teal-dark: #4a9d93;
+  --pixel-teal-light: #7fd4ca;
+  --pixel-green: #7cc47f;
+  --pixel-green-dark: #5eaa61;
+  --pixel-green-light: #9edd9f;
+  --pixel-beige: #e8dab2;
+  --pixel-beige-dark: #d6c89c;
+  --pixel-beige-light: #f5ecd4;
+  --pixel-blue: #68b0d8;
+  --pixel-blue-dark: #4a99c7;
+  --pixel-blue-light: #8bc5e4;
+  --pixel-pink: #f5b0bd;
+  --pixel-pink-dark: #e8899b;
+  --pixel-pink-light: #fccbd5;
+  
+  /* UI Element Colors */
+  --window-bg: white;
+  --window-header-bg: var(--pixel-teal);
+  --window-header-text: white;
+  --window-border: black;
+  --window-shadow: rgba(0, 0, 0, 0.3);
+  
+  /* Button Colors */
+  --button-primary-bg: var(--pixel-blue);
+  --button-primary-hover: var(--pixel-blue-light);
+  --button-primary-active: var(--pixel-blue-dark);
+  --button-secondary-bg: var(--pixel-beige);
+  --button-secondary-hover: var(--pixel-beige-light);
+  --button-secondary-active: var(--pixel-beige-dark);
+  --button-danger-bg: #ff6b6b;
+  --button-success-bg: var(--pixel-green);
+  
+  /* Progress Bar Colors */
+  --progress-bg: #f9f9f9;
+  --progress-fill-good: var(--pixel-green);
+  --progress-fill-medium: #f5d76e;
+  --progress-fill-bad: #ff6b6b;
+  
+  /* Text Colors */
+  --text-primary: black;
+  --text-secondary: #555555;
+  --text-light: #888888;
+}
+
+/* Pixel Window Styling */
+.pixel-window {
+  border: 2px solid black;
+  background-color: var(--window-bg);
+  position: relative;
+  image-rendering: pixelated;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+.pixel-window-header {
+  background-color: var(--window-header-bg);
+  color: var(--window-header-text);
+  padding: 0.5rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid black;
+  font-family: 'Pixelify Sans', monospace;
+  font-size: 1rem;
+  height: 2.2rem;
+}
+
+.pixel-window-controls {
+  display: flex;
+  gap: 4px;
+}
+
+.pixel-window-button {
+  width: 16px;
+  height: 16px;
+  border: 1px solid black;
+  background-color: #d9d9d9;
+}
+
+.pixel-window-button:hover {
+  background-color: #ffffff;
+}
+
+.pixel-window-content {
+  padding: 1rem;
+  background-color: white;
+}
+
+/* Pixel Buttons */
+.pixel-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 0.8rem;
+  background-color: var(--button-primary-bg);
+  color: black;
+  border: 2px solid black;
+  text-transform: uppercase;
+  font-family: 'Pixelify Sans', monospace;
+  font-size: 0.85rem;
+  cursor: pointer;
+  box-shadow: 2px 2px 0 black;
+  transition: all 0.1s;
+  white-space: nowrap;
+  flex-shrink: 0;
+  image-rendering: pixelated;
+}
+
+.pixel-button:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 black;
+}
+
+.pixel-button:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 black;
+}
+
+.pixel-button svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.pixel-button-sm {
+  padding: 0.3rem 0.6rem;
+  font-size: 0.75rem;
+}
+
+.pixel-button-primary {
+  background-color: var(--button-primary-bg);
+}
+
+.pixel-button-secondary {
+  background-color: var(--button-secondary-bg);
+}
+
+.pixel-button-success {
+  background-color: var(--button-success-bg);
+}
+
+.pixel-button-danger {
+  background-color: var(--button-danger-bg);
+}
+
+/* slider component */
+.slider-thumb {
+  position: relative;
+  z-index: 10;
+  background: white;
+  border: 2px solid black;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+.slider-track {
+  position: relative;
+  height: 8px;
+  width: 100%;
+  background-color: #e5e5e5;
+  border: 1px solid black;
+  overflow: hidden;
+}
+
+.slider-range {
+  position: absolute;
+  height: 100%;
+  background-color: var(--pixel-green);
+}
+
+/* Pixel Progress Bars */
+.pixel-progress {
+  height: 16px;
+  width: 100%;
+  background-color: var(--progress-bg);
+  border: 2px solid black;
+  position: relative;
+  overflow: hidden;
+}
+
+.pixel-progress-fill {
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background-color: var(--progress-fill-good);
+  transition: width 0.3s;
+}
+
+/* Simple bordered container - for non-pixel UI components */
+.simple-container {
+  border: 1px solid #000;
+  background-color: white;
+}
+
+.simple-container-header {
+  border-bottom: 1px solid #000;
+  padding: 1rem;
+}
+
+.simple-container-content {
+  padding: 1rem;
+}
+
+/* Pixel Input Fields */
+.pixel-input {
+  border: 2px solid black;
+  padding: 0.5rem;
+  width: 100%;
+  background-color: white;
+  font-family: 'Pixelify Sans', monospace;
+  font-size: 0.7rem;
+  box-shadow: inset 2px 2px 0 rgba(0, 0, 0, 0.1);
+}
+
+.pixel-input:focus {
+  outline: none;
+  border-color: var(--pixel-blue);
+}
+
+/* Dialog Box */
+.pixel-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  border: 2px solid black;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.2);
+  max-width: 90%;
+  width: 400px;
+  z-index: 1000;
+}
+
+.pixel-dialog-header {
+  background-color: var(--pixel-pink);
+  color: black;
+  padding: 0.5rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid black;
+  font-family: 'Pixelify Sans', monospace;
+  font-size: 0.8rem;
+}
+
+.pixel-dialog-content {
+  padding: 1rem;
+  text-align: center;
+  font-family: 'Pixelify Sans', monospace;
+  font-size: 0.7rem;
+  line-height: 1.5;
+}
+
+.pixel-dialog-buttons {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  padding: 1rem;
+}
+
+/* Pixel Icons */
+.pixel-icon {
+  width: 24px;
+  height: 24px;
+  image-rendering: pixelated;
+}
+
+/* Notification System */
+.pixel-notification {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  max-width: 300px;
+  z-index: 1000;
+}
+
+/* Forest Background */
+.forest-background {
+  background-image: url('/backgrounds/forest.png');
+  background-size: cover;
+  background-position: center;
+  image-rendering: pixelated;
+}
+
+.pond-background {
+  background-image: url('/backgrounds/pond.png');
+  background-size: cover;
+  background-position: center;
+  image-rendering: pixelated;
+}
+
+/* Tabs Styling */
+.pixel-tabs-list {
+  display: flex;
+  border-bottom: 2px solid black;
+  margin-bottom: 1rem;
+}
+
+.pixel-tab {
+  padding: 0.5rem 1rem;
+  background-color: var(--pixel-beige);
+  border: 2px solid black;
+  border-bottom: none;
+  margin-right: 0.25rem;
+  font-family: 'Pixelify Sans', monospace;
+  font-size: 0.7rem;
+  cursor: pointer;
+  position: relative;
+  bottom: -2px;
+}
+
+.pixel-tab[data-state="active"] {
+  background-color: white;
+  border-bottom-color: white;
+}
+
+/* Segmented Pixel Progress Bar */
+.segmented-progress {
+  display: flex;
+  width: 100%;
+  height: 12px;
+  gap: 2px;
+}
+
+.segment {
+  flex: 1;
+  background-color: #e1e1e1;
+  border: 1px solid black;
+}
+
+.segment.filled {
+  background-color: var(--progress-fill-good);
+}

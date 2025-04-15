@@ -1,11 +1,24 @@
-
 import React, { useState } from 'react';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/Card/Card";
 import { Button } from "@/components/ui/Button/Button";
 import { Input } from "@/components/ui/Input/Input";
 import { Slider } from "@/components/ui/Slider/Slider";
-import { CheckCircle, Circle, Edit, Save, Trash, Plus } from "lucide-react";
 import { useEmitEmotion } from '@/lib/emotionContext';
+
+// Helper function to safely access localStorage
+const getLocalStorageItem = (key: string, defaultValue: any) => {
+  if (typeof window !== 'undefined') {
+    const item = localStorage.getItem(key);
+    return item ? (typeof defaultValue === 'object' ? JSON.parse(item) : item) : defaultValue;
+  }
+  return defaultValue;
+};
+
+// Helper function to safely set localStorage item
+const setLocalStorageItem = (key: string, value: any) => {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem(key, typeof value === 'object' ? JSON.stringify(value) : value);
+  }
+};
 
 // Mock data for goals
 const initialGoals = [
@@ -21,19 +34,90 @@ export interface Goal {
   progress: number;
 }
 
+// Pixel art icon components
+const CheckIcon = () => (
+  <div className="w-5 h-5 flex items-center justify-center">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="pixelated">
+      <rect x="4" y="4" width="12" height="12" fill="white" stroke="currentColor" strokeWidth="2"/>
+      <rect x="6" y="8" width="2" height="2" fill="currentColor" />
+      <rect x="8" y="10" width="2" height="2" fill="currentColor" />
+      <rect x="10" y="8" width="2" height="2" fill="currentColor" />
+      <rect x="12" y="6" width="2" height="2" fill="currentColor" />
+    </svg>
+  </div>
+);
+
+const EmptyCheckIcon = () => (
+  <div className="w-5 h-5 flex items-center justify-center">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="pixelated">
+      <rect x="4" y="4" width="12" height="12" fill="white" stroke="currentColor" strokeWidth="2"/>
+    </svg>
+  </div>
+);
+
+const EditIcon = () => (
+  <div className="w-5 h-5 flex items-center justify-center">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="pixelated">
+      <rect x="4" y="4" width="2" height="2" fill="currentColor" />
+      <rect x="6" y="6" width="2" height="2" fill="currentColor" />
+      <rect x="8" y="8" width="2" height="2" fill="currentColor" />
+      <rect x="10" y="10" width="2" height="2" fill="currentColor" />
+      <rect x="12" y="12" width="2" height="2" fill="currentColor" />
+      <rect x="14" y="14" width="2" height="2" fill="currentColor" />
+      <rect x="6" y="4" width="10" height="2" fill="currentColor" />
+      <rect x="4" y="14" width="10" height="2" fill="currentColor" />
+    </svg>
+  </div>
+);
+
+const TrashIcon = () => (
+  <div className="w-5 h-5 flex items-center justify-center">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="pixelated">
+      <rect x="6" y="2" width="8" height="2" fill="currentColor" />
+      <rect x="4" y="4" width="12" height="2" fill="currentColor" />
+      <rect x="6" y="6" width="2" height="10" fill="currentColor" />
+      <rect x="12" y="6" width="2" height="10" fill="currentColor" />
+      <rect x="8" y="8" width="4" height="2" fill="currentColor" />
+      <rect x="8" y="12" width="4" height="2" fill="currentColor" />
+      <rect x="4" y="16" width="12" height="2" fill="currentColor" />
+    </svg>
+  </div>
+);
+
+const PlusIcon = () => (
+  <div className="w-5 h-5 flex items-center justify-center">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="pixelated">
+      <rect x="8" y="4" width="4" height="4" fill="currentColor" />
+      <rect x="8" y="12" width="4" height="4" fill="currentColor" />
+      <rect x="4" y="8" width="4" height="4" fill="currentColor" />
+      <rect x="12" y="8" width="4" height="4" fill="currentColor" />
+    </svg>
+  </div>
+);
+
+const SaveIcon = () => (
+  <div className="w-5 h-5 flex items-center justify-center">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="pixelated">
+      <rect x="4" y="4" width="12" height="12" fill="currentColor" />
+      <rect x="6" y="6" width="8" height="8" fill="white" />
+      <rect x="8" y="8" width="4" height="4" fill="currentColor" />
+    </svg>
+  </div>
+);
+
 const Goals: React.FC= () => {
   const emitEmotion = useEmitEmotion();
 
   const [goals, setGoals] = useState<Goal[]>(() => {
-    const savedGoals = localStorage.getItem("goals");
-    return savedGoals ? JSON.parse(savedGoals) : initialGoals;
+    const savedGoals = getLocalStorageItem("goals", initialGoals);
+    return savedGoals;
   });
   const [newGoalTitle, setNewGoalTitle] = useState("");
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editTitle, setEditTitle] = useState("");
 
   const updateLocalStorage = (updatedGoals: Goal[]) => {
-    localStorage.setItem("goals", JSON.stringify(updatedGoals));
+    setLocalStorageItem("goals", updatedGoals);
   };
 
   const handleAddGoal = () => {
@@ -46,36 +130,23 @@ const Goals: React.FC= () => {
       progress: 0,
     };
 
-    // setGoals([...goals, newGoal]);
     const updatedGoals = [...goals, newGoal];
     setGoals(updatedGoals);
     updateLocalStorage(updatedGoals);
     setNewGoalTitle("");
+    
+    // Emit a happy emotion when adding a new goal
+    emitEmotion("happy", 50, "newGoal");
   };
 
   const handleRemoveGoal = (id: number) => {
-    // setGoals(goals.filter(goal => goal.id !== id));
     const updatedGoals = goals.filter((goal) => goal.id !== id);
     setGoals(updatedGoals);
     updateLocalStorage(updatedGoals);
+    
+    // Emit a sad emotion when removing a goal
+    emitEmotion("sad", 30, "removeGoal");
   };
-
-  // const handleToggleComplete = (id: number) => {
-  //   // setGoals(goals.map(goal =>
-  //   //   goal.id === id ? { ...goal, completed: !goal.completed, progress: !goal.completed ? 100 : goal.progress } : goal
-  //   // ));
-  //   const updatedGoals = goals.map((goal) =>
-  //     goal.id === id
-  //       ? {
-  //           ...goal,
-  //           completed: !goal.completed,
-  //           progress: !goal.completed ? 100 : goal.progress,
-  //         }
-  //       : goal
-  //   );
-  //   setGoals(updatedGoals);
-  //   updateLocalStorage(updatedGoals);
-  // };
 
   const handleToggleComplete = (id: number) => {
     const goalToToggle = goals.find((goal) => goal.id === id);
@@ -93,7 +164,6 @@ const Goals: React.FC= () => {
     setGoals(updatedGoals);
     updateLocalStorage(updatedGoals);
 
-
     if (goalToToggle.completed) {
       emitEmotion("sad", 100, "goalUnfinished");
     } else {
@@ -102,13 +172,6 @@ const Goals: React.FC= () => {
   };
 
   const handleProgressChange = (id: number, newProgress: number) => {
-    // setGoals(goals.map(goal =>
-    //   goal.id === id ? {
-    //     ...goal,
-    //     progress: newProgress,
-    //     completed: newProgress === 100
-    //   } : goal
-    // ));
     const updatedGoals = goals.map((goal) =>
       goal.id === id
         ? { ...goal, progress: newProgress, completed: newProgress === 100 }
@@ -119,6 +182,9 @@ const Goals: React.FC= () => {
 
     if (newProgress === 100) {
       handleToggleComplete(id);
+    } else if (newProgress > 50) {
+      // Positive feedback for good progress
+      emitEmotion("happy", 20, "goodProgress");
     }
   };
 
@@ -130,23 +196,23 @@ const Goals: React.FC= () => {
   const saveEdit = () => {
     if (editTitle.trim() === "") return;
 
-    setGoals(
-      goals.map((goal) =>
-        goal.id === editingId ? { ...goal, title: editTitle.trim() } : goal
-      )
+    const updatedGoals = goals.map((goal) =>
+      goal.id === editingId ? { ...goal, title: editTitle.trim() } : goal
     );
-
+    
+    setGoals(updatedGoals);
+    updateLocalStorage(updatedGoals);
     setEditingId(null);
     setEditTitle("");
   };
 
   return (
-    <Card className="pixel-container">
-      <CardHeader>
-        <CardTitle>Productivity Goals</CardTitle>
-        <CardDescription>Set and track your productivity goals</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
+    <div className="w-full border border-black bg-white">
+      <div className="p-4 border-b border-black">
+        <h2 className="text-xl font-bold mb-1">Productivity Goals</h2>
+        <p className="text-sm text-gray-600">Set and track your daily progress</p>
+      </div>
+      <div className="p-4">
         <div className="flex gap-2 mb-6">
           <div className="flex-1">
             <Input
@@ -156,38 +222,38 @@ const Goals: React.FC= () => {
               className="w-full"
             />
           </div>
-          <Button onClick={handleAddGoal} className="px-3" variant="default">
-            <Plus className="h-4 w-4 mr-1" />
-            Add Goal
+          <Button onClick={handleAddGoal} className="pixel-button">
+            <PlusIcon />
+            <span className="ml-1 text-pixel-sm">ADD</span>
           </Button>
         </div>
 
         <div className="space-y-4">
           {goals.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground">
+            <div className="text-center py-8 text-gray-500 text-sm bg-gray-100 p-4 border border-gray-200">
               No goals yet. Add your first goal above!
             </div>
           ) : (
             goals.map((goal) => (
               <div
                 key={goal.id}
-                className="p-3 border-2 border-black"
+                className="p-3 border border-gray-200 rounded"
                 style={{
                   backgroundColor: goal.completed
-                    ? "rgba(16, 185, 129, 0.1)"
+                    ? "var(--pixel-green-light)"
                     : "white",
                 }}
               >
                 <div className="flex items-center justify-between gap-2 mb-2">
-                  <div className="flex items-center gap-2 flex-1">
+                  <div className="flex items-center gap-2 flex-1 mr-2">
                     <button
                       onClick={() => handleToggleComplete(goal.id)}
                       className="flex-shrink-0"
                     >
                       {goal.completed ? (
-                        <CheckCircle className="h-5 w-5 text-green-600" />
+                        <CheckIcon />
                       ) : (
-                        <Circle className="h-5 w-5 text-gray-400" />
+                        <EmptyCheckIcon />
                       )}
                     </button>
 
@@ -195,80 +261,81 @@ const Goals: React.FC= () => {
                       <Input
                         value={editTitle}
                         onChange={(e) => setEditTitle(e.target.value)}
-                        className="flex-1"
+                        className="w-full"
                       />
                     ) : (
                       <span
-                        className={
-                          goal.completed
-                            ? "line-through text-muted-foreground"
-                            : ""
-                        }
+                        className={`text-sm ${
+                          goal.completed ? "line-through text-gray-500" : ""
+                        }`}
                       >
                         {goal.title}
                       </span>
                     )}
                   </div>
 
-                  <div className="flex items-center gap-1">
+                  <div className="flex-shrink-0 flex items-center gap-1">
                     {editingId === goal.id ? (
                       <Button
-                        variant="ghost"
-                        size="icon"
                         onClick={saveEdit}
-                        className="h-8 w-8"
+                        size="sm"
+                        className="pixel-button pixel-button-success flex-shrink-0 whitespace-nowrap"
                       >
-                        <Save className="h-4 w-4" />
+                        <SaveIcon />
                       </Button>
                     ) : (
                       <Button
-                        variant="ghost"
-                        size="icon"
                         onClick={() => startEditing(goal)}
-                        className="h-8 w-8"
+                        size="sm"
+                        className="pixel-button pixel-button-secondary flex-shrink-0 whitespace-nowrap"
                       >
-                        <Edit className="h-4 w-4" />
+                        <EditIcon />
                       </Button>
                     )}
                     <Button
-                      variant="destructive"
-                      size="icon"
-                      className="h-8 w-8"
                       onClick={() => handleRemoveGoal(goal.id)}
+                      size="sm"
+                      className="pixel-button pixel-button-danger flex-shrink-0 whitespace-nowrap"
                     >
-                      <Trash className="h-4 w-4" />
+                      <TrashIcon />
                     </Button>
                   </div>
                 </div>
 
-                <div className="pl-7">
-                  <div className="flex items-center gap-4">
-                    <div className="w-full flex-1">
-                      <Slider
-                        value={[goal.progress]}
-                        min={0}
-                        max={100}
-                        step={5}
-                        disabled={goal.completed}
-                        onValueChange={(values) =>
-                          handleProgressChange(goal.id, values[0])
-                        }
-                      />
-                    </div>
-                    <div className="w-12 text-right font-medium">
-                      {goal.progress}%
-                    </div>
+                <div className="mt-3">
+                  <div className="flex justify-between text-xs mb-1">
+                    <span className="text-sm">Progress: {goal.progress}%</span>
                   </div>
+                  <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
+                    <div
+                      className="h-full rounded-full"
+                      style={{
+                        width: `${goal.progress}%`,
+                        backgroundColor: 
+                          goal.progress > 75 ? 'var(--pixel-green)' : 
+                          goal.progress > 25 ? 'var(--pixel-blue)' : 
+                          'var(--pixel-pink)'
+                      }}
+                    />
+                  </div>
+                  <Slider
+                    value={[goal.progress]}
+                    min={0}
+                    max={100}
+                    step={5}
+                    className="mt-2"
+                    onValueChange={(values) =>
+                      handleProgressChange(goal.id, values[0])
+                    }
+                    disabled={goal.completed}
+                  />
                 </div>
               </div>
             ))
           )}
         </div>
-      </CardContent>
-      <CardFooter className="text-sm text-muted-foreground">
-        Completing goals helps your LilGuy grow and gain new items!
-      </CardFooter>
-    </Card>
+      </div>
+    </div>
   );
 };
 

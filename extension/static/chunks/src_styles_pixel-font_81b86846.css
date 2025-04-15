@@ -1,0 +1,10 @@
+@import "https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap";
+/* [project]/src/styles/pixel-font.css [app-client] (css) */
+.pixel-font, .pixel-title, .pixel-dropdown-title-bar, .pixel-notification-text, .pixel-empty, .pixel-dropdown-footer {
+  font-size: 12px;
+  letter-spacing: .5px;
+  font-family: "Press Start 2P", monospace !important;
+}
+
+
+/*# sourceMappingURL=src_styles_pixel-font_81b86846.css.map*/
