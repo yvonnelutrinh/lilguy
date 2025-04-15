@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Button } from "@/components/UI/Button/Button";
 import { Input } from "@/components/UI/Input/Input";
-import { Label } from "@/components/ui/Label/Label";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/Select/Select";
+import { Label } from "@/components/UI/Label/Label";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/UI/Select/Select";
 import { Trash } from "lucide-react";
 import { SimpleContainer, SimpleItem } from '@/components/UI/SimpleContainer/SimpleContainer';
 import { useHealth } from "@/context/HealthContext";

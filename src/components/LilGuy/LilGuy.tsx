@@ -382,6 +382,7 @@ function LilGuy(props: LilGuyProps) {
   const [simulateProductive, setSimulateProductive] = useState(false);
   const [message, setMessage] = useState<string>("");
   const [lilGuyName, setLilGuyName] = useState<string>("");
+  const [isChilling, setIsChilling] = useState(false);
   useEffect(() => {
     const storedName = getLocalStorageItem("lilGuyName", "LilGuy");
     setLilGuyName(storedName);
@@ -575,15 +576,24 @@ function LilGuy(props: LilGuyProps) {
         <button
           className="pixel-button bg-blue-200 border-black border-2 px-8 py-2 text-lg font-pixel"
           onClick={() => {
-            setAnimation('walk');
-            setLocalStorageItem('lilGuyAnimation', 'walk');
-            // Only set message if not in simulation
-            if (!simulateProductive) {
-              setMessage(`${lilGuyName || 'LilGuy'} is going for a walk!`);
+            if (!isChilling) {
+              setIsChilling(true);
+              setAnimation('walk');
+              setLocalStorageItem('lilGuyAnimation', 'walk');
+              if (!simulateProductive) {
+                setMessage(`${lilGuyName || 'LilGuy'} is going for a walk!`);
+              }
+            } else {
+              setIsChilling(false);
+              setAnimation('idle');
+              setLocalStorageItem('lilGuyAnimation', 'idle');
+              if (!simulateProductive) {
+                setMessage(`${lilGuyName || 'LilGuy'} is chilling!`);
+              }
             }
           }}
         >
-          Walk
+          {isChilling ? 'Chill' : 'Walk'}
         </button>
         <button
           className="pixel-button green border-black border-2 px-8 py-2 text-lg font-pixel"

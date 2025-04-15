@@ -14,6 +14,7 @@ export default function TestWindow() {
   const [showNameInput, setShowNameInput] = useState(false);
   const [newName, setNewName] = useState("");
   const [message, setMessage] = useState("");
+  const [isChilling, setIsChilling] = useState(false);
 
   // helper: safely set localStorage item
   const setLocalStorageItem = (key: string, value: any) => {
@@ -240,10 +241,18 @@ export default function TestWindow() {
                 Idle
               </button>
               <button
-                onClick={() => emitEmotion("walk", 100, "button")}
+                onClick={() => {
+                  if (!isChilling) {
+                    setIsChilling(true);
+                    emitEmotion('walk', 100, 'button');
+                  } else {
+                    setIsChilling(false);
+                    emitEmotion('idle', 100, 'button');
+                  }
+                }}
                 className="pixel-button text-pixel-sm whitespace-nowrap"
               >
-                Walk
+                {isChilling ? 'Chill' : 'Walk'}
               </button>
               <button
                 onClick={() => emitEmotion("happy", 100, "button")}

@@ -168,7 +168,8 @@ const ExtensionWidget: React.FC<WidgetProps> = ({ onClose, onExpand, activeTab }
     };
   }, []);
 
-  // --- Pet/Walk Button Handlers ---
+  // --- Pet/Walk/Chill Button Handlers ---
+  const [isChilling, setIsChilling] = useState(false);
   const handlePet = () => {
     const health = parseInt(localStorage.getItem('health') || '100', 10);
     const newHealth = Math.min(100, health + 1);
@@ -178,14 +179,14 @@ const ExtensionWidget: React.FC<WidgetProps> = ({ onClose, onExpand, activeTab }
     window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'health', value: newHealth } }));
     console.log('[Widget] Pet action: +1 health. New health:', newHealth);
   };
-  const handleWalk = () => {
-    const health = parseInt(localStorage.getItem('health') || '100', 10);
-    const newHealth = Math.max(0, health - 1);
-    localStorage.setItem('health', newHealth.toString());
-    setWidgetHealth(newHealth);
-    setWidgetAnimation('walk');
-    window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'health', value: newHealth } }));
-    console.log('[Widget] Walk action: -1 health. New health:', newHealth);
+  const handleWalkOrChill = () => {
+    if (!isChilling) {
+      setIsChilling(true);
+      setWidgetAnimation('walk');
+    } else {
+      setIsChilling(false);
+      setWidgetAnimation('idle');
+    }
   };
 
   const websiteTrackers = [
@@ -210,15 +211,15 @@ const ExtensionWidget: React.FC<WidgetProps> = ({ onClose, onExpand, activeTab }
       {/* Buttons */}
       <div className="bg-white p-2 flex items-center gap-2">
         <div className="flex-1 flex gap-2">
+          <button className="pixel-button blue flex-1 text-xs py-1 whitespace-nowrap" onClick={handleWalkOrChill}>
+            {isChilling ? 'Chill' : 'Walk'}
+          </button>
           <button className="pixel-button green flex-1 text-xs py-1 whitespace-nowrap" onClick={handlePet}>
             Pet
           </button>
-          <button className="pixel-button contrast flex-1 text-xs py-1 whitespace-nowrap" onClick={handleWalk}>
-            Walk
-          </button>
         </div>
         <button
-          className="pixel-button pixel-button-sm px-1 py-1 bg-pixel-teal"
+          className="pixel-button contrast pixel-button-sm px-1 py-1 bg-pixel-teal"
           onClick={onExpand}
         >
           <SettingsIcon />

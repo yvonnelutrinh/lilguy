@@ -1,6 +1,6 @@
 import React from 'react';
 import { DropdownMenu } from "radix-ui";
-import { Button } from '@/components/ui/Button/Button';
+import { Button } from '@/components/UI/Button/Button';
 
 const notifications = [
     { id: 1, message: "You've been productive for 2 hours today!", isRead: false },
