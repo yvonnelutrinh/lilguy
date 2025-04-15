@@ -4,7 +4,7 @@ import { Bell, Clock, X, Settings } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { HealthBar } from '../HealthBar/HealthBar';
 import { WidgetLilGuy } from '../LilGuy/LilGuy';
-import PixelWindow from '../ui/PixelWindow';
+import PixelWindow from '../UI/PixelWindow';
 
 // Icons with pixel art style
 const SettingsIcon = () => (

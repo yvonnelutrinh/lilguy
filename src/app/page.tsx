@@ -8,7 +8,7 @@ import SiteList from "@/components/SiteList/SiteList";
 import ExtensionWidget from "@/components/ExtensionWidget/ExtensionWidget";
 import { LilGuy } from "@/components/LilGuy/LilGuy";
 import LilGuyInteractor from "@/components/LilGuyInteractor/LilGuyInteractor";
-import CharacterStyles from "@/components/CharacterStyles/CharacterStyles";
+import TestWindow from "@/components/TestWindow/TestWindow";
 import type { LilGuyColor } from "@/components/LilGuy/LilGuy";
 import PixelWindow from "@/components/ui/PixelWindow";
 import { HealthProvider } from "@/context/HealthContext";
@@ -54,13 +54,13 @@ export default function Home() {
                 <LilGuy />
               </PixelWindow>
               
-              {/* LilGuy Character Customization */}
+              {/* LilGuy States Toggling - TEMP FOR TESTING ONLY */}
               <PixelWindow
                 title="TEMP WINDOW"
                 className="mb-4"
                 contentClassName="p-2"
               >
-                <CharacterStyles />
+                <TestWindow />
               </PixelWindow>
             </div>
 

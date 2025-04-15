@@ -1,9 +1,9 @@
 import React, { useState, useRef } from 'react';
-import { Button } from "@/components/ui/Button/Button";
-import { Input } from "@/components/ui/Input/Input";
-import { Slider } from "@/components/ui/Slider/Slider";
+import { Button } from "@/components/UI/Button/Button";
+import { Input } from "@/components/UI/Input/Input";
+import { Slider } from "@/components/UI/Slider/Slider";
 import { useEmitEmotion } from '@/lib/emotionContext';
-import { SimpleContainer, SimpleItem } from '@/components/ui/SimpleContainer/SimpleContainer';
+import { SimpleContainer, SimpleItem } from '@/components/UI/SimpleContainer/SimpleContainer';
 
 // Helper function to safely access localStorage
 const getLocalStorageItem = (key: string, defaultValue: any) => {

@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 2, "column": 0}, "map": {"version":3,"sources":["file:///Users/evil/Documents/lilguy/src/styles/pixel-font.css"],"sourcesContent":["@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');\n\n.pixel-font, .pixel-title, .pixel-dropdown-title-bar, .pixel-notification-text, .pixel-empty, .pixel-dropdown-footer {\n  font-family: 'Press Start 2P', monospace !important;\n  font-size: 12px;\n  letter-spacing: 0.5px;\n}\n"],"names":[],"mappings":"AAEA","debugId":null}}]
-}
