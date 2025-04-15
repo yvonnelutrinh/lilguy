@@ -1,4 +1,4 @@
-(globalThis.TURBOPACK = globalThis.TURBOPACK || []).push(["static/chunks/src_d98f1dde._.js", {
+(globalThis.TURBOPACK = globalThis.TURBOPACK || []).push(["static/chunks/src_3177ad23._.js", {
 
 "[project]/src/lib/utils.ts [app-client] (ecmascript)": ((__turbopack_context__) => {
 "use strict";
@@ -4144,6 +4144,52 @@ if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelper
     __turbopack_context__.k.registerExports(module, globalThis.$RefreshHelpers$);
 }
 }}),
+"[project]/src/context/HealthContext.tsx [app-client] (ecmascript)": ((__turbopack_context__) => {
+"use strict";
+
+var { g: global, __dirname, k: __turbopack_refresh__, m: module } = __turbopack_context__;
+{
+__turbopack_context__.s({
+    "HealthProvider": (()=>HealthProvider),
+    "useHealth": (()=>useHealth)
+});
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/jsx-dev-runtime.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/index.js [app-client] (ecmascript)");
+;
+var _s = __turbopack_context__.k.signature(), _s1 = __turbopack_context__.k.signature();
+;
+const HealthContext = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["createContext"])({
+    health: 100,
+    setHealth: ()=>{}
+});
+const useHealth = ()=>{
+    _s();
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useContext"])(HealthContext);
+};
+_s(useHealth, "gDsCjeeItUuvgOWf1v4qoK9RF6k=");
+const HealthProvider = ({ children })=>{
+    _s1();
+    const [health, setHealth] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(100);
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(HealthContext.Provider, {
+        value: {
+            health,
+            setHealth
+        },
+        children: children
+    }, void 0, false, {
+        fileName: "[project]/src/context/HealthContext.tsx",
+        lineNumber: 18,
+        columnNumber: 5
+    }, this);
+};
+_s1(HealthProvider, "aH3ZCpppRyyTlaPGOaL6dJVwzbE=");
+_c = HealthProvider;
+var _c;
+__turbopack_context__.k.register(_c, "HealthProvider");
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(module, globalThis.$RefreshHelpers$);
+}
+}}),
 "[project]/src/components/LilGuy/LilGuy.tsx [app-client] (ecmascript)": ((__turbopack_context__) => {
 "use strict";
 
@@ -4158,9 +4204,11 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$emotionContext
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/index.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$LilGuyInteractor$2f$LilGuyInteractor$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/components/LilGuyInteractor/LilGuyInteractor.tsx [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$HealthBar$2f$HealthBar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/components/HealthBar/HealthBar.tsx [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$context$2f$HealthContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/context/HealthContext.tsx [app-client] (ecmascript)");
 ;
 var _s = __turbopack_context__.k.signature();
 "use client";
+;
 ;
 ;
 ;
@@ -4253,14 +4301,13 @@ function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "nor
     const canvasRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(null);
     const animRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(null);
     const [animation, setAnimation] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(controlledAnimation || initialAnimation);
-    const [health, setHealth] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(controlledHealth ?? 100);
     const [lilGuyColor, setLilGuyColor] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])({
         "LilGuyCanvas.useState": ()=>getLocalStorageItem('lilGuyColor', 'green')
     }["LilGuyCanvas.useState"]);
     const [lilGuyStage, setLilGuyStage] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(controlledStage || "normal");
     const [message, setMessage] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
-    const [modifiedHealth, setModifiedHealth] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])();
     const [lilGuyName, setLilGuyName] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("LilGuy");
+    const { health, setHealth } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$context$2f$HealthContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useHealth"])();
     // Listen for color changes from localStorage
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "LilGuyCanvas.useEffect": ()=>{
@@ -4391,33 +4438,12 @@ function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "nor
         size,
         lilGuyStage
     ]);
-    // --- Health bar dynamic update ---
-    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
-        "LilGuyCanvas.useEffect": ()=>{
-            // Only set from localStorage if not controlled
-            if (controlledHealth === undefined) {
-                const storedHealth = getLocalStorageItem("health", 100);
-                setHealth(Number(storedHealth));
-            }
-        }
-    }["LilGuyCanvas.useEffect"], [
-        controlledHealth
-    ]);
-    // --- Sync health state with controlledHealth prop ---
-    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
-        "LilGuyCanvas.useEffect": ()=>{
-            if (controlledHealth !== undefined) setHealth(controlledHealth);
-        }
-    }["LilGuyCanvas.useEffect"], [
-        controlledHealth
-    ]);
     // Listen for emotion updates and update health bar if needed
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$emotionContext$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useListenToEmotions"])({
         "LilGuyCanvas.useListenToEmotions": (emotionEvent)=>{
             setAnimation(emotionEvent.type);
             if (emotionEvent.health !== undefined) {
                 setHealth(emotionEvent.health);
-                setLocalStorageItem("health", emotionEvent.health);
             }
         }
     }["LilGuyCanvas.useListenToEmotions"]);
@@ -4432,8 +4458,6 @@ function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "nor
                     setLilGuyStage(value);
                 } else if (key === "lilGuyName") {
                     setLilGuyName(value);
-                } else if (key === "health") {
-                    setHealth(Number(value));
                 }
             }
             function handleStorageChange(e) {
@@ -4443,8 +4467,6 @@ function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "nor
                     setLilGuyStage(e.newValue || "normal");
                 } else if (e.key === "lilGuyName") {
                     setLilGuyName(e.newValue || "LilGuy");
-                } else if (e.key === "health") {
-                    setHealth(Number(e.newValue || 100));
                 }
             }
             window.addEventListener("localStorageChanged", handleCustomStorageChange);
@@ -4453,66 +4475,6 @@ function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "nor
                 "LilGuyCanvas.useEffect": ()=>{
                     window.removeEventListener("localStorageChanged", handleCustomStorageChange);
                     window.removeEventListener("storage", handleStorageChange);
-                }
-            })["LilGuyCanvas.useEffect"];
-        }
-    }["LilGuyCanvas.useEffect"], []);
-    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
-        "LilGuyCanvas.useEffect": ()=>{
-            // Health updates
-            // Listen for health events in localStorage
-            const handleStorageChange = {
-                "LilGuyCanvas.useEffect.handleStorageChange": (e)=>{
-                    if (e.key === "health") {
-                        try {
-                            const newHealth = e.newValue ? parseInt(e.newValue, 10) : null;
-                            setHealth(newHealth || 0);
-                        } catch (err) {
-                            console.error("Failed to parse health:", err);
-                        }
-                    } else if (e.key === "modifiedHealth") {
-                        try {
-                            const newHealth = e.newValue ? parseInt(e.newValue, 10) : null;
-                            setModifiedHealth(newHealth || 0);
-                        } catch (err) {
-                            console.error("Failed to parse modified health:", err);
-                        }
-                    }
-                }
-            }["LilGuyCanvas.useEffect.handleStorageChange"];
-            window.addEventListener("storage", handleStorageChange);
-            // Listen for custom events
-            const handleCustomEvent = {
-                "LilGuyCanvas.useEffect.handleCustomEvent": (e)=>{
-                    if (e.detail?.key === "health") {
-                        setHealth(parseInt(e.detail.value, 10) || 0);
-                    } else if (e.detail?.key === "modifiedHealth") {
-                        setModifiedHealth(parseInt(e.detail.value, 10) || 0);
-                    }
-                }
-            }["LilGuyCanvas.useEffect.handleCustomEvent"];
-            window.addEventListener("localStorageChanged", handleCustomEvent);
-            // Get initial health value
-            const currentHealth = localStorage.getItem("health");
-            const currentModifiedHealth = localStorage.getItem("modifiedHealth");
-            if (currentHealth) {
-                try {
-                    setHealth(parseInt(currentHealth, 10));
-                } catch (err) {
-                    console.error("Failed to parse initial health:", err);
-                }
-            }
-            if (currentModifiedHealth) {
-                try {
-                    setModifiedHealth(parseInt(currentModifiedHealth, 10));
-                } catch (err) {
-                    console.error("Failed to parse initial modified health:", err);
-                }
-            }
-            return ({
-                "LilGuyCanvas.useEffect": ()=>{
-                    window.removeEventListener("storage", handleStorageChange);
-                    window.removeEventListener("localStorageChanged", handleCustomEvent);
                 }
             })["LilGuyCanvas.useEffect"];
         }
@@ -4600,7 +4562,7 @@ function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "nor
                         children: lilGuyName
                     }, void 0, false, {
                         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                        lineNumber: 399,
+                        lineNumber: 320,
                         columnNumber: 11
                     }, this),
                     message && size === "normal" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4612,17 +4574,17 @@ function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "nor
                                 children: message
                             }, void 0, false, {
                                 fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                                lineNumber: 408,
+                                lineNumber: 329,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                            lineNumber: 407,
+                            lineNumber: 328,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                        lineNumber: 406,
+                        lineNumber: 327,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4633,7 +4595,7 @@ function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "nor
                                 ref: canvasRef
                             }, void 0, false, {
                                 fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                                lineNumber: 414,
+                                lineNumber: 335,
                                 columnNumber: 11
                             }, this),
                             showHealthBar && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4642,47 +4604,48 @@ function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "nor
                                     health: health
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                                    lineNumber: 418,
+                                    lineNumber: 339,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                                lineNumber: 417,
+                                lineNumber: 338,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                        lineNumber: 413,
+                        lineNumber: 334,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                lineNumber: 393,
+                lineNumber: 314,
                 columnNumber: 7
             }, this),
             showControls && size === "normal" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "w-full",
                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$LilGuyInteractor$2f$LilGuyInteractor$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
                     fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                    lineNumber: 425,
+                    lineNumber: 346,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                lineNumber: 424,
+                lineNumber: 345,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-        lineNumber: 389,
+        lineNumber: 310,
         columnNumber: 5
     }, this);
 }
-_s(LilGuyCanvas, "epYxwE6eqKWHE384GIl8Xtvbbq0=", false, function() {
+_s(LilGuyCanvas, "k/GbCjoN+1nKDKQ6efwFypjfuSo=", false, function() {
     return [
+        __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$context$2f$HealthContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useHealth"],
         __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$emotionContext$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useListenToEmotions"]
     ];
 });
@@ -4696,12 +4659,12 @@ function LilGuy() {
             showHealthBar: true
         }, void 0, false, {
             fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-            lineNumber: 436,
+            lineNumber: 357,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-        lineNumber: 435,
+        lineNumber: 356,
         columnNumber: 5
     }, this);
 }
@@ -4715,7 +4678,7 @@ function WidgetLilGuy(props) {
         ...props
     }, void 0, false, {
         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-        lineNumber: 447,
+        lineNumber: 368,
         columnNumber: 10
     }, this);
 }
@@ -6215,9 +6178,11 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$Extensi
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$LilGuy$2f$LilGuy$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/components/LilGuy/LilGuy.tsx [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$CharacterStyles$2f$CharacterStyles$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/components/CharacterStyles/CharacterStyles.tsx [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$PixelWindow$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/components/ui/PixelWindow.tsx [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$context$2f$HealthContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/context/HealthContext.tsx [app-client] (ecmascript)");
 ;
 var _s = __turbopack_context__.k.signature();
 "use client";
+;
 ;
 ;
 ;
@@ -6251,13 +6216,13 @@ function Home() {
             localStorage.setItem('lilGuyColor', color);
         }
     };
-    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$context$2f$HealthContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["HealthProvider"], {
         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
             className: "min-h-screen flex flex-col bg-pixel-pattern",
             children: [
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$Header$2f$Header$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
                     fileName: "[project]/src/app/page.tsx",
-                    lineNumber: 42,
+                    lineNumber: 43,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("main", {
@@ -6273,12 +6238,12 @@ function Home() {
                                         className: "mb-4",
                                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$LilGuy$2f$LilGuy$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["LilGuy"], {}, void 0, false, {
                                             fileName: "[project]/src/app/page.tsx",
-                                            lineNumber: 53,
+                                            lineNumber: 54,
                                             columnNumber: 17
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/page.tsx",
-                                        lineNumber: 49,
+                                        lineNumber: 50,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$PixelWindow$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -6287,18 +6252,18 @@ function Home() {
                                         contentClassName: "p-2",
                                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$CharacterStyles$2f$CharacterStyles$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
                                             fileName: "[project]/src/app/page.tsx",
-                                            lineNumber: 62,
+                                            lineNumber: 63,
                                             columnNumber: 17
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/page.tsx",
-                                        lineNumber: 57,
+                                        lineNumber: 58,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/page.tsx",
-                                lineNumber: 48,
+                                lineNumber: 49,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6318,7 +6283,7 @@ function Home() {
                                                     children: "Dashboard"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/page.tsx",
-                                                    lineNumber: 74,
+                                                    lineNumber: 75,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -6328,7 +6293,7 @@ function Home() {
                                                     children: "Websites"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/page.tsx",
-                                                    lineNumber: 81,
+                                                    lineNumber: 82,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -6338,7 +6303,7 @@ function Home() {
                                                     children: "Goals"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/page.tsx",
-                                                    lineNumber: 88,
+                                                    lineNumber: 89,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -6348,13 +6313,13 @@ function Home() {
                                                     children: "Widget"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/page.tsx",
-                                                    lineNumber: 95,
+                                                    lineNumber: 96,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/page.tsx",
-                                            lineNumber: 73,
+                                            lineNumber: 74,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6362,17 +6327,17 @@ function Home() {
                                             children: [
                                                 activeTab === 'dashboard' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ProductivityMetrics$2f$ProductivityMetrics$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
                                                     fileName: "[project]/src/app/page.tsx",
-                                                    lineNumber: 105,
+                                                    lineNumber: 106,
                                                     columnNumber: 49
                                                 }, this),
                                                 activeTab === 'websites' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$SiteList$2f$SiteList$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
                                                     fileName: "[project]/src/app/page.tsx",
-                                                    lineNumber: 106,
+                                                    lineNumber: 107,
                                                     columnNumber: 48
                                                 }, this),
                                                 activeTab === 'goals' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$Goals$2f$Goals$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
                                                     fileName: "[project]/src/app/page.tsx",
-                                                    lineNumber: 107,
+                                                    lineNumber: 108,
                                                     columnNumber: 45
                                                 }, this),
                                                 activeTab === 'widget' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6381,49 +6346,53 @@ function Home() {
                                                         activeTab: activeTab
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/page.tsx",
-                                                        lineNumber: 110,
+                                                        lineNumber: 111,
                                                         columnNumber: 23
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/page.tsx",
-                                                    lineNumber: 109,
+                                                    lineNumber: 110,
                                                     columnNumber: 21
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/page.tsx",
-                                            lineNumber: 104,
+                                            lineNumber: 105,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/page.tsx",
-                                    lineNumber: 68,
+                                    lineNumber: 69,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/app/page.tsx",
-                                lineNumber: 67,
+                                lineNumber: 68,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/page.tsx",
-                        lineNumber: 45,
+                        lineNumber: 46,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/app/page.tsx",
-                    lineNumber: 44,
+                    lineNumber: 45,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/src/app/page.tsx",
-            lineNumber: 41,
+            lineNumber: 42,
             columnNumber: 7
         }, this)
-    }, void 0, false);
+    }, void 0, false, {
+        fileName: "[project]/src/app/page.tsx",
+        lineNumber: 41,
+        columnNumber: 5
+    }, this);
 }
 _s(Home, "Ig22HqU80xYbTO9ic3P8nY171v0=");
 _c = Home;
@@ -6435,4 +6404,4 @@ if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelper
 }}),
 }]);
 
-//# sourceMappingURL=src_d98f1dde._.js.map
+//# sourceMappingURL=src_3177ad23._.js.map

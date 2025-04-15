@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import LilGuyInteractor from "../LilGuyInteractor/LilGuyInteractor";
 import { HealthBar } from "../HealthBar/HealthBar";
 import type { EmotionEvent } from "@/lib/emotionEventBus";
+import { useHealth } from "@/context/HealthContext";
 
 // helper function to safely access localStorage
 const getLocalStorageItem = (key: string, defaultValue: any) => {
@@ -83,12 +84,11 @@ function LilGuyCanvas({
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const animRef = useRef<number | null>(null);
   const [animation, setAnimation] = useState<LilGuyAnimation>(controlledAnimation || initialAnimation);
-  const [health, setHealth] = useState<number>(controlledHealth ?? 100);
   const [lilGuyColor, setLilGuyColor] = useState<LilGuyColor>(() => getLocalStorageItem('lilGuyColor', 'green'));
   const [lilGuyStage, setLilGuyStage] = useState<LilGuyStage>(controlledStage || "normal");
   const [message, setMessage] = useState<string>("");
-  const [modifiedHealth, setModifiedHealth] = useState<number>();
   const [lilGuyName, setLilGuyName] = useState("LilGuy");
+  const { health, setHealth } = useHealth();
 
   // Listen for color changes from localStorage
   useEffect(() => {
@@ -166,6 +166,7 @@ function LilGuyCanvas({
     });
     const staggerFrames = 8; // adjust for speed
     function draw() {
+      if (!ctx) return;
       ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
       ctx.save();
       ctx.globalAlpha = 1;
@@ -204,26 +205,11 @@ function LilGuyCanvas({
     };
   }, [animation, size, lilGuyStage]);
 
-  // --- Health bar dynamic update ---
-  useEffect(() => {
-    // Only set from localStorage if not controlled
-    if (controlledHealth === undefined) {
-      const storedHealth = getLocalStorageItem("health", 100);
-      setHealth(Number(storedHealth));
-    }
-  }, [controlledHealth]);
-
-  // --- Sync health state with controlledHealth prop ---
-  useEffect(() => {
-    if (controlledHealth !== undefined) setHealth(controlledHealth);
-  }, [controlledHealth]);
-
   // Listen for emotion updates and update health bar if needed
   useListenToEmotions((emotionEvent: EmotionEvent) => {
     setAnimation(emotionEvent.type);
     if (emotionEvent.health !== undefined) {
       setHealth(emotionEvent.health);
-      setLocalStorageItem("health", emotionEvent.health);
     }
   });
 
@@ -237,8 +223,6 @@ function LilGuyCanvas({
         setLilGuyStage(value as LilGuyStage);
       } else if (key === "lilGuyName") {
         setLilGuyName(value);
-      } else if (key === "health") {
-        setHealth(Number(value));
       }
     }
 
@@ -249,8 +233,6 @@ function LilGuyCanvas({
         setLilGuyStage((e.newValue || "normal") as LilGuyStage);
       } else if (e.key === "lilGuyName") {
         setLilGuyName(e.newValue || "LilGuy");
-      } else if (e.key === "health") {
-        setHealth(Number(e.newValue || 100));
       }
     }
 
@@ -259,66 +241,6 @@ function LilGuyCanvas({
     return () => {
       window.removeEventListener("localStorageChanged", handleCustomStorageChange as any);
       window.removeEventListener("storage", handleStorageChange);
-    };
-  }, []);
-
-  useEffect(() => {
-    // Health updates
-    // Listen for health events in localStorage
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === "health") {
-        try {
-          const newHealth = e.newValue ? parseInt(e.newValue, 10) : null;
-          setHealth(newHealth || 0);
-        } catch (err) {
-          console.error("Failed to parse health:", err);
-        }
-      } else if (e.key === "modifiedHealth") {
-        try {
-          const newHealth = e.newValue ? parseInt(e.newValue, 10) : null;
-          setModifiedHealth(newHealth || 0);
-        } catch (err) {
-          console.error("Failed to parse modified health:", err);
-        }
-      }
-    };
-
-    window.addEventListener("storage", handleStorageChange);
-    
-    // Listen for custom events
-    const handleCustomEvent = (e: any) => {
-      if (e.detail?.key === "health") {
-        setHealth(parseInt(e.detail.value, 10) || 0);
-      } else if (e.detail?.key === "modifiedHealth") {
-        setModifiedHealth(parseInt(e.detail.value, 10) || 0);
-      }
-    };
-    
-    window.addEventListener("localStorageChanged", handleCustomEvent);
-
-    // Get initial health value
-    const currentHealth = localStorage.getItem("health");
-    const currentModifiedHealth = localStorage.getItem("modifiedHealth");
-    
-    if (currentHealth) {
-      try {
-        setHealth(parseInt(currentHealth, 10));
-      } catch (err) {
-        console.error("Failed to parse initial health:", err);
-      }
-    }
-    
-    if (currentModifiedHealth) {
-      try {
-        setModifiedHealth(parseInt(currentModifiedHealth, 10));
-      } catch (err) {
-        console.error("Failed to parse initial modified health:", err);
-      }
-    }
-
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-      window.removeEventListener("localStorageChanged", handleCustomEvent);
     };
   }, []);
 

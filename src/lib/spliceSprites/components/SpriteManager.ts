@@ -1,5 +1,5 @@
 // Sprite Manager for LilGuy Character
-import { LilGuyStage, LilGuyColor, LilGuyAnimation } from '../../components/LilGuy/LilGuy';
+import type { LilGuyStage, LilGuyColor, LilGuyAnimation } from '../../components/LilGuy/LilGuy.tsx';
 
 // Define specific animation types for each stage
 type EggAnimation = 'idle' | 'shake' | 'hatch';

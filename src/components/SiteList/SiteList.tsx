@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/Label/Label";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/Select/Select";
 import { Trash } from "lucide-react";
 import { SimpleContainer, SimpleItem } from '@/components/ui/SimpleContainer/SimpleContainer';
+import { useHealth } from "@/context/HealthContext";
 
 // PlusIcon component from Goals.tsx
 const PlusIcon = () => (
@@ -33,6 +34,7 @@ const initialWebsites: Website[] = [
   { id: 4, name: 'youtube.com', category: 'unproductive', timeSpent: 103 },
   { id: 5, name: 'netflix.com', category: 'unproductive', timeSpent: 45 },
   { id: 6, name: 'twitter.com', category: 'unproductive', timeSpent: 86 },
+  { id: 7, name: 'localhost', category: 'productive', timeSpent: 0 },
 ];
 
 const SiteList: React.FC = () => {
@@ -41,16 +43,23 @@ const SiteList: React.FC = () => {
   const [category, setCategory] = useState<'productive' | 'unproductive' | 'neutral'>('neutral');
   const [filter, setFilter] = useState<'all' | 'productive' | 'unproductive' | 'neutral'>('all');
   const [localhostSeconds, setLocalhostSeconds] = useState(() => parseInt(localStorage.getItem('localhost_seconds') || '0', 10));
+  const { health, setHealth } = useHealth();
 
   // Add localhost to websites if not present
   useEffect(() => {
-    if (!websites.some(site => site.name === 'localhost')) {
-      setWebsites(ws => [
-        ...ws,
-        { id: Math.max(0, ...ws.map(w => w.id)) + 1, name: 'localhost', category: 'productive', timeSpent: 0 }
-      ]);
-    }
-  }, [websites]);
+    setWebsites(ws => {
+      const filtered = ws.filter((site, idx, arr) =>
+        site.name !== 'localhost' || arr.findIndex(s => s.name === 'localhost') === idx
+      );
+      if (!filtered.some(site => site.name === 'localhost')) {
+        return [
+          ...filtered,
+          { id: Math.max(0, ...filtered.map(w => w.id)) + 1, name: 'localhost', category: 'productive', timeSpent: 0 }
+        ];
+      }
+      return filtered;
+    });
+  }, []); // Only run on mount
 
   // Timer for localhost
   useEffect(() => {
@@ -60,18 +69,18 @@ const SiteList: React.FC = () => {
       seconds += 1;
       setLocalhostSeconds(seconds);
       localStorage.setItem('localhost_seconds', seconds.toString());
-      // Update websites state
       setWebsites(ws => ws.map(site => site.name === 'localhost' ? { ...site, timeSpent: Math.floor(seconds / 60) } : site));
       if (seconds % 30 === 0) {
         // Increment health and log
-        const health = parseInt(localStorage.getItem('health') || '100', 10);
-        const newHealth = Math.min(100, health + 1);
-        localStorage.setItem('health', newHealth.toString());
-        console.log('[WebsiteTracker] +1 health for 30s on localhost. Action: productive. New health:', newHealth);
+        setHealth((h: number) => {
+          const newHealth = Math.min(100, (typeof h === 'number' ? h : 100) + 1);
+          console.log('[WebsiteTracker] +1 health for 30s on localhost. Action: productive. New health:', newHealth);
+          return newHealth;
+        });
       }
     }, 1000);
     return () => clearInterval(timer);
-  }, [localhostSeconds]);
+  }, [localhostSeconds, setHealth]);
 
   const handleAddWebsite = () => {
     if (newWebsite.trim() === '') return;
@@ -101,7 +110,10 @@ const SiteList: React.FC = () => {
   };
   
   const filteredWebsites = filter === 'all' 
-    ? websites 
+    ? [...websites].sort((a, b) => {
+        const catOrder = { productive: 0, neutral: 1, unproductive: 2 };
+        return catOrder[a.category] - catOrder[b.category];
+      })
     : websites.filter(site => site.category === filter);
   
   const formatTime = (minutes: number) => {

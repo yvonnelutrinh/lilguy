@@ -11,6 +11,7 @@ import LilGuyInteractor from "@/components/LilGuyInteractor/LilGuyInteractor";
 import CharacterStyles from "@/components/CharacterStyles/CharacterStyles";
 import type { LilGuyColor } from "@/components/LilGuy/LilGuy";
 import PixelWindow from "@/components/ui/PixelWindow";
+import { HealthProvider } from "@/context/HealthContext";
 
 export default function Home() {
   // State for current tab selection
@@ -37,7 +38,7 @@ export default function Home() {
   };
 
   return (
-    <>
+    <HealthProvider>
       <div className="min-h-screen flex flex-col bg-pixel-pattern">
         <Header />
 
@@ -116,6 +117,6 @@ export default function Home() {
           </div>
         </main>
       </div>
-    </>
+    </HealthProvider>
   );
 }
