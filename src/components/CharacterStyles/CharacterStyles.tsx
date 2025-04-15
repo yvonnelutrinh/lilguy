@@ -3,12 +3,16 @@
 import React, { useEffect, useState } from "react";
 import type { LilGuyColor, LilGuyStage } from "@/components/LilGuy/LilGuy";
 import { useEmitEmotion } from "@/lib/emotionContext";
+import { SimpleContainer } from "../ui/SimpleContainer/SimpleContainer";
 
 export default function CharacterStyles() {
   const emitEmotion = useEmitEmotion();
   const [currentColor, setCurrentColor] = useState<LilGuyColor>("green");
   const [currentStage, setCurrentStage] = useState<LilGuyStage>("normal");
   const [buttonText, setButtonText] = useState("Walk");
+  const [name, setName] = useState("");
+  const [showNameInput, setShowNameInput] = useState(false);
+  const [newName, setNewName] = useState("");
 
   // helper function to safely set localStorage item
   const setLocalStorageItem = (key: string, value: any) => {
@@ -35,9 +39,12 @@ export default function CharacterStyles() {
   useEffect(() => {
     const storedColor = getLocalStorageItem("lilGuyColor", "green");
     const storedStage = getLocalStorageItem("lilGuyStage", "normal");
+    const storedName = getLocalStorageItem("lilGuyName", "LilGuy");
     
     setCurrentColor(storedColor as LilGuyColor);
     setCurrentStage(storedStage as LilGuyStage);
+    setName(storedName);
+    setNewName(storedName);
   }, []);
 
   // function to change lilguy color
@@ -69,106 +76,169 @@ export default function CharacterStyles() {
     }
   };
 
+  // function to save lilguy name
+  const saveName = () => {
+    if (newName.trim()) {
+      setName(newName);
+      setLocalStorageItem("lilGuyName", newName);
+      setShowNameInput(false);
+      // Trigger a happy animation when name is updated
+      emitEmotion("happy", 100, "button");
+    }
+  };
+
   return (
-    <div className="w-full">
+    <SimpleContainer title="Testing Customization" description="Temp window to test customizing LilGuy's appearance and toggle animations">
+      {/* Name customization */}
+      <div className="mb-6">
+        <h3 className="mb-2 text-lg font-semibold">Character Name</h3>
+        {showNameInput ? (
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              value={newName}
+              onChange={(e) => setNewName(e.target.value)}
+              className="flex-1 px-3 py-2 border-2 border-black"
+              placeholder="Enter name"
+              maxLength={15}
+            />
+            <button 
+              onClick={saveName}
+              className="pixel-button bg-pixel-accent text-pixel-sm whitespace-nowrap"
+            >
+              Save
+            </button>
+            <button 
+              onClick={() => {
+                setNewName(name);
+                setShowNameInput(false);
+              }}
+              className="pixel-button text-pixel-sm whitespace-nowrap"
+            >
+              Cancel
+            </button>
+          </div>
+        ) : (
+          <div className="flex items-center gap-2">
+            <div className="flex-1 px-3 py-2 border-2 border-black bg-gray-50">
+              {name}
+            </div>
+            <button 
+              onClick={() => setShowNameInput(true)}
+              className="pixel-button text-pixel-sm whitespace-nowrap"
+            >
+              Edit
+            </button>
+          </div>
+        )}
+      </div>
+      
       {/* animations section */}
-      <div className="mb-4">
-        <h3 className="mb-2 text-pixel-lg font-semibold">Animations</h3>
-        <div className="grid grid-cols-3 gap-2 mb-4">
+      <div className="mb-6">
+        <h3 className="mb-2 text-lg font-semibold">Animations</h3>
+        <div className="grid grid-cols-3 gap-2">
           <button
             onClick={() => emitEmotion("idle", 100, "button")}
-            className="w-full px-3 py-2 bg-gray-100 text-black border border-black rounded transition-all hover:bg-gray-200 text-pixel-sm whitespace-nowrap"
+            className="pixel-button text-pixel-sm whitespace-nowrap"
           >
             Idle
           </button>
           <button
             onClick={() => emitEmotion("walk", 100, "button")}
-            className="w-full px-3 py-2 bg-gray-100 text-black border border-black rounded transition-all hover:bg-gray-200 text-pixel-sm whitespace-nowrap"
+            className="pixel-button text-pixel-sm whitespace-nowrap"
           >
             Walk
           </button>
           <button
             onClick={() => emitEmotion("happy", 100, "button")}
-            className="w-full px-3 py-2 bg-gray-100 text-black border border-black rounded transition-all hover:bg-gray-200 text-pixel-sm whitespace-nowrap"
+            className="pixel-button text-pixel-sm whitespace-nowrap"
           >
             Happy
           </button>
           <button
             onClick={() => emitEmotion("angry", 100, "button")}
-            className="w-full px-3 py-2 bg-gray-100 text-black border border-black rounded transition-all hover:bg-gray-200 text-pixel-sm whitespace-nowrap"
+            className="pixel-button text-pixel-sm whitespace-nowrap"
           >
             Angry
           </button>
           <button
             onClick={() => emitEmotion("sad", 100, "button")}
-            className="w-full px-3 py-2 bg-gray-100 text-black border border-black rounded transition-all hover:bg-gray-200 text-pixel-sm whitespace-nowrap"
+            className="pixel-button text-pixel-sm whitespace-nowrap"
           >
             Sad
           </button>
           <button
             onClick={() => emitEmotion("shocked", 100, "button")}
-            className="w-full px-3 py-2 bg-gray-100 text-black border border-black rounded transition-all hover:bg-gray-200 text-pixel-sm whitespace-nowrap"
+            className="pixel-button text-pixel-sm whitespace-nowrap"
           >
             Shocked
           </button>
         </div>
       </div>
       
-      {/* character states */}
-      <div className="mb-4">
-        <h3 className="mb-2 text-pixel-lg font-semibold">States</h3>
-        <div className="grid grid-cols-2 gap-2 mb-4">
-          <button
-            onClick={() => changeStage("normal")}
-            className={`w-full px-3 py-2 border border-black rounded transition-all text-pixel-sm whitespace-nowrap ${currentStage === 'normal' ? 'bg-pixel-green text-black font-bold' : 'bg-gray-100 hover:bg-gray-200'}`}
-          >
-            Normal
-          </button>
-          <button
-            onClick={() => changeStage("egg")}
-            className={`w-full px-3 py-2 border border-black rounded transition-all text-pixel-sm whitespace-nowrap ${currentStage === 'egg' ? 'bg-pixel-green text-black font-bold' : 'bg-gray-100 hover:bg-gray-200'}`}
-          >
-            Egg
-          </button>
-          <button
-            onClick={() => changeStage("angel")}
-            className={`w-full px-3 py-2 border border-black rounded transition-all text-pixel-sm whitespace-nowrap ${currentStage === 'angel' ? 'bg-pixel-green text-black font-bold' : 'bg-gray-100 hover:bg-gray-200'}`}
-          >
-            Angel
-          </button>
-          <button
-            onClick={() => changeStage("devil")}
-            className={`w-full px-3 py-2 border border-black rounded transition-all text-pixel-sm whitespace-nowrap ${currentStage === 'devil' ? 'bg-pixel-green text-black font-bold' : 'bg-gray-100 hover:bg-gray-200'}`}
-          >
-            Devil
-          </button>
-        </div>
-      </div>
-
-      {/* colors section */}
-      <div className="mb-4">
-        <h3 className="mb-2 text-pixel-lg font-semibold">Colors</h3>
-        <div className="flex gap-2 mb-4">
+      {/* LilGuy Color selection */}
+      <div className="mb-6">
+        <h3 className="mb-2 text-lg font-semibold">LilGuy Color</h3>
+        <div className="flex gap-3">
           <button 
-            className={`w-12 h-12 border-2 ${currentColor === 'green' ? 'outline outline-2 outline-black' : 'border-black'}`}
+            className={`w-12 h-12 border-2 border-black ${currentColor === 'green' ? 'border-4' : ''}`}
             style={{ backgroundColor: 'var(--pixel-green)' }}
             onClick={() => changeLilGuyColor('green')}
             aria-label="Green color"
           />
           <button 
-            className={`w-12 h-12 border-2 ${currentColor === 'blue' ? 'outline outline-2 outline-black' : 'border-black'}`}
+            className={`w-12 h-12 border-2 border-black ${currentColor === 'blue' ? 'border-4' : ''}`}
             style={{ backgroundColor: 'var(--pixel-blue)' }}
             onClick={() => changeLilGuyColor('blue')}
             aria-label="Blue color"
           />
           <button 
-            className={`w-12 h-12 border-2 ${currentColor === 'black' ? 'outline outline-2 outline-black' : 'border-black'}`}
+            className={`w-12 h-12 border-2 border-black ${currentColor === 'black' ? 'border-4' : ''}`}
             style={{ backgroundColor: 'black' }}
             onClick={() => changeLilGuyColor('black')}
             aria-label="Black color"
           />
         </div>
       </div>
-    </div>
+
+      {/* Evolution Stage */}
+      <div className="mb-4">
+        <h3 className="mb-2 text-lg font-semibold">Evolution Stage</h3>
+        <div className="grid grid-cols-2 gap-2">
+          <button
+            onClick={() => changeStage("egg")}
+            className={`pixel-button text-pixel-sm whitespace-nowrap ${
+              currentStage === "egg" ? "border-4 border-black" : ""
+            }`}
+          >
+            Egg
+          </button>
+          <button
+            onClick={() => changeStage("normal")}
+            className={`pixel-button text-pixel-sm whitespace-nowrap ${
+              currentStage === "normal" ? "border-4 border-black" : ""
+            }`}
+          >
+            Normal
+          </button>
+          <button
+            onClick={() => changeStage("angel")}
+            className={`pixel-button bg-blue-100 text-pixel-sm whitespace-nowrap ${
+              currentStage === "angel" ? "border-4 border-black" : ""
+            }`}
+          >
+            Angel
+          </button>
+          <button
+            onClick={() => changeStage("devil")}
+            className={`pixel-button bg-red-100 text-pixel-sm whitespace-nowrap ${
+              currentStage === "devil" ? "border-4 border-black" : ""
+            }`}
+          >
+            Devil
+          </button>
+        </div>
+      </div>
+    </SimpleContainer>
   );
 }

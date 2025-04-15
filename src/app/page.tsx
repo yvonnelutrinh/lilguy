@@ -46,7 +46,7 @@ export default function Home() {
             {/* Left sidebar with LilGuy */}
             <div className="md:w-[40%] lg:sticky top-6 h-[min-content]">
               <PixelWindow
-                title="LILGUY CUSTOMIZER"
+                title="LILGUY"
                 className="mb-4"
               >
                 <LilGuy />
@@ -54,7 +54,7 @@ export default function Home() {
               
               {/* LilGuy Character Customization */}
               <PixelWindow
-                title="CHARACTER STYLES"
+                title="TEMP WINDOW"
                 className="mb-4"
                 contentClassName="p-2"
               >

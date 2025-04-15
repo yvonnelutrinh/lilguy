@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/Button/Button";
 import { Input } from "@/components/ui/Input/Input";
 import { Slider } from "@/components/ui/Slider/Slider";
 import { useEmitEmotion } from '@/lib/emotionContext';
+import { SimpleContainer, SimpleItem } from '@/components/ui/SimpleContainer/SimpleContainer';
 
 // Helper function to safely access localStorage
 const getLocalStorageItem = (key: string, defaultValue: any) => {
@@ -58,14 +59,14 @@ const EmptyCheckIcon = () => (
 const EditIcon = () => (
   <div className="w-5 h-5 flex items-center justify-center">
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="pixelated">
-      <rect x="4" y="4" width="2" height="2" fill="currentColor" />
-      <rect x="6" y="6" width="2" height="2" fill="currentColor" />
+      <rect x="4" y="4" width="12" height="12" fill="currentColor" />
+      <rect x="6" y="6" width="8" height="8" fill="white" />
       <rect x="8" y="8" width="2" height="2" fill="currentColor" />
+      <rect x="10" y="6" width="2" height="2" fill="currentColor" />
+      <rect x="12" y="8" width="2" height="2" fill="currentColor" />
       <rect x="10" y="10" width="2" height="2" fill="currentColor" />
-      <rect x="12" y="12" width="2" height="2" fill="currentColor" />
-      <rect x="14" y="14" width="2" height="2" fill="currentColor" />
-      <rect x="6" y="4" width="10" height="2" fill="currentColor" />
-      <rect x="4" y="14" width="10" height="2" fill="currentColor" />
+      <rect x="8" y="12" width="2" height="2" fill="currentColor" />
+      <rect x="6" y="10" width="2" height="2" fill="currentColor" />
     </svg>
   </div>
 );
@@ -73,13 +74,12 @@ const EditIcon = () => (
 const TrashIcon = () => (
   <div className="w-5 h-5 flex items-center justify-center">
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="pixelated">
-      <rect x="6" y="2" width="8" height="2" fill="currentColor" />
-      <rect x="4" y="4" width="12" height="2" fill="currentColor" />
-      <rect x="6" y="6" width="2" height="10" fill="currentColor" />
-      <rect x="12" y="6" width="2" height="10" fill="currentColor" />
-      <rect x="8" y="8" width="4" height="2" fill="currentColor" />
-      <rect x="8" y="12" width="4" height="2" fill="currentColor" />
-      <rect x="4" y="16" width="12" height="2" fill="currentColor" />
+      <rect x="6" y="4" width="8" height="2" fill="currentColor" />
+      <rect x="4" y="6" width="2" height="10" fill="currentColor" />
+      <rect x="6" y="14" width="8" height="2" fill="currentColor" />
+      <rect x="14" y="6" width="2" height="10" fill="currentColor" />
+      <rect x="6" y="8" width="2" height="2" fill="currentColor" />
+      <rect x="10" y="8" width="2" height="2" fill="currentColor" />
     </svg>
   </div>
 );
@@ -87,10 +87,10 @@ const TrashIcon = () => (
 const PlusIcon = () => (
   <div className="w-5 h-5 flex items-center justify-center">
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="pixelated">
-      <rect x="8" y="4" width="4" height="4" fill="currentColor" />
-      <rect x="8" y="12" width="4" height="4" fill="currentColor" />
-      <rect x="4" y="8" width="4" height="4" fill="currentColor" />
-      <rect x="12" y="8" width="4" height="4" fill="currentColor" />
+      <rect x="8" y="5" width="4" height="2" fill="currentColor" />
+      <rect x="8" y="13" width="4" height="2" fill="currentColor" />
+      <rect x="5" y="8" width="2" height="4" fill="currentColor" />
+      <rect x="13" y="8" width="2" height="4" fill="currentColor" />
     </svg>
   </div>
 );
@@ -149,42 +149,34 @@ const Goals: React.FC= () => {
   };
 
   const handleToggleComplete = (id: number) => {
-    const goalToToggle = goals.find((goal) => goal.id === id);
-
-    if (!goalToToggle) return;
     const updatedGoals = goals.map((goal) =>
-      goal.id === id
-        ? {
-          ...goal,
-          completed: !goal.completed,
-          progress: !goal.completed ? 100 : goal.progress,
-        }
-        : goal
+      goal.id === id ? { ...goal, completed: !goal.completed } : goal
     );
+    
+    // Find the toggled goal
+    const toggledGoal = updatedGoals.find(g => g.id === id);
+    
+    // Emit appropriate emotion based on completion state
+    if (toggledGoal?.completed) {
+      emitEmotion("happy", 80, "completeGoal");
+    }
+    
     setGoals(updatedGoals);
     updateLocalStorage(updatedGoals);
-
-    if (goalToToggle.completed) {
-      emitEmotion("sad", 100, "goalUnfinished");
-    } else {
-      emitEmotion("happy", 100, "goalCompletion");
-    }
   };
 
-  const handleProgressChange = (id: number, newProgress: number) => {
+  const handleProgressChange = (id: number, progress: number) => {
     const updatedGoals = goals.map((goal) =>
-      goal.id === id
-        ? { ...goal, progress: newProgress, completed: newProgress === 100 }
-        : goal
+      goal.id === id ? { ...goal, progress } : goal
     );
     setGoals(updatedGoals);
     updateLocalStorage(updatedGoals);
-
-    if (newProgress === 100) {
-      handleToggleComplete(id);
-    } else if (newProgress > 50) {
-      // Positive feedback for good progress
-      emitEmotion("happy", 20, "goodProgress");
+    
+    // Determine emotion based on progress
+    if (progress === 100) {
+      emitEmotion("happy", 100, "completedProgress");
+    } else if (progress >= 50) {
+      emitEmotion("happy", 50, "goodProgress");
     }
   };
 
@@ -207,135 +199,129 @@ const Goals: React.FC= () => {
   };
 
   return (
-    <div className="w-full border border-black bg-white">
-      <div className="p-4 border-b border-black">
-        <h2 className="text-xl font-bold mb-1">Productivity Goals</h2>
-        <p className="text-sm text-gray-600">Set and track your daily progress</p>
-      </div>
-      <div className="p-4">
-        <div className="flex gap-2 mb-6">
-          <div className="flex-1">
-            <Input
-              placeholder="Enter a new goal..."
-              value={newGoalTitle}
-              onChange={(e) => setNewGoalTitle(e.target.value)}
-              className="w-full"
-            />
-          </div>
-          <Button onClick={handleAddGoal} className="pixel-button">
-            <PlusIcon />
-            <span className="ml-1 text-pixel-sm">ADD</span>
-          </Button>
+    <SimpleContainer 
+      title="Productivity Goals" 
+      description="Set productivity goals and track your progress"
+      instructionText="Drag the slider to update progress, or click the buttons"
+      renderInstructionAfterInput={true}
+    >
+      <div className="flex gap-2 mb-6">
+        <div className="flex-1">
+          <Input
+            placeholder="Enter a new goal..."
+            value={newGoalTitle}
+            onChange={(e) => setNewGoalTitle(e.target.value)}
+            className="w-full"
+          />
         </div>
+        <Button onClick={handleAddGoal} className="pixel-button">
+          <PlusIcon />
+          <span className="ml-1 text-pixel-sm">ADD</span>
+        </Button>
+      </div>
 
-        <div className="space-y-4">
-          {goals.length === 0 ? (
-            <div className="text-center py-8 text-gray-500 text-sm bg-gray-100 p-4 border border-gray-200">
-              No goals yet. Add your first goal above!
-            </div>
-          ) : (
-            goals.map((goal) => (
-              <div
-                key={goal.id}
-                className="p-3 border border-gray-200 rounded"
-                style={{
-                  backgroundColor: goal.completed
-                    ? "var(--pixel-green-light)"
-                    : "white",
-                }}
-              >
-                <div className="flex items-center justify-between gap-2 mb-2">
-                  <div className="flex items-center gap-2 flex-1 mr-2">
-                    <button
-                      onClick={() => handleToggleComplete(goal.id)}
-                      className="flex-shrink-0"
-                    >
-                      {goal.completed ? (
-                        <CheckIcon />
-                      ) : (
-                        <EmptyCheckIcon />
-                      )}
-                    </button>
-
-                    {editingId === goal.id ? (
-                      <Input
-                        value={editTitle}
-                        onChange={(e) => setEditTitle(e.target.value)}
-                        className="w-full"
-                      />
+      <div className="space-y-4">
+        {goals.length === 0 ? (
+          <div className="text-center py-8 text-gray-500 text-sm bg-gray-100 p-4 border border-gray-200">
+            No goals yet. Add your first goal above!
+          </div>
+        ) : (
+          goals.map((goal) => (
+            <SimpleItem
+              key={goal.id}
+              backgroundColor={goal.completed ? "var(--pixel-green-light)" : "white"}
+            >
+              <div className="flex items-center justify-between gap-2 mb-2">
+                <div className="flex items-center gap-2 flex-1 mr-2">
+                  <button
+                    onClick={() => handleToggleComplete(goal.id)}
+                    className="flex-shrink-0"
+                  >
+                    {goal.completed ? (
+                      <CheckIcon />
                     ) : (
-                      <span
-                        className={`text-sm ${
-                          goal.completed ? "line-through text-gray-500" : ""
-                        }`}
-                      >
-                        {goal.title}
-                      </span>
+                      <EmptyCheckIcon />
                     )}
-                  </div>
+                  </button>
 
-                  <div className="flex-shrink-0 flex items-center gap-1">
-                    {editingId === goal.id ? (
-                      <Button
-                        onClick={saveEdit}
-                        size="sm"
-                        className="pixel-button pixel-button-success flex-shrink-0 whitespace-nowrap"
-                      >
-                        <SaveIcon />
-                      </Button>
-                    ) : (
-                      <Button
-                        onClick={() => startEditing(goal)}
-                        size="sm"
-                        className="pixel-button pixel-button-secondary flex-shrink-0 whitespace-nowrap"
-                      >
-                        <EditIcon />
-                      </Button>
-                    )}
-                    <Button
-                      onClick={() => handleRemoveGoal(goal.id)}
-                      size="sm"
-                      className="pixel-button pixel-button-danger flex-shrink-0 whitespace-nowrap"
+                  {editingId === goal.id ? (
+                    <Input
+                      value={editTitle}
+                      onChange={(e) => setEditTitle(e.target.value)}
+                      className="w-full"
+                    />
+                  ) : (
+                    <span
+                      className={`text-sm ${
+                        goal.completed ? "line-through text-gray-500" : ""
+                      }`}
                     >
-                      <TrashIcon />
-                    </Button>
-                  </div>
+                      {goal.title}
+                    </span>
+                  )}
                 </div>
 
-                <div className="mt-3">
-                  <div className="flex justify-between text-xs mb-1">
-                    <span className="text-sm">Progress: {goal.progress}%</span>
-                  </div>
-                  <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
-                    <div
-                      className="h-full rounded-full"
-                      style={{
-                        width: `${goal.progress}%`,
-                        backgroundColor: 
-                          goal.progress > 75 ? 'var(--pixel-green)' : 
-                          goal.progress > 25 ? 'var(--pixel-blue)' : 
-                          'var(--pixel-pink)'
-                      }}
-                    />
-                  </div>
-                  <Slider
-                    value={[goal.progress]}
-                    min={0}
-                    max={100}
-                    step={5}
-                    className="mt-2"
-                    onValueChange={(values) =>
-                      handleProgressChange(goal.id, values[0])
-                    }
-                    disabled={goal.completed}
-                  />
+                <div className="flex-shrink-0 flex items-center gap-1">
+                  {editingId === goal.id ? (
+                    <Button
+                      onClick={saveEdit}
+                      size="sm"
+                      className="pixel-button pixel-button-success flex-shrink-0 whitespace-nowrap"
+                    >
+                      <SaveIcon />
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={() => startEditing(goal)}
+                      size="sm"
+                      className="pixel-button pixel-button-secondary flex-shrink-0 whitespace-nowrap"
+                    >
+                      <EditIcon />
+                    </Button>
+                  )}
+                  <Button
+                    onClick={() => handleRemoveGoal(goal.id)}
+                    size="sm"
+                    className="pixel-button pixel-button-danger flex-shrink-0 whitespace-nowrap"
+                  >
+                    <TrashIcon />
+                  </Button>
                 </div>
               </div>
-            ))
-          )}
-        </div>
+
+              <div className="mt-3">
+                <div className="flex justify-between text-xs mb-1">
+                  <span className="text-sm">Progress: {goal.progress}%</span>
+                </div>
+                <div className="h-4 w-full bg-gray-200 border-2 border-black overflow-hidden">
+                  <div
+                    className="h-full"
+                    style={{
+                      width: `${goal.progress}%`,
+                      backgroundColor: 
+                        goal.progress > 75 ? 'var(--pixel-green)' : 
+                        goal.progress > 25 ? 'var(--pixel-blue)' : 
+                        'var(--pixel-pink)'
+                    }}
+                  />
+                </div>
+                <Slider
+                  value={[goal.progress]}
+                  min={0}
+                  max={100}
+                  step={5}
+                  className="mt-2"
+                  onValueChange={(values) =>
+                    handleProgressChange(goal.id, values[0])
+                  }
+                  disabled={goal.completed}
+                />
+              </div>
+            </SimpleItem>
+          ))
+        )}
       </div>
-    </div>
+    </SimpleContainer>
   );
 };
 

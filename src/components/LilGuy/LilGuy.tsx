@@ -50,6 +50,7 @@ function LilGuyCanvas({
   const [lilGuyStage, setLilGuyStage] = useState<LilGuyStage>("normal");
   const [message, setMessage] = useState<string>("");
   const [modifiedHealth, setModifiedHealth] = useState<number>();
+  const [lilGuyName, setLilGuyName] = useState("LilGuy");
 
   // listen for emotion updates
   useListenToEmotions((emotionEvent: EmotionEvent) => {
@@ -94,12 +95,67 @@ function LilGuyCanvas({
     }
   });
 
-  // on mount, get health and other data from localStorage
   useEffect(() => {
-    // Get cached modified health from localStorage
-    const storedModifiedHealth = getLocalStorageItem("modifiedHealth", 55);
-    setModifiedHealth(Number(storedModifiedHealth));
+    // Health updates
+    // Listen for health events in localStorage
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === "health") {
+        try {
+          const newHealth = e.newValue ? parseInt(e.newValue, 10) : null;
+          setHealth(newHealth || 0);
+        } catch (err) {
+          console.error("Failed to parse health:", err);
+        }
+      } else if (e.key === "modifiedHealth") {
+        try {
+          const newHealth = e.newValue ? parseInt(e.newValue, 10) : null;
+          setModifiedHealth(newHealth || 0);
+        } catch (err) {
+          console.error("Failed to parse modified health:", err);
+        }
+      }
+    };
 
+    window.addEventListener("storage", handleStorageChange);
+    
+    // Listen for custom events
+    const handleCustomEvent = (e: any) => {
+      if (e.detail?.key === "health") {
+        setHealth(parseInt(e.detail.value, 10) || 0);
+      } else if (e.detail?.key === "modifiedHealth") {
+        setModifiedHealth(parseInt(e.detail.value, 10) || 0);
+      }
+    };
+    
+    window.addEventListener("localStorageChanged", handleCustomEvent);
+
+    // Get initial health value
+    const currentHealth = localStorage.getItem("health");
+    const currentModifiedHealth = localStorage.getItem("modifiedHealth");
+    
+    if (currentHealth) {
+      try {
+        setHealth(parseInt(currentHealth, 10));
+      } catch (err) {
+        console.error("Failed to parse initial health:", err);
+      }
+    }
+    
+    if (currentModifiedHealth) {
+      try {
+        setModifiedHealth(parseInt(currentModifiedHealth, 10));
+      } catch (err) {
+        console.error("Failed to parse initial modified health:", err);
+      }
+    }
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("localStorageChanged", handleCustomEvent);
+    };
+  }, []);
+
+  useEffect(() => {
     // Get cached color from localStorage
     const storedColor = getLocalStorageItem("lilGuyColor", "green");
     setLilGuyColor(storedColor as LilGuyColor);
@@ -108,13 +164,9 @@ function LilGuyCanvas({
     const storedStage = getLocalStorageItem("lilGuyStage", "normal");
     setLilGuyStage(storedStage as LilGuyStage);
 
-    // Reset health bar
-    const health = localStorage.getItem("health");
-    if (health) {
-      setHealth(JSON.parse(health));
-    } else {
-      setHealth(100);
-    }
+    // Get cached name from localStorage
+    const storedName = getLocalStorageItem("lilGuyName", "LilGuy");
+    setLilGuyName(storedName);
 
     // set up window event listeners for localStorage changes
     const handleStorageChange = (e: StorageEvent) => {
@@ -122,6 +174,8 @@ function LilGuyCanvas({
         setLilGuyColor((e.newValue || "green") as LilGuyColor);
       } else if (e.key === "lilGuyStage") {
         setLilGuyStage((e.newValue || "normal") as LilGuyStage);
+      } else if (e.key === "lilGuyName") {
+        setLilGuyName(e.newValue || "LilGuy");
       }
     };
 
@@ -134,6 +188,9 @@ function LilGuyCanvas({
       } else if (key === "lilGuyStage") {
         console.log("Custom event detected: stage change to", value);
         setLilGuyStage(value as LilGuyStage);
+      } else if (key === "lilGuyName") {
+        console.log("Custom event detected: name change to", value);
+        setLilGuyName(value);
       }
     };
 
@@ -326,8 +383,8 @@ function LilGuyCanvas({
   }, [animation, size, lilGuyColor, lilGuyStage]);
 
   const canvasClasses = `${size === "normal"
-    ? "border border-black bg-gray-100 w-[100%] h-[auto] pb-4 relative"
-    : "w-[48px] h-[48px] relative"
+    ? "border-2 border-black bg-white pixelated w-[100%] h-[auto] pb-4 relative shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+    : "w-[48px] h-[48px] relative pixelated border-2 border-black"
     } ${className}`;
 
   return (
@@ -339,11 +396,27 @@ function LilGuyCanvas({
         className={`relative flex flex-col items-center ${size === "normal" ? "" : "w-min"
           }`}
       >
+        {/* Show name above the canvas */}
+        {size === "normal" && (
+          <div className="w-full bg-pixel-primary text-black px-4 py-2 border-t-2 border-l-2 border-r-2 border-black text-center font-bold">
+            {lilGuyName}
+          </div>
+        )}
+        
+        {/* Message box for LilGuy */}
+        {message && size === "normal" && (
+          <div className="pixel-window mb-2 w-full max-w-xs">
+            <div className="pixel-window-content p-3">
+              <p className="text-sm">{message}</p>
+            </div>
+          </div>
+        )}
+        
         <div className="relative">
           <canvas className={canvasClasses} ref={canvasRef} />
           
           {showHealthBar && (
-            <div className="absolute bottom-2 left-0 right-0 w-[80%] mx-auto">
+            <div className="absolute bottom-4 left-0 right-0 w-[80%] mx-auto">
               <HealthBar health={modifiedHealth || 0} />
             </div>
           )}

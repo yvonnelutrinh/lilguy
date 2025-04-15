@@ -104,7 +104,7 @@ export default function LilGuyInteractor() {
   return (
     <div className="w-[100%] flex flex-col items-center">
       <div className="w-full min-h-[12.5rem] max-w-[25rem] mb-4">
-        <div className="w-full bg-white p-[24px] min-h-[12.5rem] border border-black flex flex-col items-start justify-start">
+        <div className="w-full bg-white p-[24px] min-h-[12.5rem] border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex flex-col items-start justify-start">
           <p className="text-left text-xl text-black font-mono">
             {text}
             <span className="ml-1 text-xl cursor-blink">|</span>
@@ -143,16 +143,14 @@ export default function LilGuyInteractor() {
               }
               setButtonText((prev) => (prev === "Walk" ? "Chill" : "Walk"));
             }}
-            className="flex-1 px-3 py-2 bg-gray-100 text-black border border-black rounded transition-all hover:bg-gray-200 text-pixel-sm whitespace-nowrap"
+            className="flex-1 px-3 py-2 pixel-button text-pixel-sm whitespace-nowrap"
           >
             {buttonText}
           </button>
 
           <button
-            onClick={() => {
-              emitEmotion("happy", 50, "button")
-            }}
-            className="flex-1 px-3 py-2 bg-gray-100 text-black border border-black rounded transition-all hover:bg-gray-200 text-pixel-sm whitespace-nowrap"
+            onClick={() => emitEmotion("happy", 100, "button")}
+            className="flex-1 px-3 py-2 pixel-button bg-pixel-primary text-white text-pixel-sm whitespace-nowrap"
           >
             Pet
           </button>

@@ -1,10 +1,22 @@
 import React, { useState } from 'react';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/Card/Card";
 import { Button } from "@/components/ui/Button/Button";
 import { Input } from "@/components/ui/Input/Input";
 import { Label } from "@/components/ui/Label/Label";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/Select/Select";
-import { Trash, Plus } from "lucide-react";
+import { Trash } from "lucide-react";
+import { SimpleContainer, SimpleItem } from '@/components/ui/SimpleContainer/SimpleContainer';
+
+// PlusIcon component from Goals.tsx
+const PlusIcon = () => (
+  <div className="w-5 h-5 flex items-center justify-center">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="pixelated">
+      <rect x="8" y="5" width="4" height="2" fill="currentColor" />
+      <rect x="8" y="13" width="4" height="2" fill="currentColor" />
+      <rect x="5" y="8" width="2" height="4" fill="currentColor" />
+      <rect x="13" y="8" width="2" height="4" fill="currentColor" />
+    </svg>
+  </div>
+);
 
 interface Website {
   id: number;
@@ -67,98 +79,96 @@ const SiteList: React.FC = () => {
   };
 
   return (
-    <Card className="pixel-container">
-      <CardHeader>
-        <CardTitle>Website Tracker</CardTitle>
-        <CardDescription>
-          Categorize websites and track time spent on them
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="flex gap-2 mb-6">
-          <div className="flex-1">
-            <Input
-              placeholder="Enter website URL (e.g., example.com)"
-              value={newWebsite}
-              onChange={(e) => setNewWebsite(e.target.value)}
-              className="w-full"
-            />
-          </div>
-          <Select 
-            value={category} 
-            onValueChange={(value) => setCategory(value as 'productive' | 'unproductive' | 'neutral')}
+    <SimpleContainer 
+      title="Website Tracker" 
+      description="Categorize websites and track time spent on them"
+      instructionText="Click on a category to change it or remove a website"
+      renderInstructionAfterInput={true}
+    >
+      <div className="flex gap-2 mb-3">
+        <div className="flex-1">
+          <Input
+            placeholder="Enter website URL (e.g., example.com)"
+            value={newWebsite}
+            onChange={(e) => setNewWebsite(e.target.value)}
+            className="w-full"
+          />
+        </div>
+        <Select 
+          value={category} 
+          onValueChange={(value) => setCategory(value as 'productive' | 'unproductive' | 'neutral')}
+        >
+          <SelectTrigger className="w-[180px] bg-white">
+            <SelectValue placeholder="Category" />
+          </SelectTrigger>
+          <SelectContent className="bg-white">
+            <SelectGroup>
+              <SelectLabel>Category</SelectLabel>
+              <SelectItem value="productive">Productive</SelectItem>
+              <SelectItem value="unproductive">Unproductive</SelectItem>
+              <SelectItem value="neutral">Neutral</SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+        <Button onClick={handleAddWebsite} className="pixel-button">
+          <PlusIcon />
+          <span className="ml-1 text-pixel-sm">ADD</span>
+        </Button>
+      </div>
+      
+      <div className="mb-4">
+        <Label>Filter:</Label>
+        <div className="flex gap-2 mt-1">
+          <Button 
+            variant={filter === 'all' ? 'default' : 'outline'} 
+            onClick={() => setFilter('all')}
+            size="sm"
           >
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Category" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectLabel>Category</SelectLabel>
-                <SelectItem value="productive">Productive</SelectItem>
-                <SelectItem value="unproductive">Unproductive</SelectItem>
-                <SelectItem value="neutral">Neutral</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-          <Button onClick={handleAddWebsite} className="px-3" variant="default">
-            <Plus className="h-4 w-4" />
+            All
+          </Button>
+          <Button 
+            variant={filter === 'productive' ? 'default' : 'outline'}
+            onClick={() => setFilter('productive')}
+            size="sm"
+            className="bg-pixel-accent border-black"
+          >
+            Productive
+          </Button>
+          <Button 
+            variant={filter === 'unproductive' ? 'default' : 'outline'}
+            onClick={() => setFilter('unproductive')}
+            size="sm"
+            className="bg-pixel-danger border-black"
+          >
+            Unproductive
+          </Button>
+          <Button 
+            variant={filter === 'neutral' ? 'default' : 'outline'}
+            onClick={() => setFilter('neutral')}
+            size="sm"
+            className="bg-pixel-warning border-black"
+          >
+            Neutral
           </Button>
         </div>
-        
-        <div className="mb-4">
-          <Label>Filter:</Label>
-          <div className="flex gap-2 mt-1">
-            <Button 
-              variant={filter === 'all' ? 'default' : 'outline'} 
-              onClick={() => setFilter('all')}
-              size="sm"
-            >
-              All
-            </Button>
-            <Button 
-              variant={filter === 'productive' ? 'default' : 'outline'}
-              onClick={() => setFilter('productive')}
-              size="sm"
-              className="bg-pixel-accent border-black"
-            >
-              Productive
-            </Button>
-            <Button 
-              variant={filter === 'unproductive' ? 'default' : 'outline'}
-              onClick={() => setFilter('unproductive')}
-              size="sm"
-              className="bg-pixel-danger border-black"
-            >
-              Unproductive
-            </Button>
-            <Button 
-              variant={filter === 'neutral' ? 'default' : 'outline'}
-              onClick={() => setFilter('neutral')}
-              size="sm"
-              className="bg-pixel-warning border-black"
-            >
-              Neutral
-            </Button>
+      </div>
+      
+      <div className="space-y-2">
+        {filteredWebsites.length === 0 ? (
+          <div className="text-center py-4 text-muted-foreground">
+            No websites in this category
           </div>
-        </div>
-        
-        <div className="space-y-2 max-h-64 overflow-y-auto pr-2">
-          {filteredWebsites.length === 0 ? (
-            <div className="text-center py-4 text-muted-foreground">
-              No websites in this category
-            </div>
-          ) : (
-            filteredWebsites.map((website) => (
-              <div 
-                key={website.id} 
-                className="flex items-center justify-between p-3 border-2 border-black"
-                style={{
-                  backgroundColor: 
-                    website.category === 'productive' ? 'rgba(16, 185, 129, 0.1)' : 
-                    website.category === 'unproductive' ? 'rgba(239, 68, 68, 0.1)' : 
-                    'rgba(245, 158, 11, 0.1)'
-                }}
-              >
+        ) : (
+          filteredWebsites.map((website) => (
+            <SimpleItem
+              key={website.id}
+              backgroundColor={
+                website.category === 'productive' ? 'rgba(16, 185, 129, 0.1)' : 
+                website.category === 'unproductive' ? 'rgba(239, 68, 68, 0.1)' : 
+                'rgba(245, 158, 11, 0.1)'
+              }
+            >
+              <div className="flex items-center justify-between">
                 <div className="flex-1">
                   <div className="font-medium">{website.name}</div>
                   <div className="text-xs text-muted-foreground">
@@ -173,10 +183,10 @@ const SiteList: React.FC = () => {
                       value as 'productive' | 'unproductive' | 'neutral'
                     )}
                   >
-                    <SelectTrigger className="w-[140px] h-8 text-xs">
+                    <SelectTrigger className="w-[140px] h-8 text-xs bg-white">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-white">
                       <SelectItem value="productive">Productive</SelectItem>
                       <SelectItem value="unproductive">Unproductive</SelectItem>
                       <SelectItem value="neutral">Neutral</SelectItem>
@@ -185,21 +195,18 @@ const SiteList: React.FC = () => {
                   <Button 
                     variant="destructive" 
                     size="icon" 
-                    className="h-8 w-8"
+                    className="h-8 w-8 pixel-button pixel-button-danger"
                     onClick={() => handleRemoveWebsite(website.id)}
                   >
                     <Trash className="h-4 w-4" />
                   </Button>
                 </div>
               </div>
-            ))
-          )}
-        </div>
-      </CardContent>
-      <CardFooter className="text-sm text-muted-foreground">
-        Click on a category to change it or remove a website
-      </CardFooter>
-    </Card>
+            </SimpleItem>
+          ))
+        )}
+      </div>
+    </SimpleContainer>
   );
 };
 
