@@ -10,6 +10,7 @@ __turbopack_context__.s({
     "getAnimationFrameIndex": (()=>getAnimationFrameIndex),
     "getAnimationFrames": (()=>getAnimationFrames),
     "getSpriteSheetPath": (()=>getSpriteSheetPath),
+    "recolorSpriteImage": (()=>recolorSpriteImage),
     "spriteDimensions": (()=>spriteDimensions)
 });
 const spriteDimensions = {
@@ -124,6 +125,193 @@ const getFrameRate = (animation)=>{
             return 8; // Default for idle
     }
 };
+// --- Palette Swap Utility for LilGuy Recoloring ---
+// Palette values matched to user screenshots
+const LILGUY_COLOR_PALETTES = {
+    black: [
+        [
+            30,
+            30,
+            30
+        ],
+        [
+            60,
+            60,
+            60
+        ],
+        [
+            100,
+            100,
+            100
+        ],
+        [
+            160,
+            160,
+            160
+        ],
+        [
+            220,
+            220,
+            220
+        ]
+    ],
+    blue: [
+        [
+            25,
+            80,
+            170
+        ],
+        [
+            33,
+            118,
+            217
+        ],
+        [
+            87,
+            156,
+            255
+        ],
+        [
+            120,
+            180,
+            255
+        ],
+        [
+            255,
+            255,
+            255
+        ]
+    ],
+    green: [
+        [
+            20,
+            100,
+            30
+        ],
+        [
+            54,
+            210,
+            58
+        ],
+        [
+            120,
+            240,
+            120
+        ],
+        [
+            180,
+            255,
+            180
+        ],
+        [
+            255,
+            255,
+            255
+        ]
+    ],
+    pink: [
+        [
+            100,
+            30,
+            70
+        ],
+        [
+            220,
+            80,
+            180
+        ],
+        [
+            240,
+            140,
+            200
+        ],
+        [
+            255,
+            200,
+            220
+        ],
+        [
+            255,
+            220,
+            240
+        ]
+    ]
+};
+// Improved: More robust outline/contour detection for colored versions
+function isBodyPixel(r, g, b) {
+    // Allow a bit more color drift for outlines (tolerate up to 40 difference)
+    const maxDiff = 40;
+    return Math.abs(r - g) < maxDiff && Math.abs(r - b) < maxDiff && Math.abs(g - b) < maxDiff;
+}
+function recolorSpriteImage(img, targetColor, callback) {
+    console.log('[LilGuy] recolorSpriteImage called for color:', targetColor);
+    const palette = LILGUY_COLOR_PALETTES[targetColor] || LILGUY_COLOR_PALETTES.black;
+    const mainColor = palette[1];
+    const outlineColor = palette[3];
+    const darkOutline = palette[0];
+    const highlightColor = palette[4];
+    const offCanvas = document.createElement('canvas');
+    offCanvas.width = img.width;
+    offCanvas.height = img.height;
+    const ctx = offCanvas.getContext('2d');
+    if (!ctx) {
+        console.error('[LilGuy] Failed to get 2D context');
+        return;
+    }
+    ctx.drawImage(img, 0, 0);
+    const imageData = ctx.getImageData(0, 0, img.width, img.height);
+    const data = imageData.data;
+    let recoloredCount = 0;
+    for(let i = 0; i < data.length; i += 4){
+        if (data[i + 3] === 0) continue; // transparent
+        const r = data[i], g = data[i + 1], b = data[i + 2];
+        // If pixel is nearly white, use highlight
+        if (r > 220 && g > 220 && b > 220) {
+            data[i] = highlightColor[0];
+            data[i + 1] = highlightColor[1];
+            data[i + 2] = highlightColor[2];
+            data[i + 3] = 255;
+            recoloredCount++;
+            continue;
+        }
+        // Only recolor neutral/gray pixels (body/outline), preserve colored emotion details
+        const maxDiff = 24;
+        if (Math.abs(r - g) < maxDiff && Math.abs(r - b) < maxDiff && Math.abs(g - b) < maxDiff) {
+            const brightness = 0.299 * r + 0.587 * g + 0.114 * b;
+            if (brightness < 20) {
+                data[i] = darkOutline[0];
+                data[i + 1] = darkOutline[1];
+                data[i + 2] = darkOutline[2];
+                data[i + 3] = 255;
+                recoloredCount++;
+            } else if (brightness < 80) {
+                data[i] = outlineColor[0];
+                data[i + 1] = outlineColor[1];
+                data[i + 2] = outlineColor[2];
+                data[i + 3] = 255;
+                recoloredCount++;
+            } else {
+                data[i] = mainColor[0];
+                data[i + 1] = mainColor[1];
+                data[i + 2] = mainColor[2];
+                data[i + 3] = 255;
+                recoloredCount++;
+            }
+        }
+        // else: colored pixel (emotion/expressive detail), preserve as-is
+        if (i % 4000 === 0) {
+            console.log(`[LilGuy] Recoloring pixel ${i / 4}: rgb(${r},${g},${b}) -> rgb(${data[i]},${data[i + 1]},${data[i + 2]})`);
+        }
+    }
+    console.log(`[LilGuy] Total recolored pixels: ${recoloredCount} / ${data.length / 4}`);
+    ctx.putImageData(imageData, 0, 0);
+    const recoloredImg = new window.Image();
+    recoloredImg.onload = ()=>{
+        console.log('[LilGuy] Recolored image loaded and callback called');
+        callback(recoloredImg);
+    };
+    recoloredImg.src = offCanvas.toDataURL();
+} // --- END Palette Swap Utility ---
 }}),
 
 };

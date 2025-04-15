@@ -4251,9 +4251,45 @@ function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "nor
                 CANVAS_WIDTH = canvas.width = 400;
                 CANVAS_HEIGHT = canvas.height = 250;
             }
+            ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
             // create and load the sprite image
             const playerImage = new Image();
             let imageLoaded = false;
+            let recoloredImage = null;
+            // Palette swap integration
+            __turbopack_context__.r("[project]/src/components/LilGuy/SpriteManager.ts [app-client] (ecmascript, async loader)")(__turbopack_context__.i).then({
+                "LilGuyCanvas.useEffect": ({ recolorSpriteImage })=>{
+                    playerImage.src = `/lilguy_3.png`;
+                    playerImage.onload = ({
+                        "LilGuyCanvas.useEffect": ()=>{
+                            imageLoaded = true;
+                            // Only recolor if not black (default sprite is black)
+                            if (lilGuyColor !== "black") {
+                                recolorSpriteImage(playerImage, lilGuyColor, {
+                                    "LilGuyCanvas.useEffect": (img)=>{
+                                        recoloredImage = img;
+                                        if (animRef.current) {
+                                            cancelAnimationFrame(animRef.current);
+                                        }
+                                        animRef.current = requestAnimationFrame(animate);
+                                    }
+                                }["LilGuyCanvas.useEffect"]);
+                            } else {
+                                recoloredImage = null;
+                                if (animRef.current) {
+                                    cancelAnimationFrame(animRef.current);
+                                }
+                                animRef.current = requestAnimationFrame(animate);
+                            }
+                        }
+                    })["LilGuyCanvas.useEffect"];
+                    playerImage.onerror = ({
+                        "LilGuyCanvas.useEffect": ()=>{
+                            console.error("Error loading basic sprite");
+                        }
+                    })["LilGuyCanvas.useEffect"];
+                }
+            }["LilGuyCanvas.useEffect"]);
             // Define our animation function
             function animate() {
                 if (!ctx) return;
@@ -4265,39 +4301,15 @@ function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "nor
                     }
                     let frameX = spriteAnimations[animation].loc[position] ? spriteAnimations[animation].loc[position].x : 0;
                     let frameY = spriteAnimations[animation].loc[position] ? spriteAnimations[animation].loc[position].y : 0;
-                    ctx.drawImage(playerImage, frameX, frameY, spriteWidth, spriteHeight, centerX, centerY, displayWidth, displayHeight);
+                    const imgToDraw = recoloredImage || playerImage;
+                    ctx.drawImage(imgToDraw, frameX, frameY, spriteWidth, spriteHeight, centerX, centerY, displayWidth, displayHeight);
                 } else {
-                    // Draw loading text if image not loaded
                     ctx.fillStyle = 'black';
                     ctx.font = '16px Arial';
                     ctx.fillText('Loading...', CANVAS_WIDTH / 2 - 30, CANVAS_HEIGHT / 2);
                 }
                 gameFrame++;
                 animRef.current = requestAnimationFrame(animate);
-            }
-            try {
-                // First try to use our fallback sprite that we know works
-                playerImage.src = `/lilguy_3.png`;
-                console.log("Loading basic sprite:", playerImage.src);
-                playerImage.onload = ({
-                    "LilGuyCanvas.useEffect": ()=>{
-                        imageLoaded = true;
-                        console.log("Basic sprite loaded successfully");
-                        // Start animation once the image is loaded
-                        if (animRef.current) {
-                            cancelAnimationFrame(animRef.current);
-                        }
-                        animRef.current = requestAnimationFrame(animate);
-                    }
-                })["LilGuyCanvas.useEffect"];
-                playerImage.onerror = ({
-                    "LilGuyCanvas.useEffect": ()=>{
-                        console.error("Error loading basic sprite");
-                    // Try fallback SVG or other fallback mechanism
-                    }
-                })["LilGuyCanvas.useEffect"];
-            } catch (e) {
-                console.error("Error in sprite loading:", e);
             }
             const spriteWidth = 500;
             const spriteHeight = 500;
@@ -4392,7 +4404,7 @@ function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "nor
                         children: lilGuyName
                     }, void 0, false, {
                         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                        lineNumber: 403,
+                        lineNumber: 404,
                         columnNumber: 11
                     }, this),
                     message && size === "normal" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4404,17 +4416,17 @@ function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "nor
                                 children: message
                             }, void 0, false, {
                                 fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                                lineNumber: 412,
+                                lineNumber: 413,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                            lineNumber: 411,
+                            lineNumber: 412,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                        lineNumber: 410,
+                        lineNumber: 411,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4425,7 +4437,7 @@ function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "nor
                                 ref: canvasRef
                             }, void 0, false, {
                                 fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                                lineNumber: 418,
+                                lineNumber: 419,
                                 columnNumber: 11
                             }, this),
                             showHealthBar && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4434,42 +4446,42 @@ function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "nor
                                     health: modifiedHealth || 0
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                                    lineNumber: 422,
+                                    lineNumber: 423,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                                lineNumber: 421,
+                                lineNumber: 422,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                        lineNumber: 417,
+                        lineNumber: 418,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                lineNumber: 397,
+                lineNumber: 398,
                 columnNumber: 7
             }, this),
             showControls && size === "normal" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "w-full",
                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$LilGuyInteractor$2f$LilGuyInteractor$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
                     fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                    lineNumber: 429,
+                    lineNumber: 430,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                lineNumber: 428,
+                lineNumber: 429,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-        lineNumber: 393,
+        lineNumber: 394,
         columnNumber: 5
     }, this);
 }
@@ -4488,12 +4500,12 @@ function LilGuy() {
             showHealthBar: true
         }, void 0, false, {
             fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-            lineNumber: 440,
+            lineNumber: 441,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-        lineNumber: 439,
+        lineNumber: 440,
         columnNumber: 5
     }, this);
 }
@@ -4505,7 +4517,7 @@ function WidgetLilGuy() {
         showHealthBar: false
     }, void 0, false, {
         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-        lineNumber: 450,
+        lineNumber: 451,
         columnNumber: 10
     }, this);
 }

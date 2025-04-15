@@ -261,11 +261,41 @@ function LilGuyCanvas({
       CANVAS_WIDTH = canvas.width = 400;
       CANVAS_HEIGHT = canvas.height = 250;
     }
+    
+    ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
     // create and load the sprite image
     const playerImage = new Image();
     let imageLoaded = false;
-    
+    let recoloredImage: HTMLImageElement | null = null;
+
+    // Palette swap integration
+    import("./SpriteManager").then(({ recolorSpriteImage }) => {
+      playerImage.src = `/lilguy_3.png`;
+      playerImage.onload = () => {
+        imageLoaded = true;
+        // Only recolor if not black (default sprite is black)
+        if (lilGuyColor !== "black") {
+          recolorSpriteImage(playerImage, lilGuyColor as any, (img: HTMLImageElement) => {
+            recoloredImage = img;
+            if (animRef.current) {
+              cancelAnimationFrame(animRef.current);
+            }
+            animRef.current = requestAnimationFrame(animate);
+          });
+        } else {
+          recoloredImage = null;
+          if (animRef.current) {
+            cancelAnimationFrame(animRef.current);
+          }
+          animRef.current = requestAnimationFrame(animate);
+        }
+      };
+      playerImage.onerror = () => {
+        console.error("Error loading basic sprite");
+      };
+    });
+
     // Define our animation function
     function animate() {
       if (!ctx) return;
@@ -276,16 +306,15 @@ function LilGuyCanvas({
         if (!spriteAnimations[animation]) {
           return;
         }
-
         let frameX = spriteAnimations[animation].loc[position]
           ? spriteAnimations[animation].loc[position].x
           : 0;
         let frameY = spriteAnimations[animation].loc[position]
           ? spriteAnimations[animation].loc[position].y
           : 0;
-
+        const imgToDraw = recoloredImage || playerImage;
         ctx.drawImage(
-          playerImage,
+          imgToDraw,
           frameX,
           frameY,
           spriteWidth,
@@ -296,41 +325,13 @@ function LilGuyCanvas({
           displayHeight
         );
       } else {
-        // Draw loading text if image not loaded
         ctx.fillStyle = 'black';
         ctx.font = '16px Arial';
         ctx.fillText('Loading...', CANVAS_WIDTH/2 - 30, CANVAS_HEIGHT/2);
       }
-      
       gameFrame++;
       animRef.current = requestAnimationFrame(animate);
     }
-    
-    try {
-      // First try to use our fallback sprite that we know works
-      playerImage.src = `/lilguy_3.png`;
-      console.log("Loading basic sprite:", playerImage.src);
-      
-      playerImage.onload = () => {
-        imageLoaded = true;
-        console.log("Basic sprite loaded successfully");
-        
-        // Start animation once the image is loaded
-        if (animRef.current) {
-          cancelAnimationFrame(animRef.current);
-        }
-        animRef.current = requestAnimationFrame(animate);
-      };
-      
-      playerImage.onerror = () => {
-        console.error("Error loading basic sprite");
-        // Try fallback SVG or other fallback mechanism
-      };
-      
-    } catch (e) {
-      console.error("Error in sprite loading:", e);
-    }
-
     const spriteWidth = 500;
     const spriteHeight = 500;
     let gameFrame = 0;
