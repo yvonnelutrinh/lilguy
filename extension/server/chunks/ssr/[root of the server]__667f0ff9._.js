@@ -3310,16 +3310,25 @@ const SiteList = ()=>{
                 category: newCategory
             } : site));
     };
-    const filteredWebsites = filter === 'all' ? [
-        ...websites
-    ].sort((a, b)=>{
-        const catOrder = {
-            productive: 0,
-            neutral: 1,
-            unproductive: 2
-        };
-        return catOrder[a.category] - catOrder[b.category];
-    }) : websites.filter((site)=>site.category === filter);
+    // Memoize filtered and sorted websites
+    const filteredWebsites = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useMemo"])(()=>{
+        if (filter === 'all') {
+            return [
+                ...websites
+            ].sort((a, b)=>{
+                const catOrder = {
+                    productive: 0,
+                    neutral: 1,
+                    unproductive: 2
+                };
+                return catOrder[a.category] - catOrder[b.category];
+            });
+        }
+        return websites.filter((site)=>site.category === filter);
+    }, [
+        websites,
+        filter
+    ]);
     const formatTime = (minutes)=>{
         const hours = Math.floor(minutes / 60);
         const mins = minutes % 60;
@@ -3343,12 +3352,12 @@ const SiteList = ()=>{
                             className: "w-full"
                         }, void 0, false, {
                             fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                            lineNumber: 134,
+                            lineNumber: 138,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                        lineNumber: 133,
+                        lineNumber: 137,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Select$2f$Select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Select"], {
@@ -3361,12 +3370,12 @@ const SiteList = ()=>{
                                     placeholder: "Category"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                    lineNumber: 146,
+                                    lineNumber: 150,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                lineNumber: 145,
+                                lineNumber: 149,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Select$2f$Select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SelectContent"], {
@@ -3377,7 +3386,7 @@ const SiteList = ()=>{
                                             children: "Category"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                            lineNumber: 150,
+                                            lineNumber: 154,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Select$2f$Select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -3385,7 +3394,7 @@ const SiteList = ()=>{
                                             children: "Productive"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                            lineNumber: 151,
+                                            lineNumber: 155,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Select$2f$Select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -3393,7 +3402,7 @@ const SiteList = ()=>{
                                             children: "Unproductive"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                            lineNumber: 152,
+                                            lineNumber: 156,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Select$2f$Select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -3401,24 +3410,24 @@ const SiteList = ()=>{
                                             children: "Neutral"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                            lineNumber: 153,
+                                            lineNumber: 157,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                    lineNumber: 149,
+                                    lineNumber: 153,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                lineNumber: 148,
+                                lineNumber: 152,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                        lineNumber: 141,
+                        lineNumber: 145,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Button$2f$Button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -3427,7 +3436,7 @@ const SiteList = ()=>{
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(PlusIcon, {}, void 0, false, {
                                 fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                lineNumber: 158,
+                                lineNumber: 162,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3435,19 +3444,19 @@ const SiteList = ()=>{
                                 children: "ADD"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                lineNumber: 159,
+                                lineNumber: 163,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                        lineNumber: 157,
+                        lineNumber: 161,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                lineNumber: 132,
+                lineNumber: 136,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3457,7 +3466,7 @@ const SiteList = ()=>{
                         children: "Filter:"
                     }, void 0, false, {
                         fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                        lineNumber: 164,
+                        lineNumber: 168,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3470,7 +3479,7 @@ const SiteList = ()=>{
                                 children: "All"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                lineNumber: 166,
+                                lineNumber: 170,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Button$2f$Button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -3481,7 +3490,7 @@ const SiteList = ()=>{
                                 children: "Productive"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                lineNumber: 173,
+                                lineNumber: 177,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Button$2f$Button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -3492,7 +3501,7 @@ const SiteList = ()=>{
                                 children: "Unproductive"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                lineNumber: 181,
+                                lineNumber: 185,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Button$2f$Button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -3503,19 +3512,19 @@ const SiteList = ()=>{
                                 children: "Neutral"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                lineNumber: 189,
+                                lineNumber: 193,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                        lineNumber: 165,
+                        lineNumber: 169,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                lineNumber: 163,
+                lineNumber: 167,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3525,7 +3534,7 @@ const SiteList = ()=>{
                     children: "No websites in this category"
                 }, void 0, false, {
                     fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                    lineNumber: 202,
+                    lineNumber: 206,
                     columnNumber: 11
                 }, this) : filteredWebsites.map((website)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$SimpleContainer$2f$SimpleContainer$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SimpleItem"], {
                         backgroundColor: website.category === 'productive' ? 'rgba(16, 185, 129, 0.1)' : website.category === 'unproductive' ? 'rgba(239, 68, 68, 0.1)' : 'rgba(245, 158, 11, 0.1)',
@@ -3540,7 +3549,7 @@ const SiteList = ()=>{
                                             children: website.name
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                            lineNumber: 217,
+                                            lineNumber: 221,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3551,13 +3560,13 @@ const SiteList = ()=>{
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                            lineNumber: 218,
+                                            lineNumber: 222,
                                             columnNumber: 19
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                    lineNumber: 216,
+                                    lineNumber: 220,
                                     columnNumber: 17
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3571,12 +3580,12 @@ const SiteList = ()=>{
                                                     className: "w-[140px] h-8 text-xs bg-white",
                                                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Select$2f$Select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SelectValue"], {}, void 0, false, {
                                                         fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                                        lineNumber: 231,
+                                                        lineNumber: 235,
                                                         columnNumber: 23
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                                    lineNumber: 230,
+                                                    lineNumber: 234,
                                                     columnNumber: 21
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Select$2f$Select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SelectContent"], {
@@ -3587,7 +3596,7 @@ const SiteList = ()=>{
                                                             children: "Productive"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                                            lineNumber: 234,
+                                                            lineNumber: 238,
                                                             columnNumber: 23
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Select$2f$Select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -3595,7 +3604,7 @@ const SiteList = ()=>{
                                                             children: "Unproductive"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                                            lineNumber: 235,
+                                                            lineNumber: 239,
                                                             columnNumber: 23
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Select$2f$Select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -3603,19 +3612,19 @@ const SiteList = ()=>{
                                                             children: "Neutral"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                                            lineNumber: 236,
+                                                            lineNumber: 240,
                                                             columnNumber: 23
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                                    lineNumber: 233,
+                                                    lineNumber: 237,
                                                     columnNumber: 21
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                            lineNumber: 223,
+                                            lineNumber: 227,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Button$2f$Button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -3627,40 +3636,40 @@ const SiteList = ()=>{
                                                 className: "h-4 w-4"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                                lineNumber: 245,
+                                                lineNumber: 249,
                                                 columnNumber: 21
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                            lineNumber: 239,
+                                            lineNumber: 243,
                                             columnNumber: 19
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                                    lineNumber: 222,
+                                    lineNumber: 226,
                                     columnNumber: 17
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                            lineNumber: 215,
+                            lineNumber: 219,
                             columnNumber: 15
                         }, this)
                     }, website.id, false, {
                         fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                        lineNumber: 207,
+                        lineNumber: 211,
                         columnNumber: 13
                     }, this))
             }, void 0, false, {
                 fileName: "[project]/src/components/SiteList/SiteList.tsx",
-                lineNumber: 200,
+                lineNumber: 204,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/SiteList/SiteList.tsx",
-        lineNumber: 126,
+        lineNumber: 130,
         columnNumber: 5
     }, this);
 };
@@ -4100,7 +4109,7 @@ function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "nor
     const animRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useRef"])(null);
     const [animation, setAnimation] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(controlledAnimation || initialAnimation);
     const [lilGuyColor, setLilGuyColor] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(()=>getLocalStorageItem('lilGuyColor', 'green'));
-    const [lilGuyStage, setLilGuyStage] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(controlledStage || "normal");
+    const [lilGuyStage, setLilGuyStage] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(()=>getLocalStorageItem('lilGuyStage', 'normal'));
     const [message, setMessage] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])("");
     const [lilGuyName, setLilGuyName] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])("LilGuy");
     const { health, setHealth } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$context$2f$HealthContext$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useHealth"])();
@@ -4253,46 +4262,15 @@ function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "nor
         };
     }, []);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
-        // Get cached color from localStorage
-        const storedColor = getLocalStorageItem("lilGuyColor", "green");
-        setLilGuyColor(storedColor);
-        // Get cached stage from localStorage
-        const storedStage = getLocalStorageItem("lilGuyStage", "normal");
-        setLilGuyStage(storedStage);
-        // Get cached name from localStorage
-        const storedName = getLocalStorageItem("lilGuyName", "LilGuy");
-        setLilGuyName(storedName);
-        // set up window event listeners for localStorage changes
-        const handleStorageChange = (e)=>{
-            if (e.key === "lilGuyColor") {
-                setLilGuyColor(e.newValue || "green");
-            } else if (e.key === "lilGuyStage") {
-                setLilGuyStage(e.newValue || "normal");
-            } else if (e.key === "lilGuyName") {
-                setLilGuyName(e.newValue || "LilGuy");
-            }
-        };
-        // Listen for custom events from the CharacterStyles component
-        const handleCustomStorageChange = (e)=>{
-            const { key, value } = e.detail;
-            if (key === "lilGuyColor") {
-                console.log("Custom event detected: color change to", value);
-                setLilGuyColor(value);
-            } else if (key === "lilGuyStage") {
-                console.log("Custom event detected: stage change to", value);
-                setLilGuyStage(value);
-            } else if (key === "lilGuyName") {
-                console.log("Custom event detected: name change to", value);
-                setLilGuyName(value);
-            }
-        };
-        window.addEventListener("storage", handleStorageChange);
-        window.addEventListener("localStorageChanged", handleCustomStorageChange);
-        return ()=>{
-            window.removeEventListener("storage", handleStorageChange);
-            window.removeEventListener("localStorageChanged", handleCustomStorageChange);
-        };
-    }, []);
+        setLocalStorageItem('lilGuyColor', lilGuyColor);
+    }, [
+        lilGuyColor
+    ]);
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
+        setLocalStorageItem('lilGuyStage', lilGuyStage);
+    }, [
+        lilGuyStage
+    ]);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
         if (controlledHealth !== undefined) setHealth(controlledHealth);
     }, [
@@ -4321,7 +4299,7 @@ function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "nor
                         children: lilGuyName
                     }, void 0, false, {
                         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                        lineNumber: 321,
+                        lineNumber: 280,
                         columnNumber: 11
                     }, this),
                     message && size === "normal" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4333,17 +4311,17 @@ function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "nor
                                 children: message
                             }, void 0, false, {
                                 fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                                lineNumber: 330,
+                                lineNumber: 289,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                            lineNumber: 329,
+                            lineNumber: 288,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                        lineNumber: 328,
+                        lineNumber: 287,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4354,7 +4332,7 @@ function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "nor
                                 ref: canvasRef
                             }, void 0, false, {
                                 fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                                lineNumber: 336,
+                                lineNumber: 295,
                                 columnNumber: 11
                             }, this),
                             showHealthBar && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4363,42 +4341,42 @@ function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "nor
                                     health: health
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                                    lineNumber: 340,
+                                    lineNumber: 299,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                                lineNumber: 339,
+                                lineNumber: 298,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                        lineNumber: 335,
+                        lineNumber: 294,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                lineNumber: 315,
+                lineNumber: 274,
                 columnNumber: 7
             }, this),
             showControls && size === "normal" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "w-full",
                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$LilGuyInteractor$2f$LilGuyInteractor$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
                     fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                    lineNumber: 347,
+                    lineNumber: 306,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                lineNumber: 346,
+                lineNumber: 305,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-        lineNumber: 311,
+        lineNumber: 270,
         columnNumber: 5
     }, this);
 }
@@ -4411,12 +4389,12 @@ function LilGuy() {
             showHealthBar: true
         }, void 0, false, {
             fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-            lineNumber: 358,
+            lineNumber: 317,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-        lineNumber: 357,
+        lineNumber: 316,
         columnNumber: 5
     }, this);
 }
@@ -4429,7 +4407,7 @@ function WidgetLilGuy(props) {
         ...props
     }, void 0, false, {
         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-        lineNumber: 369,
+        lineNumber: 328,
         columnNumber: 10
     }, this);
 }

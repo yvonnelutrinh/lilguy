@@ -85,7 +85,7 @@ function LilGuyCanvas({
   const animRef = useRef<number | null>(null);
   const [animation, setAnimation] = useState<LilGuyAnimation>(controlledAnimation || initialAnimation);
   const [lilGuyColor, setLilGuyColor] = useState<LilGuyColor>(() => getLocalStorageItem('lilGuyColor', 'green'));
-  const [lilGuyStage, setLilGuyStage] = useState<LilGuyStage>(controlledStage || "normal");
+  const [lilGuyStage, setLilGuyStage] = useState<LilGuyStage>(() => getLocalStorageItem('lilGuyStage', 'normal'));
   const [message, setMessage] = useState<string>("");
   const [lilGuyName, setLilGuyName] = useState("LilGuy");
   const { health, setHealth } = useHealth();
@@ -245,52 +245,11 @@ function LilGuyCanvas({
   }, []);
 
   useEffect(() => {
-    // Get cached color from localStorage
-    const storedColor = getLocalStorageItem("lilGuyColor", "green");
-    setLilGuyColor(storedColor as LilGuyColor);
-
-    // Get cached stage from localStorage
-    const storedStage = getLocalStorageItem("lilGuyStage", "normal");
-    setLilGuyStage(storedStage as LilGuyStage);
-
-    // Get cached name from localStorage
-    const storedName = getLocalStorageItem("lilGuyName", "LilGuy");
-    setLilGuyName(storedName);
-
-    // set up window event listeners for localStorage changes
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === "lilGuyColor") {
-        setLilGuyColor((e.newValue || "green") as LilGuyColor);
-      } else if (e.key === "lilGuyStage") {
-        setLilGuyStage((e.newValue || "normal") as LilGuyStage);
-      } else if (e.key === "lilGuyName") {
-        setLilGuyName(e.newValue || "LilGuy");
-      }
-    };
-
-    // Listen for custom events from the CharacterStyles component
-    const handleCustomStorageChange = (e: CustomEvent) => {
-      const { key, value } = e.detail;
-      if (key === "lilGuyColor") {
-        console.log("Custom event detected: color change to", value);
-        setLilGuyColor(value as LilGuyColor);
-      } else if (key === "lilGuyStage") {
-        console.log("Custom event detected: stage change to", value);
-        setLilGuyStage(value as LilGuyStage);
-      } else if (key === "lilGuyName") {
-        console.log("Custom event detected: name change to", value);
-        setLilGuyName(value);
-      }
-    };
-
-    window.addEventListener("storage", handleStorageChange);
-    window.addEventListener("localStorageChanged", handleCustomStorageChange as EventListener);
-    
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-      window.removeEventListener("localStorageChanged", handleCustomStorageChange as EventListener);
-    };
-  }, []);
+    setLocalStorageItem('lilGuyColor', lilGuyColor);
+  }, [lilGuyColor]);
+  useEffect(() => {
+    setLocalStorageItem('lilGuyStage', lilGuyStage);
+  }, [lilGuyStage]);
 
   useEffect(() => {
     if (controlledHealth !== undefined) setHealth(controlledHealth);

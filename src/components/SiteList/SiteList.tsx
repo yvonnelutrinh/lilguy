@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Button } from "@/components/ui/Button/Button";
 import { Input } from "@/components/ui/Input/Input";
 import { Label } from "@/components/ui/Label/Label";
@@ -109,12 +109,16 @@ const SiteList: React.FC = () => {
     ));
   };
   
-  const filteredWebsites = filter === 'all' 
-    ? [...websites].sort((a, b) => {
+  // Memoize filtered and sorted websites
+  const filteredWebsites = useMemo(() => {
+    if (filter === 'all') {
+      return [...websites].sort((a, b) => {
         const catOrder = { productive: 0, neutral: 1, unproductive: 2 };
         return catOrder[a.category] - catOrder[b.category];
-      })
-    : websites.filter(site => site.category === filter);
+      });
+    }
+    return websites.filter(site => site.category === filter);
+  }, [websites, filter]);
   
   const formatTime = (minutes: number) => {
     const hours = Math.floor(minutes / 60);
