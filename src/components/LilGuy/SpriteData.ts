@@ -50,7 +50,9 @@ export const getSpriteDataUrl = (color: LilGuyColor): string => {
   const colorValues = {
     green: '#4CAF50',
     blue: '#2196F3',
-    black: '#333333'
+    black: '#333333',
+    pink: '#EC6BAE', // Added pink for sad button
+    brown: '#8B5C2A' // Added brown for egg button
   };
   
   // Create and return sprite data for the specified color

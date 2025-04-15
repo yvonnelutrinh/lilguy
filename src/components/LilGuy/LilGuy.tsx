@@ -21,7 +21,7 @@ const setLocalStorageItem = (key: string, value: any) => {
   }
 };
 
-export type LilGuyColor = "green" | "blue" | "black";
+export type LilGuyColor = "green" | "blue" | "black" | "pink" | "brown";
 export type LilGuyAnimation = "idle" | "walk" | "happy" | "angry" | "sad" | "shocked" | "shake" | "hatch";
 export type LilGuyStage = "normal" | "egg" | "angel" | "devil" | "hatchling";
 
@@ -261,8 +261,14 @@ function LilGuyCanvas({
       CANVAS_WIDTH = canvas.width = 400;
       CANVAS_HEIGHT = canvas.height = 250;
     }
-    
+
+    // Remove white flash: fill with transparent before drawing
     ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    ctx.save();
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = "rgba(0,0,0,0)"; // transparent fill
+    ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    ctx.restore();
 
     // create and load the sprite image
     const playerImage = new Image();
@@ -300,6 +306,11 @@ function LilGuyCanvas({
     function animate() {
       if (!ctx) return;
       ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+      ctx.save();
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = "rgba(0,0,0,0)";
+      ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+      ctx.restore();
 
       if (imageLoaded) {
         const position = Math.floor(gameFrame / staggerFrames) % 5;
@@ -386,7 +397,7 @@ function LilGuyCanvas({
   }, [animation, size, lilGuyColor, lilGuyStage]);
 
   const canvasClasses = `${size === "normal"
-    ? "border-2 border-black bg-white pixelated w-[100%] h-[auto] pb-4 relative shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+    ? "border-2 border-black bg-transparent pixelated w-[100%] h-[auto] pb-4 relative shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
     : "w-[48px] h-[48px] relative pixelated border-2 border-black"
     } ${className}`;
 

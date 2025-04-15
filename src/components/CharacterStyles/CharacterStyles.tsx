@@ -179,25 +179,48 @@ export default function CharacterStyles() {
       {/* LilGuy Color selection */}
       <div className="mb-6">
         <h3 className="mb-2 text-lg font-semibold">LilGuy Color</h3>
-        <div className="flex gap-3">
-          <button 
-            className={`w-12 h-12 border-2 border-black ${currentColor === 'green' ? 'border-4' : ''}`}
-            style={{ backgroundColor: 'var(--pixel-green)' }}
-            onClick={() => changeLilGuyColor('green')}
-            aria-label="Green color"
-          />
-          <button 
-            className={`w-12 h-12 border-2 border-black ${currentColor === 'blue' ? 'border-4' : ''}`}
-            style={{ backgroundColor: 'var(--pixel-blue)' }}
-            onClick={() => changeLilGuyColor('blue')}
-            aria-label="Blue color"
-          />
-          <button 
-            className={`w-12 h-12 border-2 border-black ${currentColor === 'black' ? 'border-4' : ''}`}
-            style={{ backgroundColor: 'black' }}
-            onClick={() => changeLilGuyColor('black')}
-            aria-label="Black color"
-          />
+        <div className="flex flex-row gap-2 items-center mt-2">
+          <span className="font-mono text-xs">LilGuy Color:</span>
+          {["green", "blue", "black", "pink", "brown"].map((color) => (
+            <button
+              key={color}
+              style={{
+                background:
+                  color === "green"
+                    ? "#4CAF50"
+                    : color === "blue"
+                    ? "#2196F3"
+                    : color === "black"
+                    ? "#333"
+                    : color === "pink"
+                    ? "#EC6BAE"
+                    : color === "brown"
+                    ? "#8B5C2A"
+                    : "#fff",
+                border:
+                  currentColor === color
+                    ? "2px solid #FFD700"
+                    : "2px solid #222",
+                color: color === "black" || color === "brown" ? "#fff" : "#222",
+                fontWeight: currentColor === color ? "bold" : "normal",
+                fontFamily: 'inherit',
+                padding: '0.3rem 0.7rem',
+                borderRadius: 4,
+                cursor: 'pointer',
+                boxShadow:
+                  currentColor === color
+                    ? '0 0 0 2px #FFD700, 2px 2px 0 #000'
+                    : '2px 2px 0 #000',
+                outline: 'none',
+                transition: 'all 0.1s',
+                fontSize: 13,
+              }}
+              onClick={() => changeLilGuyColor(color as LilGuyColor)}
+              aria-label={`Set LilGuy color to ${color}`}
+            >
+              {color.charAt(0).toUpperCase() + color.slice(1)}
+            </button>
+          ))}
         </div>
       </div>
 

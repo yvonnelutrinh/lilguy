@@ -43,6 +43,7 @@ export default function Home() {
 
         <main className="flex-1 container max-w-[100%] px-4 py-6">
           <div className="flex flex-col md:flex-row gap-6">
+            
             {/* Left sidebar with LilGuy */}
             <div className="md:w-[40%] lg:sticky top-6 h-[min-content]">
               <PixelWindow
