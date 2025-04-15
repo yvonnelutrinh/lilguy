@@ -2480,6 +2480,11 @@
   --button-secondary-active: var(--pixel-beige-dark);
   --button-danger-bg: #ff6b6b;
   --button-success-bg: var(--pixel-green);
+  --button-green-bg: var(--pixel-green);
+  --button-beige-bg: var(--pixel-beige);
+  --button-pink-bg: var(--pixel-pink);
+  --button-contrast-bg: #222;
+  --button-contrast-text: #fff;
   --progress-bg: #f9f9f9;
   --progress-fill-good: var(--pixel-green);
   --progress-fill-medium: #f5d76e;
@@ -2550,6 +2555,26 @@
   white-space: nowrap;
   flex-shrink: 0;
   image-rendering: pixelated;
+}
+
+.pixel-button.green {
+  background-color: var(--button-green-bg);
+  color: #000;
+}
+
+.pixel-button.beige {
+  background-color: var(--button-beige-bg);
+  color: #000;
+}
+
+.pixel-button.pink {
+  background-color: var(--button-pink-bg);
+  color: #000;
+}
+
+.pixel-button.contrast {
+  background-color: var(--button-contrast-bg);
+  color: var(--button-contrast-text);
 }
 
 .pixel-button:hover {
@@ -3362,6 +3387,11 @@ body {
   --button-secondary-active: var(--pixel-beige-dark);
   --button-danger-bg: #ff6b6b;
   --button-success-bg: var(--pixel-green);
+  --button-green-bg: var(--pixel-green);
+  --button-beige-bg: var(--pixel-beige);
+  --button-pink-bg: var(--pixel-pink);
+  --button-contrast-bg: #222;
+  --button-contrast-text: #fff;
   --progress-bg: #f9f9f9;
   --progress-fill-good: var(--pixel-green);
   --progress-fill-medium: #f5d76e;
@@ -3434,6 +3464,26 @@ body {
   image-rendering: pixelated;
 }
 
+.pixel-button.green {
+  background-color: var(--button-green-bg);
+  color: #000;
+}
+
+.pixel-button.beige {
+  background-color: var(--button-beige-bg);
+  color: #000;
+}
+
+.pixel-button.pink {
+  background-color: var(--button-pink-bg);
+  color: #000;
+}
+
+.pixel-button.contrast {
+  background-color: var(--button-contrast-bg);
+  color: var(--button-contrast-text);
+}
+
 .pixel-button:hover {
   transform: translate(-1px, -1px);
   box-shadow: 3px 3px #000;
@@ -3469,6 +3519,9 @@ body {
 
 .pixel-button-danger {
   background-color: var(--button-danger-bg);
+}
+
+.pixel-button.teal {
 }
 
 .slider-thumb {

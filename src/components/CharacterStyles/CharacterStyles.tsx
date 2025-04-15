@@ -139,7 +139,7 @@ export default function CharacterStyles() {
         <div className="grid grid-cols-3 gap-2">
           <button
             onClick={() => emitEmotion("idle", 100, "button")}
-            className="pixel-button text-pixel-sm whitespace-nowrap"
+            className="pixel-button beige text-pixel-sm whitespace-nowrap"
           >
             Idle
           </button>
@@ -151,25 +151,25 @@ export default function CharacterStyles() {
           </button>
           <button
             onClick={() => emitEmotion("happy", 100, "button")}
-            className="pixel-button text-pixel-sm whitespace-nowrap"
+            className="pixel-button green text-pixel-sm whitespace-nowrap"
           >
             Happy
           </button>
           <button
             onClick={() => emitEmotion("angry", 100, "button")}
-            className="pixel-button text-pixel-sm whitespace-nowrap"
+            className="pixel-button contrast text-pixel-sm whitespace-nowrap"
           >
             Angry
           </button>
           <button
             onClick={() => emitEmotion("sad", 100, "button")}
-            className="pixel-button text-pixel-sm whitespace-nowrap"
+            className="pixel-button pink text-pixel-sm whitespace-nowrap"
           >
             Sad
           </button>
           <button
             onClick={() => emitEmotion("shocked", 100, "button")}
-            className="pixel-button text-pixel-sm whitespace-nowrap"
+            className="pixel-button contrast text-pixel-sm whitespace-nowrap"
           >
             Shocked
           </button>
@@ -207,33 +207,25 @@ export default function CharacterStyles() {
         <div className="grid grid-cols-2 gap-2">
           <button
             onClick={() => changeStage("egg")}
-            className={`pixel-button text-pixel-sm whitespace-nowrap ${
-              currentStage === "egg" ? "border-4 border-black" : ""
-            }`}
+            className={`pixel-button beige text-pixel-sm whitespace-nowrap ${currentStage === "egg" ? "border-4 border-black" : ""}`}
           >
             Egg
           </button>
           <button
             onClick={() => changeStage("normal")}
-            className={`pixel-button text-pixel-sm whitespace-nowrap ${
-              currentStage === "normal" ? "border-4 border-black" : ""
-            }`}
+            className={`pixel-button text-pixel-sm whitespace-nowrap ${currentStage === "normal" ? "border-4 border-black" : ""}`}
           >
             Normal
           </button>
           <button
             onClick={() => changeStage("angel")}
-            className={`pixel-button bg-blue-100 text-pixel-sm whitespace-nowrap ${
-              currentStage === "angel" ? "border-4 border-black" : ""
-            }`}
+            className={`pixel-button green text-pixel-sm whitespace-nowrap ${currentStage === "angel" ? "border-4 border-black" : ""}`}
           >
             Angel
           </button>
           <button
             onClick={() => changeStage("devil")}
-            className={`pixel-button bg-red-100 text-pixel-sm whitespace-nowrap ${
-              currentStage === "devil" ? "border-4 border-black" : ""
-            }`}
+            className={`pixel-button contrast text-pixel-sm whitespace-nowrap ${currentStage === "devil" ? "border-4 border-black" : ""}`}
           >
             Devil
           </button>

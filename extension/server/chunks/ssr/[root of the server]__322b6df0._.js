@@ -3781,7 +3781,7 @@ function LilGuyInteractor() {
                                     }
                                     setButtonText((prev)=>prev === "Walk" ? "Chill" : "Walk");
                                 },
-                                className: "jsx-1b521f0484efe7c7" + " " + "flex-1 px-3 py-2 pixel-button text-pixel-sm whitespace-nowrap",
+                                className: "jsx-1b521f0484efe7c7" + " " + `flex-1 px-3 py-2 pixel-button text-pixel-sm whitespace-nowrap`,
                                 children: buttonText
                             }, void 0, false, {
                                 fileName: "[project]/src/components/LilGuyInteractor/LilGuyInteractor.tsx",
@@ -3790,7 +3790,7 @@ function LilGuyInteractor() {
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                 onClick: ()=>emitEmotion("happy", 100, "button"),
-                                className: "jsx-1b521f0484efe7c7" + " " + "flex-1 px-3 py-2 pixel-button bg-pixel-primary text-white text-pixel-sm whitespace-nowrap",
+                                className: "jsx-1b521f0484efe7c7" + " " + "flex-1 px-3 py-2 pixel-button green text-pixel-sm whitespace-nowrap",
                                 children: "Pet"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/LilGuyInteractor/LilGuyInteractor.tsx",
@@ -4129,6 +4129,14 @@ function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "nor
             {
                 name: "shocked",
                 frames: 4
+            },
+            {
+                name: "shake",
+                frames: 4
+            },
+            {
+                name: "hatch",
+                frames: 4
             }
         ];
         // set up animation frames
@@ -4166,11 +4174,11 @@ function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "nor
                 className: `relative flex flex-col items-center ${size === "normal" ? "" : "w-min"}`,
                 children: [
                     size === "normal" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                        className: "w-full bg-pixel-primary text-black px-4 py-2 border-t-2 border-l-2 border-r-2 border-black text-center font-bold",
+                        className: "w-full bg-pixel-primary text-black px-4 py-2 border-t-2 border-l-2 border-r-2 border-black text-center font-bold shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]",
                         children: lilGuyName
                     }, void 0, false, {
                         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                        lineNumber: 401,
+                        lineNumber: 403,
                         columnNumber: 11
                     }, this),
                     message && size === "normal" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4182,17 +4190,17 @@ function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "nor
                                 children: message
                             }, void 0, false, {
                                 fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                                lineNumber: 410,
+                                lineNumber: 412,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                            lineNumber: 409,
+                            lineNumber: 411,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                        lineNumber: 408,
+                        lineNumber: 410,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4203,7 +4211,7 @@ function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "nor
                                 ref: canvasRef
                             }, void 0, false, {
                                 fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                                lineNumber: 416,
+                                lineNumber: 418,
                                 columnNumber: 11
                             }, this),
                             showHealthBar && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4212,42 +4220,42 @@ function LilGuyCanvas({ showControls = false, showHealthBar = false, size = "nor
                                     health: modifiedHealth || 0
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                                    lineNumber: 420,
+                                    lineNumber: 422,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                                lineNumber: 419,
+                                lineNumber: 421,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                        lineNumber: 415,
+                        lineNumber: 417,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                lineNumber: 395,
+                lineNumber: 397,
                 columnNumber: 7
             }, this),
             showControls && size === "normal" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "w-full",
                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$LilGuyInteractor$2f$LilGuyInteractor$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
                     fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                    lineNumber: 427,
+                    lineNumber: 429,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-                lineNumber: 426,
+                lineNumber: 428,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-        lineNumber: 391,
+        lineNumber: 393,
         columnNumber: 5
     }, this);
 }
@@ -4260,12 +4268,12 @@ function LilGuy() {
             showHealthBar: true
         }, void 0, false, {
             fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-            lineNumber: 438,
+            lineNumber: 440,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-        lineNumber: 437,
+        lineNumber: 439,
         columnNumber: 5
     }, this);
 }
@@ -4276,7 +4284,7 @@ function WidgetLilGuy() {
         showHealthBar: false
     }, void 0, false, {
         fileName: "[project]/src/components/LilGuy/LilGuy.tsx",
-        lineNumber: 448,
+        lineNumber: 450,
         columnNumber: 10
     }, this);
 }
@@ -4805,7 +4813,7 @@ const ExtensionWidget = ({ onClose, onExpand })=>{
                         className: "flex-1 flex gap-2",
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                                className: "pixel-button flex-1 text-xs py-1 whitespace-nowrap",
+                                className: "pixel-button green flex-1 text-xs py-1 whitespace-nowrap",
                                 children: "Pet"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
@@ -4813,7 +4821,7 @@ const ExtensionWidget = ({ onClose, onExpand })=>{
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                                className: "pixel-button flex-1 text-xs py-1 whitespace-nowrap",
+                                className: "pixel-button contrast flex-1 text-xs py-1 whitespace-nowrap",
                                 children: "Focus"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/ExtensionWidget/ExtensionWidget.tsx",
@@ -5272,7 +5280,7 @@ function CharacterStyles() {
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                 onClick: ()=>emitEmotion("idle", 100, "button"),
-                                className: "pixel-button text-pixel-sm whitespace-nowrap",
+                                className: "pixel-button beige text-pixel-sm whitespace-nowrap",
                                 children: "Idle"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
@@ -5290,7 +5298,7 @@ function CharacterStyles() {
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                 onClick: ()=>emitEmotion("happy", 100, "button"),
-                                className: "pixel-button text-pixel-sm whitespace-nowrap",
+                                className: "pixel-button green text-pixel-sm whitespace-nowrap",
                                 children: "Happy"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
@@ -5299,7 +5307,7 @@ function CharacterStyles() {
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                 onClick: ()=>emitEmotion("angry", 100, "button"),
-                                className: "pixel-button text-pixel-sm whitespace-nowrap",
+                                className: "pixel-button contrast text-pixel-sm whitespace-nowrap",
                                 children: "Angry"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
@@ -5308,7 +5316,7 @@ function CharacterStyles() {
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                 onClick: ()=>emitEmotion("sad", 100, "button"),
-                                className: "pixel-button text-pixel-sm whitespace-nowrap",
+                                className: "pixel-button pink text-pixel-sm whitespace-nowrap",
                                 children: "Sad"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
@@ -5317,7 +5325,7 @@ function CharacterStyles() {
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                 onClick: ()=>emitEmotion("shocked", 100, "button"),
-                                className: "pixel-button text-pixel-sm whitespace-nowrap",
+                                className: "pixel-button contrast text-pixel-sm whitespace-nowrap",
                                 children: "Shocked"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
@@ -5414,7 +5422,7 @@ function CharacterStyles() {
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                 onClick: ()=>changeStage("egg"),
-                                className: `pixel-button text-pixel-sm whitespace-nowrap ${currentStage === "egg" ? "border-4 border-black" : ""}`,
+                                className: `pixel-button beige text-pixel-sm whitespace-nowrap ${currentStage === "egg" ? "border-4 border-black" : ""}`,
                                 children: "Egg"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
@@ -5427,25 +5435,25 @@ function CharacterStyles() {
                                 children: "Normal"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                                lineNumber: 216,
+                                lineNumber: 214,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                 onClick: ()=>changeStage("angel"),
-                                className: `pixel-button bg-blue-100 text-pixel-sm whitespace-nowrap ${currentStage === "angel" ? "border-4 border-black" : ""}`,
+                                className: `pixel-button green text-pixel-sm whitespace-nowrap ${currentStage === "angel" ? "border-4 border-black" : ""}`,
                                 children: "Angel"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                                lineNumber: 224,
+                                lineNumber: 220,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                 onClick: ()=>changeStage("devil"),
-                                className: `pixel-button bg-red-100 text-pixel-sm whitespace-nowrap ${currentStage === "devil" ? "border-4 border-black" : ""}`,
+                                className: `pixel-button contrast text-pixel-sm whitespace-nowrap ${currentStage === "devil" ? "border-4 border-black" : ""}`,
                                 children: "Devil"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/CharacterStyles/CharacterStyles.tsx",
-                                lineNumber: 232,
+                                lineNumber: 226,
                                 columnNumber: 11
                             }, this)
                         ]

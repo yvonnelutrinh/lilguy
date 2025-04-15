@@ -22,8 +22,8 @@ const setLocalStorageItem = (key: string, value: any) => {
 };
 
 export type LilGuyColor = "green" | "blue" | "black";
-export type LilGuyAnimation = "idle" | "walk" | "happy" | "angry" | "sad" | "shocked";
-export type LilGuyStage = "normal" | "egg" | "angel" | "devil";
+export type LilGuyAnimation = "idle" | "walk" | "happy" | "angry" | "sad" | "shocked" | "shake" | "hatch";
+export type LilGuyStage = "normal" | "egg" | "angel" | "devil" | "hatchling";
 
 interface LilGuyProps {
   showControls?: boolean;
@@ -360,6 +360,8 @@ function LilGuyCanvas({
       { name: "angry", frames: 5 },
       { name: "sad", frames: 5 },
       { name: "shocked", frames: 4 },
+      { name: "shake", frames: 4 },
+      { name: "hatch", frames: 4 },
     ];
 
     // set up animation frames
@@ -398,7 +400,7 @@ function LilGuyCanvas({
       >
         {/* Show name above the canvas */}
         {size === "normal" && (
-          <div className="w-full bg-pixel-primary text-black px-4 py-2 border-t-2 border-l-2 border-r-2 border-black text-center font-bold">
+          <div className="w-full bg-pixel-primary text-black px-4 py-2 border-t-2 border-l-2 border-r-2 border-black text-center font-bold shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
             {lilGuyName}
           </div>
         )}

@@ -109,10 +109,10 @@ const ExtensionWidget: React.FC<WidgetProps> = ({ onClose, onExpand }) => {
       {/* Buttons */}
       <div className="bg-white p-2 flex items-center gap-2">
         <div className="flex-1 flex gap-2">
-          <button className="pixel-button flex-1 text-xs py-1 whitespace-nowrap">
+          <button className="pixel-button green flex-1 text-xs py-1 whitespace-nowrap">
             Pet
           </button>
-          <button className="pixel-button flex-1 text-xs py-1 whitespace-nowrap">
+          <button className="pixel-button contrast flex-1 text-xs py-1 whitespace-nowrap">
             Focus
           </button>
         </div>

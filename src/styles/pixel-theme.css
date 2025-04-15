@@ -34,6 +34,11 @@
   --button-secondary-active: var(--pixel-beige-dark);
   --button-danger-bg: #ff6b6b;
   --button-success-bg: var(--pixel-green);
+  --button-green-bg: var(--pixel-green);
+  --button-beige-bg: var(--pixel-beige);
+  --button-pink-bg: var(--pixel-pink);
+  --button-contrast-bg: #222;
+  --button-contrast-text: #fff;
   
   /* Progress Bar Colors */
   --progress-bg: #f9f9f9;
@@ -112,6 +117,26 @@
   image-rendering: pixelated;
 }
 
+.pixel-button.green {
+  background-color: var(--button-green-bg);
+  color: black;
+}
+
+.pixel-button.beige {
+  background-color: var(--button-beige-bg);
+  color: black;
+}
+
+.pixel-button.pink {
+  background-color: var(--button-pink-bg);
+  color: black;
+}
+
+.pixel-button.contrast {
+  background-color: var(--button-contrast-bg);
+  color: var(--button-contrast-text);
+}
+
 .pixel-button:hover {
   transform: translate(-1px, -1px);
   box-shadow: 3px 3px 0 black;
@@ -147,6 +172,10 @@
 
 .pixel-button-danger {
   background-color: var(--button-danger-bg);
+}
+
+.pixel-button.teal {
+  /* deprecated */
 }
 
 /* slider component */

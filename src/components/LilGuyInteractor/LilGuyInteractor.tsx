@@ -143,14 +143,14 @@ export default function LilGuyInteractor() {
               }
               setButtonText((prev) => (prev === "Walk" ? "Chill" : "Walk"));
             }}
-            className="flex-1 px-3 py-2 pixel-button text-pixel-sm whitespace-nowrap"
+            className={`flex-1 px-3 py-2 pixel-button text-pixel-sm whitespace-nowrap`}
           >
             {buttonText}
           </button>
 
           <button
             onClick={() => emitEmotion("happy", 100, "button")}
-            className="flex-1 px-3 py-2 pixel-button bg-pixel-primary text-white text-pixel-sm whitespace-nowrap"
+            className="flex-1 px-3 py-2 pixel-button green text-pixel-sm whitespace-nowrap"
           >
             Pet
           </button>
