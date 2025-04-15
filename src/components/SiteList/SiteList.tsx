@@ -6,10 +6,9 @@ import { Label } from "@/components/ui/Label/Label";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/Select/Select";
 import { Trash, Plus } from "lucide-react";
 import { User } from '@clerk/nextjs/server';
-import { api } from '../../../convex/_generated/api';
-import { useQuery } from 'convex/react';
 import { Id } from '../../../convex/_generated/dataModel';
-
+import { useMutation, useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 
 interface Sitevisit {
   _id: Id<"sitevisits">;
@@ -69,18 +68,27 @@ interface SiteListProps {
   user?: User;
 }
 
-
 const SiteList: React.FC = ({ user }: SiteListProps) => {
   const [websites, setWebsites] = useState<Sitevisit[]>(initialWebsites);
   const [newWebsite, setNewWebsite] = useState('');
   const [category, setCategory] = useState<'productive' | 'unproductive' | 'neutral'>('neutral');
   const [filter, setFilter] = useState<'all' | 'productive' | 'unproductive' | 'neutral'>('all');
-
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const [pageViews, setPageViews] = React.useState({});
   const [sessionData, setSessionData] = React.useState({});
-  const [isLoading, setIsLoading] = React.useState(true);
 
+  const updateClassification = useMutation(api.sitevisits.updateClassification);
+  const addSitevisit = useMutation(api.sitevisits.addSiteVisit);
+  const getSiteVisits = useQuery(api.sitevisits.getSiteVisits, user ? { userId: `clerk:${user.id}` } : "skip");
+
+  useEffect(() => {
+    if (getSiteVisits !== undefined) {
+      setWebsites(getSiteVisits);
+      setIsLoading(false);
+    }
+  }, [getSiteVisits]);
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -92,45 +100,39 @@ const SiteList: React.FC = ({ user }: SiteListProps) => {
     window.addEventListener("message", handler);
     return () => window.removeEventListener("message", handler);
   }, []);
-  
-  // this sends a message to the extension
-  // window.postMessage({ from: "page", action: "sendToExtension", payload: { foo: "bar" } }, "*");
-  
 
-  // Move useQuery to the top level of the component
-  const userId = user ? `clerk:${user.id}` : undefined;
-  const sitevisits = useQuery(api.sitevisits.getSiteVisits, { userId: userId || "" });
-
-  // Update websites state when sitevisits data changes
-  useEffect(() => {
-    if (sitevisits && sitevisits.length > 0) {
-      setWebsites(sitevisits);
-    }
-  }, [sitevisits]);
-
-  const handleAddWebsite = () => {
+  const handleAddWebsite = async () => {
     if (newWebsite.trim() === '') return;
-    // const websiteExists = websites.some(site => site.name === newWebsite.trim());
-    // if (websiteExists) return;
-    // const newSite: Website = {
-    //   id: Math.max(0, ...websites.map(w => w.id)) + 1,
-    //   name: newWebsite.trim(),
-    //   category,
-    //   timeSpent: 0
-    // };
-    // setWebsites([...websites, newSite]);
-    setNewWebsite('');
+    if (!user) return;
+    
+    try {
+      const userId = `clerk:${user.id}`;
+      await addSitevisit({ 
+        userId, 
+        hostname: newWebsite.trim(), 
+        classification: category 
+      });
+      setNewWebsite('');
+    } catch (err) {
+      console.error("Error adding website:", err);
+      setError(err instanceof Error ? err.message : 'Failed to add website');
+    }
   };
 
   const handleRemoveWebsite = (id: Id<"sitevisits">) => {
     setWebsites(websites.filter(site => site._id !== id));
   };
 
-  const handleCategoryChange = (id: Id<"sitevisits">, newClassification: 'productive' | 'unproductive' | 'neutral') => {
-    setWebsites(websites.map(site =>
-      site._id === id ? { ...site, classification: newClassification } : site
-    ));
-    // TODO: update the category in the database
+  const handleCategoryChange = async (id: Id<"sitevisits">, newClassification: 'productive' | 'unproductive' | 'neutral') => {
+    try {
+      await updateClassification({ sitevisitId: id, classification: newClassification });
+      setWebsites(websites.map(site =>
+        site._id === id ? { ...site, classification: newClassification } : site
+      ));
+    } catch (err) {
+      console.error('Error updating classification:', err);
+      setError(err instanceof Error ? err.message : 'Failed to update classification');
+    }
   };
 
   const filteredWebsites = filter === 'all'
@@ -148,6 +150,7 @@ const SiteList: React.FC = ({ user }: SiteListProps) => {
 
     return parts.join(' ');
   }
+  
 
 
   // const addSitevisit = useMutation(api.sitevisits.addSiteVisit);
@@ -249,59 +252,65 @@ const SiteList: React.FC = ({ user }: SiteListProps) => {
           </div>
         </div>
 
-        <div className="space-y-2 max-h-64 overflow-y-auto pr-2">
-          {filteredWebsites.length === 0 ? (
-            <div className="text-center py-4 text-muted-foreground">
-              No websites in this category
-            </div>
-          ) : (
-            filteredWebsites.map((website) => (
-              <div
-                key={website._id}
-                className="flex items-center justify-between p-3 border-2 border-black"
-                style={{
-                  backgroundColor:
-                    website.classification === 'productive' ? 'rgba(16, 185, 129, 0.1)' :
-                      website.classification === 'unproductive' ? 'rgba(239, 68, 68, 0.1)' :
-                        'rgba(245, 158, 11, 0.1)'
-                }}
-              >
-                <div className="flex-1">
-                  <div className="font-medium">{website.hostname}</div>
-                  <div className="text-xs text-muted-foreground">
-                    Time spent: {formatSecondsToTime(website.totalDuration)}, Visits: {website.visits}
+        {isLoading ? (
+          <div className="text-center py-4">Loading site visits...</div>
+        ) : error ? (
+          <div className="text-center py-4 text-red-500">{error}</div>
+        ) : (
+          <div className="space-y-2 max-h-64 overflow-y-auto pr-2">
+            {filteredWebsites.length === 0 ? (
+              <div className="text-center py-4 text-muted-foreground">
+                No websites in this category
+              </div>
+            ) : (
+              filteredWebsites.map((website) => (
+                <div
+                  key={website._id}
+                  className="flex items-center justify-between p-3 border-2 border-black"
+                  style={{
+                    backgroundColor:
+                      website.classification === 'productive' ? 'rgba(16, 185, 129, 0.1)' :
+                        website.classification === 'unproductive' ? 'rgba(239, 68, 68, 0.1)' :
+                          'rgba(245, 158, 11, 0.1)'
+                  }}
+                >
+                  <div className="flex-1">
+                    <div className="font-medium">{website.hostname}</div>
+                    <div className="text-xs text-muted-foreground">
+                      Time spent: {formatSecondsToTime(website.totalDuration)}, Visits: {website.visits}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Select
+                      value={website.classification}
+                      onValueChange={(value) => handleCategoryChange(
+                        website._id,
+                        value as 'productive' | 'unproductive' | 'neutral'
+                      )}
+                    >
+                      <SelectTrigger className="w-[140px] h-8 text-xs">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="productive">Productive</SelectItem>
+                        <SelectItem value="unproductive">Unproductive</SelectItem>
+                        <SelectItem value="neutral">Neutral</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Button
+                      variant="destructive"
+                      size="icon"
+                      className="h-8 w-8"
+                      onClick={() => handleRemoveWebsite(website._id)}
+                    >
+                      <Trash className="h-4 w-4" />
+                    </Button>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Select
-                    value={website.classification}
-                    onValueChange={(value) => handleCategoryChange(
-                      website._id,
-                      value as 'productive' | 'unproductive' | 'neutral'
-                    )}
-                  >
-                    <SelectTrigger className="w-[140px] h-8 text-xs">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="productive">Productive</SelectItem>
-                      <SelectItem value="unproductive">Unproductive</SelectItem>
-                      <SelectItem value="neutral">Neutral</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Button
-                    variant="destructive"
-                    size="icon"
-                    className="h-8 w-8"
-                    onClick={() => handleRemoveWebsite(website._id)}
-                  >
-                    <Trash className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
+              ))
+            )}
+          </div>
+        )}
       </CardContent>
       <CardFooter className="text-sm text-muted-foreground">
         Click on a category to change it or remove a website

@@ -17,4 +17,34 @@ export default defineSchema({
     sessions: v.number(),
     classification: v.string()
   }).index("by_user", ["userId"]),
+
+  goals: defineTable({
+    userId: v.string(),
+    title: v.string(),
+    completed: v.boolean(),
+    progress: v.number(),
+  }).index("by_user", ["userId"]),
+
+  lilguys: defineTable({
+    userId: v.string(),
+    name: v.string(),
+    health: v.boolean(),
+    progress: v.number(),
+  }).index("by_user", ["userId"]),
+
+  messages: defineTable({
+    userId: v.string(),
+    type: v.string(),
+    read: v.boolean(),
+    source: v.string(),
+    health: v.number(),
+    intensity: v.number(),
+    timestamp: v.number(),
+  }).index("by_user", ["userId"]),
+
+  apikeys: defineTable({
+    key: v.string(),
+    service: v.string(),
+  }).index("by_key", ["key"]),
+
 });

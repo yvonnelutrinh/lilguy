@@ -8,6 +8,7 @@ export const getSiteVisits = query({
     const sitevisits = await ctx.db
       .query("sitevisits")
       .withIndex("by_user", (q) => q.eq("userId", args.userId))
+      .order("desc")
       .collect();
 
     return sitevisits;
@@ -51,5 +52,50 @@ export const incrementVisits = mutation({
     });
 
     return sitevisit.visits + 1;
+  },
+});
+
+// Update an existing site visit with the latest data from the extension
+export const updateSiteVisit = mutation({
+  args: {
+    sitevisitId: v.id("sitevisits"),
+    visits: v.number(),
+    sessions: v.number(),
+    totalDuration: v.number(),
+  },
+  handler: async (ctx, args) => {
+    const sitevisit = await ctx.db.get(args.sitevisitId);
+    
+    if (!sitevisit) {
+      throw new ConvexError("Site visit not found");
+    }
+
+    await ctx.db.patch(args.sitevisitId, {
+      visits: args.visits,
+      sessions: args.sessions,
+      totalDuration: args.totalDuration,
+    });
+
+    return true;
+  },
+});
+
+export const updateClassification = mutation({
+  args: {
+    sitevisitId: v.id("sitevisits"),
+    classification: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const sitevisit = await ctx.db.get(args.sitevisitId);
+    
+    if (!sitevisit) {
+      throw new ConvexError("Site visit not found");
+    }
+
+    await ctx.db.patch(args.sitevisitId, {
+      classification: args.classification,
+    });
+
+    return true;
   },
 });

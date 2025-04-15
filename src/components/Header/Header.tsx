@@ -2,6 +2,7 @@
 import { Bell, Settings } from 'lucide-react';
 import { DropdownMenu } from "radix-ui";
 import { Button } from '@/components/ui/Button/Button';
+import AuthButton from '../AuthButton/AuthButton';
 
 const notifications = [
     { id: 1, message: "You've been productive for 2 hours today!", isRead: false },
@@ -11,9 +12,15 @@ const notifications = [
 
 const Header: React.FC = () => {
     return (
+
         <header className="bg-white border-b-2 border-black px-4 py-2 flex justify-between items-center">
+           
             <div className="flex items-center gap-2">
                 <h1 className="text-base font-bold sm:block">LilGuy</h1>
+            </div>
+
+            <div className="text-right">
+                <AuthButton />
             </div>
 
             <div className="flex items-center gap-2">

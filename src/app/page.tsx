@@ -15,29 +15,61 @@ import { useConvexAuth, useMutation, useQuery } from "convex/react";
 import { useCallback, useEffect, useState } from "react";
 import { api } from "../../convex/_generated/api";
 
+export const generateLocalTokenIdentifier = () => {
+  if (typeof window === 'undefined') return 'local:unknown';
+  const userAgent = window.navigator.userAgent;
+  const screenInfo = `${window.screen.width}x${window.screen.height}`;
+  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  return `local:${userAgent}-${screenInfo}-${timeZone}`;
+};
 
 export default function Home() {
-  const [customColor, setCustomColor] = useState("#3B82F6");
+  const [customColor, setCustomColor] = useState(() => {
+    // Try to get color from localStorage first, fall back to default
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('customColor') || "#3B82F6";
+    }
+    return "#3B82F6";
+  });
 
   const { isAuthenticated, isLoading } = useConvexAuth();
   const { user, isLoaded } = useUser();
 
   const convexUser = useQuery(
     api.users.getUser,
-    user?.id ? { tokenIdentifier: `clerk:${user?.id}` } : "skip"
+    user?.id
+      ? { tokenIdentifier: `clerk:${user?.id}` }
+      : { tokenIdentifier: generateLocalTokenIdentifier() }
   );
-  
+
+  // Update customColor when convexUser data is loaded
+  useEffect(() => {
+    if (convexUser?.customColor) {
+      setCustomColor(convexUser.customColor);
+    }
+  }, [convexUser]);
+
   const createUser = useMutation(api.users.createUser);
   useEffect(() => {
-    if (isLoaded && user && !convexUser) {
-      // Create user in Convex if doesn't exist
-      createUser({
-        tokenIdentifier: `clerk:${user.id}`,
-        name: user.fullName || "",
-        email: user.primaryEmailAddress?.emailAddress || "",
-        customColor: "#3B82F6",
-      }).catch(err => console.error("Error creating user:", err));
-
+    if (isLoaded && !convexUser) {
+      if (user) {
+        // Create authenticated user in Convex
+        createUser({
+          tokenIdentifier: `clerk:${user.id}`,
+          name: user.fullName || "",
+          email: user.primaryEmailAddress?.emailAddress || "",
+          customColor: "#3B82F6",
+        }).catch(err => console.error("Error creating user:", err));
+      } else {
+        // Create local user in Convex
+        const localIdentifier = `local:${window.navigator.userAgent}-${window.screen.width}x${window.screen.height}-${Intl.DateTimeFormat().resolvedOptions().timeZone}`;
+        createUser({
+          tokenIdentifier: localIdentifier,
+          name: "Local User",
+          email: "",
+          customColor: "#3B82F6",
+        }).catch(err => console.error("Error creating local user:", err));
+      }
     }
   }, [isLoaded, user, convexUser, createUser]);
 
@@ -45,17 +77,17 @@ export default function Home() {
   const handleColorChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const newColor = e.target.value;
     setCustomColor(newColor);
-    
+
     if (user) {
       updateCustomColor({
         tokenIdentifier: `clerk:${user.id}`,
         customColor: newColor,
       }).catch(err => console.error("Error updating color:", err));
-    }else{
-      // TODO: save this in localstorage aswell/if no user set
+    } else {
+      // Save color preference to localStorage when no user is logged in
+      localStorage.setItem('customColor', newColor);
     }
   }, [user, updateCustomColor]);
-  
 
   if (isLoading) {
     return (
@@ -67,9 +99,6 @@ export default function Home() {
 
   return (
     <>
-      <div className="mb-8 text-right">
-        <AuthButton />
-      </div>
       {!isAuthenticated && (
         <div className="text-center py-16 bg-gray-50 rounded-lg">
           <h2 className="text-2xl font-bold mb-4">Welcome to Lilguy</h2>
@@ -104,7 +133,7 @@ export default function Home() {
                           className="p-1 border rounded h-10 w-20 cursor-pointer"
                         />
                       </div>
-                      <LilGuy user={user}/>
+                      <LilGuy user={user} />
                     </main>
                     {/* </div> */}
                   </div>
@@ -147,11 +176,6 @@ export default function Home() {
           </div>
         </main>
       </div>
-
-
-
-
-
     </>
   );
 }

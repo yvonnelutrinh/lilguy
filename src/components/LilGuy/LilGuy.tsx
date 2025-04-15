@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import LilGuyInteractor from "../LilGuyInteractor/LilGuyInteractor";
 import { HealthBar } from "../HealthBar/HealthBar";
 import { User } from "@clerk/nextjs/server";
+import { EmotionEvent } from "@/lib/emotionEventBus";
 
 
 export type LilGuyAnimation = "idle" | "walk" | "happy" | "angry" | "sad" | "shocked";
@@ -64,7 +65,7 @@ function LilGuyCanvas({
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState<string>("LilGuy");
 
-  useListenToEmotions((emotion) => {
+  useListenToEmotions((emotion:EmotionEvent) => {
     // TODO: use emotion.intensity to scale the health change!
     // TODO: use emotion.source to scale the health change!
     switch (emotion.type) {
