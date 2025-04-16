@@ -1,15 +1,15 @@
 "use client";
 
-import Header from "@/components/Header/Header";
-import { LilGuy } from "@/components/LilGuy/LilGuy";
-import ProductivityMetrics from "@/components/ProductivityMetrics/ProductivityMetrics";
-// import TextBox from "@/components/TextBox/TextBox"; // put in LilGuy instead
-import AuthButton from "@/components/AuthButton/AuthButton";
 import ExtensionWidget from "@/components/ExtensionWidget/ExtensionWidget";
 import Goals from "@/components/Goals/Goals";
+import Header from "@/components/Header/Header";
+import type { LilGuyColor } from "@/components/LilGuy/LilGuy";
+import { LilGuy } from "@/components/LilGuy/LilGuy";
+import ProductivityMetrics from "@/components/ProductivityMetrics/ProductivityMetrics";
 import SiteList from "@/components/SiteList/SiteList";
-import { Card, CardContent } from "@/components/ui/Card/Card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs/Tabs";
+import TestWindow from "@/components/TestWindow/TestWindow";
+import PixelWindow from "@/components/ui/PixelWindow";
+import { HealthProvider } from "@/context/HealthContext";
 import { useUser } from "@clerk/nextjs";
 import { useConvexAuth, useMutation, useQuery } from "convex/react";
 import { useCallback, useEffect, useState } from "react";
@@ -26,19 +26,23 @@ export const generateLocalTokenIdentifier = () => {
   return `local:${identifierParts.join('-')}`;
 };
 
+
 export default function Home() {
-  const [customColor, setCustomColor] = useState(() => {
+  // State for current tab selection
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'websites' | 'goals' | 'widget'>('dashboard');
+  // State for character color (from localStorage if available)
+  const [characterColor, setCharacterColor] = useState<LilGuyColor>(() => {
     // Try to get color from localStorage first, fall back to default
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('customColor') || "#3B82F6";
+      return localStorage.getItem('lilGuyColor') as LilGuyColor || "black" as LilGuyColor;
     }
-    return "#3B82F6";
+    return "black" as LilGuyColor;
   });
 
   const { isAuthenticated, isLoading } = useConvexAuth();
   const { user, isLoaded } = useUser();
 
-  const localIdentifier =  generateLocalTokenIdentifier();
+  const localIdentifier = generateLocalTokenIdentifier();
   const convexUser = useQuery(
     api.users.getUser,
     user?.id
@@ -49,7 +53,7 @@ export default function Home() {
   // Update customColor when convexUser data is loaded
   useEffect(() => {
     if (convexUser?.customColor) {
-      setCustomColor(convexUser.customColor);
+      setCharacterColor(convexUser.customColor as LilGuyColor);
     }
   }, [convexUser]);
 
@@ -62,7 +66,7 @@ export default function Home() {
           tokenIdentifier: `clerk:${user.id}`,
           name: user.fullName || "",
           email: user.primaryEmailAddress?.emailAddress || "",
-          customColor: "#3B82F6",
+          customColor: "black",
           localIdentifier: localIdentifier,
         }).catch(err => console.error("Error creating user:", err));
       } else {
@@ -71,17 +75,17 @@ export default function Home() {
           tokenIdentifier: localIdentifier,
           name: "Local User",
           email: "",
-          customColor: "#3B82F6",
+          customColor: "black",
           localIdentifier: localIdentifier,
         }).catch(err => console.error("Error creating local user:", err));
       }
     }
-  }, [isLoaded, user, convexUser, createUser]);
+  }, [isLoaded, user, convexUser, createUser, localIdentifier]);
 
   const updateCustomColor = useMutation(api.users.updateCustomColor);
   const handleColorChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const newColor = e.target.value;
-    setCustomColor(newColor);
+    setCharacterColor(newColor as LilGuyColor);
 
     if (user) {
       updateCustomColor({
@@ -104,83 +108,108 @@ export default function Home() {
 
   return (
     <>
-      {!isAuthenticated && (
+      {!isAuthenticated ? (
+        // TODO remove this ugly poo
         <div className="text-center py-16 bg-gray-50 rounded-lg">
           <h2 className="text-2xl font-bold mb-4">Welcome to Lilguy</h2>
           <p className="mb-6 text-gray-600 max-w-lg mx-auto">
             Track your habits, and grow your thoughts! Sign in to get started.
           </p>
         </div>
+      ) : (<><h2 className="text-xl font-semibold mb-4" style={{ color: characterColor }}>
+        Welcome, {user?.fullName || user?.firstName || convexUser?.name || "User"}
+      </h2>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Customize Your Color
+        </label>
+        <input
+          type="color"
+          value={characterColor}
+          onChange={handleColorChange}
+          className="p-1 border rounded h-10 w-20 cursor-pointer"
+        /></>
       )}
-      {/* always render LilGuy, but if isAuthenticated, we pull data from DB */}
-      <div className="min-h-screen flex flex-col bg-gradient-to-b from-pixel-background to-white">
-        <Header />
-        <main className="flex-1 container max-w-[100%] px-4 py-6">
-          <div className="flex flex-col md:flex-row gap-6">
-            {/* Left sidebar with LilGuy */}
-            <Card className="pixel-container md:w-[40%] lg:sticky top-6 h-[min-content]">
-              <CardContent className="p-4 gap-0">
-                <div className="flex flex-col items-center justify-center py-4">
-                  <div className="relative mb-4">
-                    {/* <div className="grid grid-rows-[1.25rem_1fr_1.25rem] items-center justify-items-center p-8 pb-20 font-[family-name:var(--font-geist-sans)]"> */}
-                    <main className="flex flex-col gap-[2rem] row-start-2 items-center sm:items-start">
-                      <h2 className="text-xl font-semibold mb-4" style={{ color: customColor }}>
-                        Welcome, {user?.fullName || user?.firstName || convexUser?.name || "User"}
-                      </h2>
-                      <div className="mb-4">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Customize Your Color
-                        </label>
-                        <input
-                          type="color"
-                          value={customColor}
-                          onChange={handleColorChange}
-                          className="p-1 border rounded h-10 w-20 cursor-pointer"
-                        />
+      <HealthProvider>
+        <div className="min-h-screen flex flex-col bg-pixel-pattern">
+          <Header />
+          <main className="flex-1 container max-w-[100%] px-4 py-6">
+            <div className="flex flex-col md:flex-row gap-6">
+
+              {/* Left sidebar with LilGuy */}
+              <div className="md:w-[40%] lg:sticky top-6 h-[min-content]">
+                <PixelWindow
+                  title="LILGUY"
+                  className="mb-4"
+                >
+                  <LilGuy />
+                </PixelWindow>
+
+                {/* LilGuy States Toggling - TEMP FOR TESTING ONLY */}
+                <PixelWindow
+                  title="TEMP WINDOW"
+                  className="mb-4"
+                  contentClassName="p-2"
+                >
+                  <TestWindow />
+                </PixelWindow>
+              </div>
+
+              {/* Dashboard content */}
+              <div className="flex-1">
+                <PixelWindow
+                  title="DASHBOARD"
+                  className="mb-4"
+                  contentClassName="p-0"
+                >
+                  <div className="pixel-tabs-list">
+                    <button
+                      data-tab="dashboard"
+                      className={`pixel-tab ${activeTab === 'dashboard' ? 'active' : ''}`}
+                      data-state={activeTab === 'dashboard' ? 'active' : ''}
+                      onClick={() => setActiveTab('dashboard')}
+                    >
+                      Dashboard
+                    </button>
+                    <button
+                      data-tab="websites"
+                      className={`pixel-tab ${activeTab === 'websites' ? 'active' : ''}`}
+                      data-state={activeTab === 'websites' ? 'active' : ''}
+                      onClick={() => setActiveTab('websites')}
+                    >
+                      Websites
+                    </button>
+                    <button
+                      className={`pixel-tab ${activeTab === 'goals' ? 'active' : ''}`}
+                      data-state={activeTab === 'goals' ? 'active' : ''}
+                      onClick={() => setActiveTab('goals')}
+                    >
+                      Goals
+                    </button>
+                    <button
+                      className={`pixel-tab ${activeTab === 'widget' ? 'active' : ''}`}
+                      data-state={activeTab === 'widget' ? 'active' : ''}
+                      onClick={() => setActiveTab('widget')}
+                    >
+                      Widget
+                    </button>
+                  </div>
+
+                  <div className="p-4">
+                    {activeTab === 'dashboard' && <ProductivityMetrics />}
+                    {activeTab === 'websites' && <SiteList />}
+                    {activeTab === 'goals' && <Goals />}
+                    {activeTab === 'widget' && (
+                      <div className="flex justify-center py-6">
+                        <ExtensionWidget activeTab={activeTab} />
                       </div>
-                      <LilGuy user={user} />
-                    </main>
-                    {/* </div> */}
+                    )}
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Dashboard content */}
-            <div className="flex-1">
-              <Tabs defaultValue="dashboard" className="mb-6">
-                <TabsList>
-                  <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
-                  <TabsTrigger value="websites">Websites</TabsTrigger>
-                  <TabsTrigger value="goals">Goals</TabsTrigger>
-                  <TabsTrigger value="widget">Widget</TabsTrigger>
-                </TabsList>
-
-                <TabsContent value="dashboard" className="mt-4">
-                  <ProductivityMetrics />
-                </TabsContent>
-
-                <TabsContent value="websites" className="mt-4">
-                  <SiteList userId={convexUser?._id}/>
-                </TabsContent>
-
-                <TabsContent value="goals" className="mt-4">
-                  <Goals />
-                </TabsContent>
-
-                <TabsContent value="widget" className="mt-4">
-                  {/* Widget Preview */}
-                  <div className="mt-8">
-                    <div className="flex justify-center">
-                      <ExtensionWidget />
-                    </div>
-                  </div>
-                </TabsContent>
-              </Tabs>
+                </PixelWindow>
+              </div>
             </div>
-          </div>
-        </main>
-      </div>
+          </main>
+        </div>
+      </HealthProvider>
     </>
   );
 }

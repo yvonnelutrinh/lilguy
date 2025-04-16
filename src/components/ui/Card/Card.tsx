@@ -1,20 +1,41 @@
 import * as React from "react"
-
 import { classNameMerge } from "@/lib/utils"
+import PixelWindow from "../PixelWindow"
 
+// Pixel Card component that uses the PixelWindow internally
 const Card = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={classNameMerge(
-      "rounded-lg border bg-card text-card-foreground shadow-sm p-4",
-      className
-    )}
-    {...props}
-  />
-))
+  React.HTMLAttributes<HTMLDivElement> & { title?: string; headerColor?: string; showControls?: boolean }
+>(({ className, title, headerColor, showControls = false, children, ...props }, ref) => {
+  // If title is provided, use PixelWindow with a header, otherwise use a div that looks like the content area
+  if (title) {
+    return (
+      <PixelWindow
+        title={title}
+        headerColor={headerColor}
+        showControls={showControls}
+        className={className}
+        ref={ref as any}
+        {...props}
+      >
+        {children}
+      </PixelWindow>
+    )
+  }
+  
+  return (
+    <div
+      ref={ref}
+      className={classNameMerge(
+        "pixel-window bg-card text-card-foreground",
+        className
+      )}
+      {...props}
+    >
+      {children}
+    </div>
+  )
+})
 Card.displayName = "Card"
 
 const CardHeader = React.forwardRef<

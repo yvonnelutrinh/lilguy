@@ -8,6 +8,7 @@ export interface EmotionEvent {
   intensity: number; // 0-100
   source: string; // component that triggered it
   timestamp: number;
+  health?: number; // Optional health property for health bar updates
 }
 
 class EventBus {
