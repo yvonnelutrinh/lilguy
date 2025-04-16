@@ -68,7 +68,7 @@ export default function Home() {
           email: user.primaryEmailAddress?.emailAddress || "",
           customColor: "black",
           localIdentifier: localIdentifier,
-        }).catch(err => console.error("Error creating user:", err));
+        }).catch(err => console.log("Error creating user:", err));
       } else {
         // Create local user in Convex
         createUser({
@@ -77,7 +77,7 @@ export default function Home() {
           email: "",
           customColor: "black",
           localIdentifier: localIdentifier,
-        }).catch(err => console.error("Error creating local user:", err));
+        }).catch(err => console.log("Error creating local user:", err));
       }
     }
   }, [isLoaded, user, convexUser, createUser, localIdentifier]);
@@ -196,7 +196,7 @@ export default function Home() {
 
                   <div className="p-4">
                     {activeTab === 'dashboard' && <ProductivityMetrics />}
-                    {activeTab === 'websites' && <SiteList />}
+                    {activeTab === 'websites' && <SiteList userId={convexUser?._id}/>}
                     {activeTab === 'goals' && <Goals />}
                     {activeTab === 'widget' && (
                       <div className="flex justify-center py-6">
