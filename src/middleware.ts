@@ -5,12 +5,24 @@ import { api } from "../convex/_generated/api";
 
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
+const ALLOWED_ORIGIN = 'http://localhost:5173';
+const ALLOWED_METHODS = 'GET, POST, OPTIONS';
+const ALLOWED_HEADERS = 'Content-Type, x-user-id';
+
+function setCorsHeaders(response: NextResponse) {
+  response.headers.set('Access-Control-Allow-Origin', ALLOWED_ORIGIN);
+  response.headers.set('Access-Control-Allow-Methods', ALLOWED_METHODS);
+  response.headers.set('Access-Control-Allow-Headers', ALLOWED_HEADERS);
+  response.headers.set('Access-Control-Max-Age', '86400'); // optional cache
+  return response;
+}
+
 export async function middleware(request: NextRequest) {
   // Skip middleware for certain paths if needed
   if (request.nextUrl.pathname.startsWith('/_next') || 
       request.nextUrl.pathname.startsWith('/api/auth') ||
       request.nextUrl.pathname.startsWith('/static')) {
-    return NextResponse.next();
+    return setCorsHeaders(NextResponse.next());
   }
 
   // Get identifiable information from request headers
@@ -58,15 +70,15 @@ export async function middleware(request: NextRequest) {
     requestHeaders.set('x-user-id', userId);
 
     // Return the response with the modified headers
-    return NextResponse.next({
+    return setCorsHeaders(NextResponse.next({
       request: {
         headers: requestHeaders,
       },
-    });
+    }));
   } catch (error) {
     console.error('Error in middleware:', error);
     // Continue without user identification if there's an error
-    return NextResponse.next();
+    return setCorsHeaders(NextResponse.next());
   }
 }
 

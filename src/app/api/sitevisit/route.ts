@@ -82,8 +82,7 @@ export async function POST(request: Request) {
 // GET /api/sitevisit?userId=user123
 export async function GET(request: Request) {
   try {
-    const { searchParams } = new URL(request.url);
-    const userId = searchParams.get('userId');
+    const userId = request.headers.get('x-user-id');
 
     if (!userId) {
       return NextResponse.json(
@@ -116,3 +115,5 @@ export async function GET(request: Request) {
     );
   }
 }
+
+
