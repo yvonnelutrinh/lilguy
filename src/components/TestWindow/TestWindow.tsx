@@ -27,7 +27,7 @@ function TestSimulationControls({ handleSimulateNormal, simulateUnproductive, si
   );
 }
 
-function TestNameCustomization({ showNameInput, setShowNameInput, newName, setNewName, saveName, name }: any) {
+function TestNameEditor({ showNameInput, setShowNameInput, newName, setNewName, saveName, name }: any) {
   return (
     <div className="mb-6">
       <h3 className="mb-2 text-lg font-semibold">Character Name</h3>
@@ -418,7 +418,7 @@ export default function TestWindow() {
   }, []);
 
   return (
-    <SimpleContainer title="Testing Customization" description="Temp window to test customizing LilGuy's appearance and toggle animations">
+    <SimpleContainer title="Testing Customization">
       {/* --- Simulation Controls (for dev/testing only) --- */}
       <TestSimulationControls
         handleSimulateNormal={handleSimulateNormal}
@@ -428,14 +428,14 @@ export default function TestWindow() {
       />
 
       {/* Name customization */}
-      <TestNameCustomization
+      {/* <TestNameEditor
         showNameInput={showNameInput}
         setShowNameInput={setShowNameInput}
         newName={newName}
         setNewName={setNewName}
         saveName={saveName}
         name={name}
-      />
+      /> */}
 
       {/* Animations */}
       {/* <TestAnimations currentStage={currentStage} emitEmotion={emitEmotion} /> */}

@@ -313,7 +313,7 @@ function LilGuyCanvas({
         {/* Show name above the canvas */}
         {size === "normal" && (
           <div className="w-full bg-pixel-primary text-black px-4 py-2 border-t-2 border-l-2 border-r-2 border-black text-center font-bold shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-            {lilGuyName}
+            <CharacterNameEditor name={lilGuyName} setName={setLilGuyName} />
           </div>
         )}
 
@@ -332,6 +332,64 @@ function LilGuyCanvas({
           <LilGuyInteractor />
         </div>
       )}
+    </div>
+  );
+}
+
+// --- Character Name Editor for LilGuy ---
+function CharacterNameEditor({ name, setName }: { name: string, setName: (name: string) => void }) {
+  const [showInput, setShowInput] = useState(false);
+  const [newName, setNewName] = useState(name);
+
+  useEffect(() => {
+    setNewName(name);
+  }, [name]);
+
+  const saveName = () => {
+    if (newName.trim()) {
+      setName(newName);
+      setLocalStorageItem("lilGuyName", newName);
+      setShowInput(false);
+    }
+  };
+
+  if (!showInput) {
+    return (
+      <div className="flex items-center justify-center gap-2 w-full">
+        <div className="flex-1 text-center font-bold">{name}</div>
+        <button
+          className="pixel-button text-pixel-sm px-2 py-1"
+          onClick={() => setShowInput(true)}
+        >
+          Edit
+        </button>
+      </div>
+    );
+  }
+  return (
+    <div className="flex items-center justify-center gap-2 w-full">
+      <input
+        type="text"
+        value={newName}
+        onChange={e => setNewName(e.target.value)}
+        className="flex-1 px-2 py-1 border-2 border-black text-center"
+        maxLength={15}
+      />
+      <button
+        className="pixel-button bg-pixel-accent text-pixel-sm px-2 py-1"
+        onClick={saveName}
+      >
+        Save
+      </button>
+      <button
+        className="pixel-button pink text-pixel-sm px-2 py-1"
+        onClick={() => {
+          setNewName(name);
+          setShowInput(false);
+        }}
+      >
+        Cancel
+      </button>
     </div>
   );
 }
