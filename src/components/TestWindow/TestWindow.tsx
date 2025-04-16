@@ -5,6 +5,7 @@ import type { LilGuyColor, LilGuyStage } from "@/components/LilGuy/LilGuy";
 import { useEmitEmotion } from "@/lib/emotionContext";
 import { SimpleContainer } from "../UI/SimpleContainer/SimpleContainer";
 import { triggerFirstGoalSequence } from '@/lib/lilguyActions';
+import { normalWebsites, productiveWebsites, unproductiveWebsites } from '../SiteList/SiteList';
 
 export default function TestWindow() {
   const emitEmotion = useEmitEmotion();
@@ -103,6 +104,7 @@ export default function TestWindow() {
     emitEmotion("angry", 100, "button");
     setAndSyncMessage("Uh oh! Productivity is low. Devil form!");
     window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'lilGuyStage', value: 'devil' } }));
+    localStorage.setItem('websites', JSON.stringify(unproductiveWebsites));
   };
 
   // --- Simulate Productive ---
@@ -113,6 +115,7 @@ export default function TestWindow() {
     emitEmotion("happy", 100, "button");
     setAndSyncMessage("Amazing! Productivity is high. Angel form!");
     window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'lilGuyStage', value: 'angel' } }));
+    localStorage.setItem('websites', JSON.stringify(productiveWebsites));
   };
 
   // --- Simulate Normal State with Sample Goals and Websites ---
@@ -123,16 +126,8 @@ export default function TestWindow() {
       { id: 2, title: 'Complete 3 coding challenges', completed: false, progress: 50 },
       { id: 3, title: 'Limit social media to 30 minutes', completed: false, progress: 60 },
     ];
-    // Sample websites (productive/unproductive, < 4h each)
-    const sampleWebsites = [
-      { id: 1, name: 'github.com', category: 'productive', timeSpent: 125 }, // 2h 5m
-      { id: 2, name: 'stackoverflow.com', category: 'productive', timeSpent: 94 }, // 1h 34m
-      { id: 3, name: 'docs.google.com', category: 'productive', timeSpent: 67 }, // 1h 7m
-      { id: 4, name: 'youtube.com', category: 'unproductive', timeSpent: 103 }, // 1h 43m
-      { id: 5, name: 'netflix.com', category: 'unproductive', timeSpent: 45 }, // 45m
-      { id: 6, name: 'twitter.com', category: 'unproductive', timeSpent: 86 }, // 1h 26m
-      { id: 7, name: 'localhost', category: 'productive', timeSpent: 0 },
-    ];
+    // Use normalWebsites for simulation
+    const sampleWebsites = normalWebsites;
     localStorage.setItem('goals', JSON.stringify(sampleGoals));
     localStorage.setItem('websites', JSON.stringify(sampleWebsites));
     localStorage.setItem('lilGuyStage', 'normal');

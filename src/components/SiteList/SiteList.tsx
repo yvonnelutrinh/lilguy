@@ -26,14 +26,39 @@ interface Website {
   timeSpent: number;
 }
 
-// placeholder sites
-const initialWebsites: Website[] = [
+// placeholder sites for simulation (not for initial load)
+export const normalWebsites: Website[] = [
   { id: 1, name: 'github.com', category: 'productive', timeSpent: 125 },
   { id: 2, name: 'stackoverflow.com', category: 'productive', timeSpent: 94 },
   { id: 3, name: 'docs.google.com', category: 'productive', timeSpent: 67 },
   { id: 4, name: 'youtube.com', category: 'unproductive', timeSpent: 103 },
   { id: 5, name: 'netflix.com', category: 'unproductive', timeSpent: 45 },
   { id: 6, name: 'twitter.com', category: 'unproductive', timeSpent: 86 },
+  { id: 7, name: 'localhost', category: 'productive', timeSpent: 0 },
+];
+
+export const productiveWebsites: Website[] = [
+  { id: 1, name: 'github.com', category: 'productive', timeSpent: 200 },
+  { id: 2, name: 'stackoverflow.com', category: 'productive', timeSpent: 180 },
+  { id: 3, name: 'docs.google.com', category: 'productive', timeSpent: 120 },
+  { id: 4, name: 'youtube.com', category: 'unproductive', timeSpent: 30 },
+  { id: 5, name: 'netflix.com', category: 'unproductive', timeSpent: 10 },
+  { id: 6, name: 'twitter.com', category: 'unproductive', timeSpent: 14 },
+  { id: 7, name: 'localhost', category: 'productive', timeSpent: 0 },
+];
+
+export const unproductiveWebsites: Website[] = [
+  { id: 1, name: 'github.com', category: 'productive', timeSpent: 10 },
+  { id: 2, name: 'stackoverflow.com', category: 'productive', timeSpent: 5 },
+  { id: 3, name: 'docs.google.com', category: 'productive', timeSpent: 3 },
+  { id: 4, name: 'youtube.com', category: 'unproductive', timeSpent: 150 },
+  { id: 5, name: 'netflix.com', category: 'unproductive', timeSpent: 120 },
+  { id: 6, name: 'twitter.com', category: 'unproductive', timeSpent: 100 },
+  { id: 7, name: 'localhost', category: 'productive', timeSpent: 0 },
+];
+
+// For user: start with no sites except localhost (for dev)
+const initialWebsites: Website[] = [
   { id: 7, name: 'localhost', category: 'productive', timeSpent: 0 },
 ];
 
@@ -45,7 +70,7 @@ const SiteList: React.FC = () => {
   const [localhostSeconds, setLocalhostSeconds] = useState(() => parseInt(localStorage.getItem('localhost_seconds') || '0', 10));
   const { health, setHealth } = useHealth();
 
-  // Add localhost to websites if not present
+  // FOR DEV TESTING - Add localhost to websites if not present
   useEffect(() => {
     setWebsites(ws => {
       const filtered = ws.filter((site, idx, arr) =>
@@ -60,6 +85,31 @@ const SiteList: React.FC = () => {
       return filtered;
     });
   }, []); // Only run on mount
+
+  // Sync websites state with localStorage 'websites' key
+  useEffect(() => {
+    const syncWebsites = () => {
+      const stored = localStorage.getItem('websites');
+      if (stored) {
+        try {
+          setWebsites(JSON.parse(stored));
+        } catch {
+          setWebsites([]);
+        }
+      } else {
+        setWebsites(initialWebsites);
+      }
+    };
+    // Listen for changes
+    window.addEventListener('storage', syncWebsites);
+    window.addEventListener('localStorageChanged', syncWebsites);
+    // Initial load
+    syncWebsites();
+    return () => {
+      window.removeEventListener('storage', syncWebsites);
+      window.removeEventListener('localStorageChanged', syncWebsites);
+    };
+  }, []);
 
   // Timer for localhost
   useEffect(() => {
