@@ -32,7 +32,7 @@ export default defineSchema({
   lilguys: defineTable({
     userId: v.string(),
     name: v.string(),
-    health: v.boolean(),
+    health: v.number(),
     progress: v.number(),
   }).index("by_user", ["userId"]),
 

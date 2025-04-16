@@ -149,6 +149,7 @@ const SiteList: React.FC = ({ userId }: SiteListProps) => {
   const [goals, setGoals] = useState<{ id: number; title: string }[]>(() => {
     if (typeof window !== 'undefined') {
       try {
+        //TODO: get goals from convex backend
         const raw = localStorage.getItem('goals');
         if (raw) {
           return JSON.parse(raw).map((g: any) => ({ id: g.id, title: g.title }));
@@ -162,6 +163,7 @@ const SiteList: React.FC = ({ userId }: SiteListProps) => {
   function getGoalsFromStorage(): { id: number; title: string }[] {
     if (typeof window !== 'undefined') {
       try {
+        //TODO: get goals from convex backend
         const raw = localStorage.getItem('goals');
         if (raw) {
           return JSON.parse(raw).map((g: any) => ({ id: g.id, title: g.title }));
