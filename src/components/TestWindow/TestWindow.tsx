@@ -95,48 +95,24 @@ export default function TestWindow() {
     }
   };
 
-  // --- Simulation Controls ---
-  const simulateNoGoals = () => {
-    setLocalStorageItem("lilGuyFirstGoalSet", "false");
-    setLocalStorageItem("lilGuyStage", "egg");
-    setLocalStorageItem("lilGuyProductivity", 50);
-    setLocalStorageItem("lilGuyTrackedHours", 0);
-    emitEmotion("idle", 100, "button");
-    setAndSyncMessage("No goals set. LilGuy is an egg!");
-    window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { lilGuyStage: 'egg' } }));
-  };
-
-  // --- Simulate First Goal ---
-  const simulateFirstGoal = () => {
-    triggerFirstGoalSequence({
-      emitEmotion,
-      setAndSyncMessage
-    });
-  };
-
-  const simulateLowProductivity = () => {
+  // --- Simulate Unproductive ---
+  const simulateUnproductive = () => {
     setLocalStorageItem("lilGuyProductivity", 20);
     setLocalStorageItem("lilGuyTrackedHours", 4);
     setLocalStorageItem("lilGuyStage", "devil");
-    emitEmotion("idle", 100, "button");
+    emitEmotion("angry", 100, "button");
     setAndSyncMessage("Uh oh! Productivity is low. Devil form!");
-    window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { lilGuyStage: 'devil' } }));
+    window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'lilGuyStage', value: 'devil' } }));
   };
-  const simulateHighProductivity = () => {
+
+  // --- Simulate Productive ---
+  const simulateProductive = () => {
     setLocalStorageItem("lilGuyProductivity", 90);
     setLocalStorageItem("lilGuyTrackedHours", 4);
     setLocalStorageItem("lilGuyStage", "angel");
-    emitEmotion("idle", 100, "button");
+    emitEmotion("happy", 100, "button");
     setAndSyncMessage("Amazing! Productivity is high. Angel form!");
-    window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { lilGuyStage: 'angel' } }));
-  };
-  const simulateProductiveState = () => {
-    setLocalStorageItem("lilGuyProductivity", 60);
-    setLocalStorageItem("lilGuyTrackedHours", 4);
-    setLocalStorageItem("lilGuyStage", "normal");
-    emitEmotion("idle", 100, "button");
-    setAndSyncMessage("Productive day! LilGuy is normal.");
-    window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { lilGuyStage: 'normal' } }));
+    window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'lilGuyStage', value: 'angel' } }));
   };
 
   // --- Simulate Normal State with Sample Goals and Websites ---
@@ -226,6 +202,9 @@ export default function TestWindow() {
     // Set all dashboard metrics to zero for egg state
     localStorage.setItem('lilGuyProductivity', '0');
     localStorage.setItem('lilGuyTrackedHours', '0');
+    // Set lilGuyFirstGoalSet to false
+    localStorage.setItem('lilGuyFirstGoalSet', 'false');
+    localStorage.setItem('lilGuyStage', 'egg');
     // Fire events for key state changes
     window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'lilGuyStage', value: 'egg' } }));
     window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'goals', value: '[]' } }));
@@ -239,6 +218,7 @@ export default function TestWindow() {
     window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'lilGuyTrackedHours', value: '0' } }));
     // Full reload for clean state
     window.location.reload();
+    setAndSyncMessage("LilGuy is an egg. Add your first goal to get started!");
   };
 
   // Dynamically update animation buttons based on current stage
@@ -258,21 +238,18 @@ export default function TestWindow() {
   return (
     <SimpleContainer title="Testing Customization" description="Temp window to test customizing LilGuy's appearance and toggle animations">
       {/* --- Simulation Controls (for dev/testing only) --- */}
-      <div className="mb-4 flex flex-wrap gap-2">
-        <button className="pixel-button" onClick={simulateNoGoals}>Simulate No Goals</button>
-        <button className="pixel-button" onClick={simulateFirstGoal}>Simulate First Goal</button>
-        <button className="pixel-button" onClick={simulateLowProductivity}>Simulate Low Productivity</button>
-        <button className="pixel-button" onClick={simulateHighProductivity}>Simulate High Productivity</button>
-        <button className="pixel-button" onClick={simulateProductiveState}>Simulate Normal</button>
-      </div>
-
-      {/* --- LilGuy Reset Button for Simulation --- */}
-      <div className="flex flex-row gap-2 mt-4">
-        <button className="pixel-button red border-black border-2 px-3 py-1 text-xs" onClick={handleLilGuyReset}>
-          Reset LilGuy
-        </button>
-        <button className="pixel-button green border-black border-2 px-3 py-1 text-xs" onClick={handleSimulateNormal}>
+      <div className="flex flex-wrap gap-2 mt-4">
+        <button className="pixel-button blue" onClick={handleSimulateNormal}>
           Simulate Normal State
+        </button>
+        <button className="pixel-button green" onClick={simulateUnproductive}>
+          Simulate Unproductive
+        </button>
+        <button className="pixel-button pink" onClick={simulateProductive}>
+          Simulate Productive
+        </button>
+        <button className="pixel-button contrast border-black border-2 px-3 py-1 text-xs" onClick={handleLilGuyReset}>
+          Reset LilGuy
         </button>
       </div>
 

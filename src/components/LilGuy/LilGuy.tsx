@@ -510,7 +510,9 @@ function LilGuy({ showControls = true, showHealthBar = true, size = "normal", cl
           contentClassName="p-3 text-xs text-black text-center bg-white/95"
           showControls={false}
         >
-          {lilGuyMessage || lilGuyName || 'LilGuy'} is doing OK, but he knows you can do better.
+          {lilGuyMessage
+            ? lilGuyMessage
+            : `${lilGuyName || 'LilGuy'} is doing OK, but he knows you can do better.`}
         </PixelWindow>
       </div>
 
@@ -522,6 +524,8 @@ function LilGuy({ showControls = true, showHealthBar = true, size = "normal", cl
             onClick={() => {
               setAnimation('walk');
               setLocalStorageItem('lilGuyAnimation', 'walk');
+              setLocalStorageItem('lilGuyMessage', 'LilGuy is going for a walk!');
+              window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'lilGuyMessage', value: 'LilGuy is going for a walk!' } }));
             }}
           >
             Walk
@@ -531,6 +535,8 @@ function LilGuy({ showControls = true, showHealthBar = true, size = "normal", cl
             onClick={() => {
               setAnimation('happy');
               setLocalStorageItem('lilGuyAnimation', 'happy');
+              setLocalStorageItem('lilGuyMessage', 'LilGuy loves pets!');
+              window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'lilGuyMessage', value: 'LilGuy loves pets!' } }));
             }}
           >
             Pet
