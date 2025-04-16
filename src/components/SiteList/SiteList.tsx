@@ -3,12 +3,12 @@ import { Label } from "@/components/UI/Label/Label";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/UI/Select/Select";
 import { SimpleContainer, SimpleItem } from '@/components/UI/SimpleContainer/SimpleContainer';
 import { useHealth } from "@/context/HealthContext";
+import { useMutation, useQuery } from "convex/react";
 import { Trash } from "lucide-react";
 import React, { useEffect, useMemo, useState } from 'react';
-import { Button } from "../ui/Button/Button";
-import { Id } from "../../../convex/_generated/dataModel";
 import { api } from "../../../convex/_generated/api";
-import { useMutation, useQuery } from "convex/react";
+import { Id } from "../../../convex/_generated/dataModel";
+import { Button } from "../ui/Button/Button";
 
 // PlusIcon component from Goals.tsx
 const PlusIcon = () => (
@@ -135,6 +135,7 @@ const SiteList: React.FC = ({ userId }: SiteListProps) => {
 
   const updateClassification = useMutation(api.sitevisits.updateClassification);
   const addSitevisit = useMutation(api.sitevisits.addSiteVisit);
+  const removeSiteVisit = useMutation(api.sitevisits.removeSiteVisit);
   const getSiteVisits = useQuery(api.sitevisits.getSiteVisits, userId ? { userId: userId } : "skip");
 
 
@@ -222,11 +223,13 @@ const SiteList: React.FC = ({ userId }: SiteListProps) => {
     setNewWebsite('');
   };
 
-  const handleRemoveWebsite = (id: Id<"sitevisits">) => {
-    // const updated = websites.filter(site => site._id !== id);
-    console.log('TODO:DLETE', id)
-    // TODO: delete backings
-    // persistWebsites(updated);
+  const handleRemoveWebsite = async (id: Id<"sitevisits">) => {
+    try {
+      await removeSiteVisit({ sitevisitId: id });
+      // the websites state will be updated automatically when getSiteVisits refetches
+    } catch (err) {
+      console.error('Error deleting website:', err);
+    }
   };
 
   const handleCategoryChange = async (id: Id<"sitevisits">, newClassification: 'productive' | 'unproductive' | 'neutral') => {
@@ -327,10 +330,10 @@ const SiteList: React.FC = ({ userId }: SiteListProps) => {
     if (filter === 'all') {
       return [...websites].sort((a, b) => {
         const catOrder = { productive: 0, neutral: 1, unproductive: 2 };
-        return catOrder[a.category] - catOrder[b.category];
+        return catOrder[a.classification as keyof typeof catOrder] - catOrder[b.classification as keyof typeof catOrder];
       });
     }
-    return websites.filter(site => site.category === filter);
+    return websites.filter(site => site.classification === filter);
   }, [websites, filter]);
 
   const formatTime = (minutes: number) => {
