@@ -24,6 +24,7 @@ interface Website {
   name: string;
   category: 'productive' | 'unproductive' | 'neutral';
   timeSpent: number;
+  goalId?: number;
 }
 
 // placeholder sites for simulation (not for initial load)
@@ -69,6 +70,88 @@ const SiteList: React.FC = () => {
   const [filter, setFilter] = useState<'all' | 'productive' | 'unproductive' | 'neutral'>('all');
   const [localhostSeconds, setLocalhostSeconds] = useState(() => parseInt(localStorage.getItem('localhost_seconds') || '0', 10));
   const { health, setHealth } = useHealth();
+
+  // Add support for attributing websites to a goal
+  const [goals, setGoals] = useState<{ id: number; title: string }[]>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const raw = localStorage.getItem('goals');
+        if (raw) {
+          return JSON.parse(raw).map((g: any) => ({ id: g.id, title: g.title }));
+        }
+      } catch {}
+    }
+    return [];
+  });
+
+  // Helper to get goals from localStorage
+  function getGoalsFromStorage(): { id: number; title: string }[] {
+    if (typeof window !== 'undefined') {
+      try {
+        const raw = localStorage.getItem('goals');
+        if (raw) {
+          return JSON.parse(raw).map((g: any) => ({ id: g.id, title: g.title }));
+        }
+      } catch {}
+    }
+    return [];
+  }
+
+  // Keep goals in sync with localStorage
+  useEffect(() => {
+    const syncGoals = () => setGoals(getGoalsFromStorage());
+    window.addEventListener('storage', syncGoals);
+    window.addEventListener('localStorageChanged', syncGoals);
+    return () => {
+      window.removeEventListener('storage', syncGoals);
+      window.removeEventListener('localStorageChanged', syncGoals);
+    };
+  }, []);
+
+  // Attribution handler
+  const handleGoalAttribution = (websiteId: number, goalId: number|null) => {
+    setWebsites(ws => {
+      const updated = ws.map(site =>
+        site.id === websiteId ? { ...site, goalId: goalId ?? undefined } : site
+      );
+      localStorage.setItem('websites', JSON.stringify(updated));
+      return updated;
+    });
+  };
+
+  // --- Ensure all modifications to websites are persisted ---
+  const persistWebsites = (updated: Website[]) => {
+    setWebsites(updated);
+    localStorage.setItem('websites', JSON.stringify(updated));
+  };
+
+  // Patch: When adding or removing websites, persist to localStorage
+  const handleAddWebsite = () => {
+    if (newWebsite.trim() === '') return;
+    const websiteExists = websites.some(site => site.name === newWebsite.trim());
+    if (websiteExists) return;
+    const newSite: Website = {
+      id: Math.max(0, ...websites.map(w => w.id)) + 1,
+      name: newWebsite.trim(),
+      category,
+      timeSpent: 0
+    };
+    const updated = [...websites, newSite];
+    persistWebsites(updated);
+    setNewWebsite('');
+  };
+
+  const handleRemoveWebsite = (id: number) => {
+    const updated = websites.filter(site => site.id !== id);
+    persistWebsites(updated);
+  };
+
+  const handleCategoryChange = (id: number, newCategory: 'productive' | 'unproductive' | 'neutral') => {
+    const updated = websites.map(site =>
+      site.id === id ? { ...site, category: newCategory } : site
+    );
+    persistWebsites(updated);
+  };
 
   // FOR DEV TESTING - Add localhost to websites if not present
   useEffect(() => {
@@ -151,33 +234,6 @@ const SiteList: React.FC = () => {
     };
   }, []);
 
-  const handleAddWebsite = () => {
-    if (newWebsite.trim() === '') return;
-    
-    const websiteExists = websites.some(site => site.name === newWebsite.trim());
-    if (websiteExists) return;
-    
-    const newSite: Website = {
-      id: Math.max(0, ...websites.map(w => w.id)) + 1,
-      name: newWebsite.trim(),
-      category,
-      timeSpent: 0
-    };
-    
-    setWebsites([...websites, newSite]);
-    setNewWebsite('');
-  };
-  
-  const handleRemoveWebsite = (id: number) => {
-    setWebsites(websites.filter(site => site.id !== id));
-  };
-  
-  const handleCategoryChange = (id: number, newCategory: 'productive' | 'unproductive' | 'neutral') => {
-    setWebsites(websites.map(site => 
-      site.id === id ? { ...site, category: newCategory } : site
-    ));
-  };
-  
   // Memoize filtered and sorted websites
   const filteredWebsites = useMemo(() => {
     if (filter === 'all') {
@@ -188,7 +244,7 @@ const SiteList: React.FC = () => {
     }
     return websites.filter(site => site.category === filter);
   }, [websites, filter]);
-  
+
   const formatTime = (minutes: number) => {
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
@@ -271,6 +327,23 @@ const SiteList: React.FC = () => {
       </div>
       
       <div className="space-y-2">
+        {/* Show yellow box if no goals, but always show website list below */}
+        {goals.length === 0 && (
+          <div className="text-center py-4 text-pixel-warning bg-yellow-50 border border-yellow-200 rounded mb-2">
+            You have no goals. <b>Add a goal above to attribute productive websites!</b>
+            <br />
+            <button
+              className="pixel-button mt-2 text-xs px-3 py-1 bg-pixel-accent border-black border-2"
+              onClick={() => {
+                const goalTabBtn = document.querySelector('[data-state][onClick*="setActiveTab(\'dashboard\')"]') as HTMLElement;
+                if (goalTabBtn) goalTabBtn.click();
+                else window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+            >
+              Go to Goals
+            </button>
+          </div>
+        )}
         {filteredWebsites.length === 0 ? (
           <div className="text-center py-4 text-muted-foreground">
             No websites in this category
@@ -291,6 +364,23 @@ const SiteList: React.FC = () => {
                   <div className="text-xs text-muted-foreground">
                     Time spent: {formatTime(website.timeSpent)}
                   </div>
+                  {/* Only allow goal attribution for productive sites */}
+                  {website.category === 'productive' && goals.length > 0 && (
+                    <div className="mt-1">
+                      <span className="text-xs mr-2">Goal:</span>
+                      <select
+                        className="border border-black rounded px-2 py-1 text-xs bg-white"
+                        value={website.goalId ?? ''}
+                        onChange={e => handleGoalAttribution(website.id, e.target.value ? Number(e.target.value) : null)}
+                        disabled={goals.length === 0}
+                      >
+                        <option value="">Unassigned</option>
+                        {goals.map(goal => (
+                          <option key={goal.id} value={goal.id}>{goal.title}</option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
                 </div>
                 <div className="flex items-center gap-2">
                   <Select 
