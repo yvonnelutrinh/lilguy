@@ -1,0 +1,37 @@
+/* Pixel font for LilGuy Dashboard */
+@import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600&display=swap');
+
+/* Fallback font loading */
+@font-face {
+  font-family: 'Pixelify Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: url('https://fonts.gstatic.com/s/pixelifysans/v2/CHy2V-3HFUT7YQRMuEBS-Jq3xbiH_iR9RP0-bx5aFzA.woff2') format('woff2');
+  font-display: swap;
+}
+
+/* Font Variants */
+.text-pixel-sm {
+  font-family: 'Pixelify Sans', monospace;
+  font-size: 0.7rem;
+  line-height: 1.4;
+}
+
+.text-pixel {
+  font-family: 'Pixelify Sans', monospace;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.text-pixel-lg {
+  font-family: 'Pixelify Sans', monospace;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.text-pixel-xl {
+  font-family: 'Pixelify Sans', monospace;
+  font-size: 1.25rem;
+  line-height: 1.7;
+  font-weight: 600;
+}

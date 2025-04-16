@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LilGuy Sprite Sheet Guide</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        pre {
+            background-color: #f8f8f8;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            border-left: 4px solid #3498db;
+        }
+        .sprite-template {
+            border: 1px solid #ddd;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+        .grid-overlay {
+            background-image: 
+                linear-gradient(to right, rgba(0,0,0,0.1) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0,0,0,0.1) 1px, transparent 1px);
+            background-size: 32px 32px;
+            border: 1px solid #ccc;
+        }
+        .color-sample {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+            border: 1px solid #aaa;
+        }
+        .file-list {
+            background-color: #f8f8f8;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        .file-item {
+            font-family: monospace;
+            margin: 5px 0;
+        }
+        .color-items {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        .color-item {
+            display: flex;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>LilGuy Sprite Sheet Guide</h1>
+        <p>This guide explains how to prepare the sprite sheets for the LilGuy pixel art dashboard. The sprites have been implemented in the code but need proper image files to function.</p>
+    </div>
+
+    <div class="card">
+        <h2>Sprite Sheet Specifications</h2>
+        <ul>
+            <li>Each sprite is <strong>32x32 pixels</strong></li>
+            <li>Sprite sheets are organized in <strong>rows of animations</strong></li>
+            <li>Each row contains different frames of the same animation</li>
+            <li>Multiple colors needed: <strong>green</strong>, <strong>blue</strong>, and <strong>black</strong></li>
+            <li>Format should be <strong>PNG with transparency</strong></li>
+        </ul>
+
+        <h3>Colors Used:</h3>
+        <div class="color-items">
+            <div class="color-item">
+                <div class="color-sample" style="background-color: #4CAF50;"></div>
+                <span>Green: #4CAF50</span>
+            </div>
+            <div class="color-item">
+                <div class="color-sample" style="background-color: #2196F3;"></div>
+                <span>Blue: #2196F3</span>
+            </div>
+            <div class="color-item">
+                <div class="color-sample" style="background-color: #333333;"></div>
+                <span>Black: #333333</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>Required Files</h2>
+        <p>The following sprite sheet files need to be created and placed in the <code>/public/assets/sprites/</code> directory:</p>
+        
+        <div class="file-list">
+            <div class="file-item">📄 lilguy_green.png - Normal green character with all animations</div>
+            <div class="file-item">📄 lilguy_blue.png - Normal blue character with all animations</div>
+            <div class="file-item">📄 lilguy_black.png - Normal black character with all animations</div>
+            <div class="file-item">📄 egg_green.png - Egg stage for green character</div>
+            <div class="file-item">📄 egg_blue.png - Egg stage for blue character</div>
+            <div class="file-item">📄 egg_black.png - Egg stage for black character</div>
+            <div class="file-item">📄 hatchling_green.png - Hatchling stage for green character</div>
+            <div class="file-item">📄 hatchling_blue.png - Hatchling stage for blue character</div>
+            <div class="file-item">📄 hatchling_black.png - Hatchling stage for black character</div>
+            <div class="file-item">📄 angel_green.png - Angel form for green character</div>
+            <div class="file-item">📄 angel_blue.png - Angel form for blue character</div>
+            <div class="file-item">📄 angel_black.png - Angel form for black character</div>
+            <div class="file-item">📄 devil_green.png - Devil form for green character</div>
+            <div class="file-item">📄 devil_blue.png - Devil form for blue character</div>
+            <div class="file-item">📄 devil_black.png - Devil form for black character</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>Sprite Sheet Layout</h2>
+        <p>Each sprite sheet follows this row layout for animations:</p>
+        <ul>
+            <li><strong>Row 0:</strong> Idle animation (6 frames)</li>
+            <li><strong>Row 1:</strong> Walk animation (5 frames)</li>
+            <li><strong>Row 2:</strong> Happy animation (6 frames)</li>
+            <li><strong>Row 3:</strong> Angry animation (5 frames)</li>
+            <li><strong>Row 4:</strong> Sad animation (6 frames)</li>
+            <li><strong>Row 5:</strong> Shocked animation (6 frames)</li>
+        </ul>
+        
+        <p>For egg sprites:</p>
+        <ul>
+            <li><strong>Row 0:</strong> Idle animation (6 frames)</li>
+            <li><strong>Row 1:</strong> Shake and hatch animations (first 2 frames for shake, last 4 for hatch)</li>
+        </ul>
+        
+        <p>For hatchling sprites:</p>
+        <ul>
+            <li><strong>Row 0:</strong> Idle animation (4 frames)</li>
+            <li><strong>Row 1:</strong> Walk animation (4 frames)</li>
+            <li><strong>Row 2:</strong> Happy animation (4 frames)</li>
+            <li><strong>Row 3:</strong> Sad animation (4 frames)</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2>Steps to Create the Sprite Sheets</h2>
+        <ol>
+            <li>Take the blue and green sprite images you've shown</li>
+            <li>Split them into the individual sprite sheet files according to the list above</li>
+            <li>Each file should contain only the animations for its specific character type and color</li>
+            <li>Make sure all sprite frames are positioned accurately according to the animation row layout</li>
+            <li>Save each file as a PNG with transparency</li>
+            <li>Place them in the <code>/public/assets/sprites/</code> directory</li>
+        </ol>
+        
+        <p>You can use image editing software like Photoshop, GIMP, or Aseprite to create these sprite sheets.</p>
+    </div>
+
+    <div class="card">
+        <h2>Example Grid Template</h2>
+        <p>Here's a visual template with a 32x32 grid for a standard character sprite sheet (6 rows, 6 columns):</p>
+        <div class="sprite-template grid-overlay" style="width: 192px; height: 192px;"></div>
+        <p>Make sure your sprite frames align with this grid, with each frame fitting within a 32x32 pixel square.</p>
+    </div>
+
+    <div class="card">
+        <h2>Code Implementation</h2>
+        <p>The code is already set up to use these sprite sheets. The key parts are:</p>
+        
+        <pre>
+// In SpriteManager.ts
+export const getSpriteSheetPath = (stage: LilGuyStage, color: LilGuyColor): string => {
+  if (stage === 'egg') {
+    return `/assets/sprites/egg_${color}.png`;
+  } else if (stage === 'hatchling') {
+    return `/assets/sprites/hatchling_${color}.png`;
+  } else if (stage === 'angel') {
+    return `/assets/sprites/angel_${color}.png`;
+  } else if (stage === 'devil') {
+    return `/assets/sprites/devil_${color}.png`;
+  } else {
+    return `/assets/sprites/lilguy_${color}.png`;
+  }
+};</pre>
+        
+        <p>The animations are set up to extract the correct frames from each sprite sheet based on the character's current state and animation.</p>
+    </div>
+</body>
+</html>

@@ -11,29 +11,29 @@ interface HealthBarProps {
 function HealthBar({
     showLabel = true,
     className = "",
-    health,
+    health = 0,
 }: HealthBarProps) {
+    // Simple direct color based on health percentage
+    const getBgColor = () => {
+        const healthValue = health || 0;
+        if (healthValue <= 30) return "bg-red-500"; // Danger
+        if (healthValue <= 70) return "bg-yellow-500"; // Warning
+        return "bg-green-500"; // Good
+    };
+    
     return (
         <div
             className={`w-full flex flex-col justify-center items-center ${className}`}
         >
-            <div className="relative w-[90%] h-4 bg-gray-300 rounded-full mb-2">
+            <div className="relative w-full h-6 bg-white border-2 border-black rounded-none mb-1 overflow-hidden">
                 <div
-                    className="absolute top-0 left-0 h-full rounded-full"
-                    style={{
-                        width: `${health}%`,
-                        backgroundColor:
-                            (health ?? 100) <= 30
-                                ? "red"
-                                : (health ?? 100) <= 70
-                                    ? "yellow"
-                                    : "green",
-                    }}
+                    className={`absolute top-0 left-0 h-full ${getBgColor()}`}
+                    style={{ width: `${health || 0}%` }}
                 ></div>
             </div>
             {showLabel && (
-                <div className="text-xs text-black">
-                    {Math.floor(health ?? 100)} / 100
+                <div className="text-xs font-bold text-black">
+                    {Math.floor(health ?? 0)} / 100
                 </div>
             )}
         </div>
@@ -42,27 +42,51 @@ function HealthBar({
 
 // health bar as separate component for widget
 function WidgetHealth() {
-    const [health, setHealth] = useState<number>(() => {
-        const storedHealth = localStorage.getItem("modifiedHealth");
-        return storedHealth ? JSON.parse(storedHealth) : 55;
-    });
+    const [health, setHealth] = useState<number>(55);
 
     useEffect(() => {
-        // TODO: it only changes when we're on other pages
-        const handleStorageChange = (e: StorageEvent) => {
-            if (e.key === "modifiedHealth") {
-                const newValue = e.newValue ? JSON.parse(e.newValue) : null;
-                setHealth(newValue);
+        // Initial load
+        const storedHealth = localStorage.getItem("modifiedHealth");
+        if (storedHealth) {
+            try {
+                setHealth(parseInt(storedHealth, 10));
+            } catch (e) {
+                console.error("Error parsing health:", e);
+            }
+        }
+        
+        // Listen for changes
+        const handleStorageEvent = (e: StorageEvent) => {
+            if (e.key === "modifiedHealth" && e.newValue) {
+                try {
+                    setHealth(parseInt(e.newValue, 10));
+                } catch (e) {
+                    console.error("Error parsing health:", e);
+                }
             }
         };
-        window.addEventListener('storage', handleStorageChange);
-
+        
+        window.addEventListener("storage", handleStorageEvent);
+        
+        // Custom event listener
+        const handleCustomEvent = (e: any) => {
+            if (e.detail?.key === "modifiedHealth") {
+                const value = parseInt(e.detail.value, 10);
+                if (!isNaN(value)) {
+                    setHealth(value);
+                }
+            }
+        };
+        
+        window.addEventListener("localStorageChanged", handleCustomEvent);
+        
         return () => {
-            window.removeEventListener('storage', handleStorageChange);
+            window.removeEventListener("storage", handleStorageEvent);
+            window.removeEventListener("localStorageChanged", handleCustomEvent);
         };
     }, []);
 
-    return <HealthBar health={health} className="mb-2" />;
+    return <HealthBar health={health} showLabel={false} className="mt-1" />;
 }
 
 export { HealthBar, WidgetHealth };
