@@ -73,6 +73,7 @@ export default function Home() {
               >
                 <div className="pixel-tabs-list">
                   <button 
+                    data-tab="dashboard"
                     className={`pixel-tab ${activeTab === 'dashboard' ? 'active' : ''}`} 
                     data-state={activeTab === 'dashboard' ? 'active' : ''}
                     onClick={() => setActiveTab('dashboard')}
@@ -80,6 +81,7 @@ export default function Home() {
                     Dashboard
                   </button>
                   <button 
+                    data-tab="websites"
                     className={`pixel-tab ${activeTab === 'websites' ? 'active' : ''}`} 
                     data-state={activeTab === 'websites' ? 'active' : ''}
                     onClick={() => setActiveTab('websites')}

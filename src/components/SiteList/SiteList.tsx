@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { Trash } from "lucide-react";
 import { SimpleContainer, SimpleItem } from '@/components/UI/SimpleContainer/SimpleContainer';
 import { useHealth } from "@/context/HealthContext";
+import Tag from '@/components/UI/Tag';
 
 // PlusIcon component from Goals.tsx
 const PlusIcon = () => (
@@ -62,6 +63,8 @@ export const unproductiveWebsites: Website[] = [
 const initialWebsites: Website[] = [
   { id: 7, name: 'localhost', category: 'productive', timeSpent: 0 },
 ];
+
+export type { Website };
 
 const SiteList: React.FC = () => {
   const [websites, setWebsites] = useState<Website[]>(initialWebsites);
@@ -352,6 +355,7 @@ const SiteList: React.FC = () => {
           filteredWebsites.map((website) => (
             <SimpleItem
               key={website.id}
+              id={`website-${website.id}`}
               backgroundColor={
                 website.category === 'productive' ? 'rgba(16, 185, 129, 0.1)' : 
                 website.category === 'unproductive' ? 'rgba(239, 68, 68, 0.1)' : 
@@ -366,19 +370,23 @@ const SiteList: React.FC = () => {
                   </div>
                   {/* Only allow goal attribution for productive sites */}
                   {website.category === 'productive' && goals.length > 0 && (
-                    <div className="mt-1">
-                      <span className="text-xs mr-2">Goal:</span>
-                      <select
-                        className="border border-black rounded px-2 py-1 text-xs bg-white"
-                        value={website.goalId ?? ''}
-                        onChange={e => handleGoalAttribution(website.id, e.target.value ? Number(e.target.value) : null)}
+                    <div className="mt-1 flex items-center gap-2">
+                      <span className="text-xs font-bold mr-1">Goal:</span>
+                      <Select
+                        value={website.goalId ? String(website.goalId) : undefined}
+                        onValueChange={value => handleGoalAttribution(website.id, value === 'none' ? null : Number(value))}
                         disabled={goals.length === 0}
                       >
-                        <option value="">Unassigned</option>
-                        {goals.map(goal => (
-                          <option key={goal.id} value={goal.id}>{goal.title}</option>
-                        ))}
-                      </select>
+                        <SelectTrigger className="w-[140px] h-8 text-xs bg-white site-goal-select">
+                          <SelectValue placeholder="Assign to goal" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-white">
+                          <SelectItem value="none">Unassigned</SelectItem>
+                          {goals.map(goal => (
+                            <SelectItem key={goal.id} value={String(goal.id)}>{goal.title}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
                   )}
                 </div>
