@@ -1,10 +1,10 @@
 "use client";
-import { useListenToEmotions } from "@/lib/emotionContext";
-import { useEffect, useRef, useState } from "react";
-import LilGuyInteractor from "../LilGuyInteractor/LilGuyInteractor";
-import { HealthBar } from "../HealthBar/HealthBar";
-import type { EmotionEvent } from "@/lib/emotionEventBus";
 import { useHealth } from "@/context/HealthContext";
+import { useListenToEmotions } from "@/lib/emotionContext";
+import { EmotionEvent } from "@/lib/emotionEventBus";
+import { useEffect, useRef, useState } from "react";
+import { HealthBar } from "../HealthBar/HealthBar";
+import LilGuyInteractor from "../LilGuyInteractor/LilGuyInteractor";
 import PixelWindow from '../ui/PixelWindow';
 
 // helper function to safely access localStorage
@@ -18,7 +18,8 @@ const getLocalStorageItem = (key: string, defaultValue: any) => {
 
 // helper function to safely set localStorage item
 const setLocalStorageItem = (key: string, value: any) => {
-  if (typeof window !== 'undefined') {
+  if (typeof window !==
+   'undefined') {
     localStorage.setItem(key, typeof value === 'object' || typeof value === 'number' ? JSON.stringify(value) : value);
   }
 };
@@ -155,6 +156,7 @@ function LilGuyCanvas({
 
   // --- Sprite loading effect: runs when stage or color changes ---
   useEffect(() => {
+    if (lilGuyColor){
     const spriteSheetPath = getSpriteSheetForStageAndColor(lilGuyStage, lilGuyColor);
     if (spriteSheetPath === lastSpriteSheetRef.current && spriteImageRef.current) {
       return;
@@ -169,6 +171,7 @@ function LilGuyCanvas({
       spriteImageRef.current = null;
       console.error("Error loading sprite sheet asset:", spriteSheetPath);
     };
+  }
   }, [lilGuyStage, lilGuyColor]);
 
   // --- Animation loop: draws the correct frame from the sprite sheet ---
@@ -181,7 +184,7 @@ function LilGuyCanvas({
     let running = true;
     const spriteWidth = 500;
     const spriteHeight = 500;
-    let scale = size === "widget" ? 0.25 * 0.4 : 0.25;
+    const scale = size === "widget" ? 0.25 * 0.4 : 0.25;
     const displayWidth = spriteWidth * scale;
     const displayHeight = spriteHeight * scale;
     const CANVAS_WIDTH = canvas.width = size === "widget" ? 48 : 400;
@@ -211,8 +214,8 @@ function LilGuyCanvas({
       ctx.restore();
       const animFrames = spriteAnimations[animation]?.loc.length || 1;
       const position = Math.floor(gameFrame / staggerFrames) % animFrames;
-      let frameX = spriteAnimations[animation]?.loc[position]?.x || 0;
-      let frameY = spriteAnimations[animation]?.loc[position]?.y || 0;
+      const frameX = spriteAnimations[animation]?.loc[position]?.x || 0;
+      const frameY = spriteAnimations[animation]?.loc[position]?.y || 0;
       const imgToDraw = spriteImageRef.current;
       if (imgToDraw) {
         ctx.drawImage(
@@ -421,17 +424,17 @@ const getInitialLilGuyState = () => {
     console.log("[LilGuy] Loaded stage from localStorage:", stage);
   }
   // First goal
-  let firstGoalSet = getLocalStorageItem("lilGuyFirstGoalSet", false) === "true";
+  const firstGoalSet = getLocalStorageItem("lilGuyFirstGoalSet", false) === "true";
   console.log("[LilGuy] First goal set:", firstGoalSet);
   // Productivity
-  let productivity = Number(getLocalStorageItem("lilGuyProductivity", 50));
-  let hoursTracked = Number(getLocalStorageItem("lilGuyTrackedHours", 0));
+  const productivity = Number(getLocalStorageItem("lilGuyProductivity", 50));
+  const hoursTracked = Number(getLocalStorageItem("lilGuyTrackedHours", 0));
   console.log("[LilGuy] Productivity:", productivity, "Hours tracked:", hoursTracked);
   return { color, stage, firstGoalSet, productivity, hoursTracked };
 };
 
 // --- Main LilGuy Component ---
-function LilGuy({ showControls = true, showHealthBar = true, size = "normal", className = "", initialAnimation = "idle", health: controlledHealth }: LilGuyProps) {
+function LilGuy({ showControls = true, size = "normal", className = "", initialAnimation = "idle", health: controlledHealth }: LilGuyProps) {
   const [lilGuyStage, setLilGuyStage] = useState<LilGuyStage>(() => getLocalStorageItem('lilGuyStage', 'egg'));
   const [lilGuyColor, setLilGuyColor] = useState<LilGuyColor | null>(() => getLocalStorageItem('lilGuyColor', null));
   const [animation, setAnimation] = useState<LilGuyAnimation>(initialAnimation);
@@ -628,6 +631,7 @@ function LilGuy({ showControls = true, showHealthBar = true, size = "normal", cl
   );
 }
 
+
 // LilGuy for web app
 function LilGuyWebApp() {
   return (
@@ -646,4 +650,5 @@ function WidgetLilGuy(props: { health?: number; stage?: LilGuyStage; animation?:
   return <LilGuyCanvas size="widget" showHealthBar={false} {...props} />;
 }
 
-export { LilGuy, WidgetLilGuy, getRandomColor };
+export { getRandomColor, LilGuy, WidgetLilGuy };
+

@@ -1,6 +1,8 @@
 import React from 'react';
 import { DropdownMenu } from "radix-ui";
-import { Button } from '@/components/UI/Button/Button';
+import AuthButton from '../AuthButton/AuthButton';
+import { Button } from '../ui/Button/Button';
+
 
 const notifications = [
     { id: 1, message: "You've been productive for 2 hours today!", isRead: false },
@@ -46,7 +48,9 @@ const SettingsIcon = () => (
 
 const Header: React.FC = () => {
     return (
-        <header className="bg-pixel-pattern border-b-2 border-black px-4 py-2 flex justify-between items-center">
+
+        <header className="bg-white border-b-2 border-black px-4 py-2 flex justify-between items-center">
+           
             <div className="flex items-center gap-2">
                 <div className="w-8 h-8 bg-white border-2 border-black flex items-center justify-center">
                     <div className="w-6 h-6 bg-pixel-green flex items-center justify-center">
@@ -54,6 +58,10 @@ const Header: React.FC = () => {
                     </div>
                 </div>
                 <h1 className="text-base font-bold sm:block text-pixel">LilGuy</h1>
+            </div>
+
+            <div className="text-right">
+                <AuthButton />
             </div>
 
             <div className="flex items-center gap-2">

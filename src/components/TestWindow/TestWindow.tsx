@@ -41,13 +41,13 @@ function TestNameEditor({ showNameInput, setShowNameInput, newName, setNewName, 
             placeholder="Enter name"
             maxLength={15}
           />
-          <button 
+          <button
             onClick={saveName}
             className="pixel-button bg-pixel-accent text-pixel-sm whitespace-nowrap"
           >
             Save
           </button>
-          <button 
+          <button
             onClick={() => {
               setNewName(name);
               setShowNameInput(false);
@@ -62,7 +62,7 @@ function TestNameEditor({ showNameInput, setShowNameInput, newName, setNewName, 
           <div className="flex-1 px-3 py-2 border-2 border-black bg-gray-50">
             {name}
           </div>
-          <button 
+          <button
             onClick={() => setShowNameInput(true)}
             className="pixel-button text-pixel-sm whitespace-nowrap"
           >
@@ -140,6 +140,23 @@ function TestAnimations({ currentStage, emitEmotion }: any) {
 }
 
 function TestLilGuyColor({ currentColor, changeLilGuyColor }: any) {
+
+  // const updateCustomColor = useMutation(api.users.updateCustomColor);
+
+  // const newColor = e.target.value;
+  // setCharacterColor(newColor as LilGuyColor);
+
+  // if (user) {
+  //   updateCustomColor({
+  //     tokenIdentifier: `clerk:${user.id}`,
+  //     customColor: newColor,
+  //   }).catch(err => console.error("Error updating color:", err));
+  // } else {
+  //   // Save color preference to localStorage when no user is logged in
+  //   localStorage.setItem('customColor', newColor);
+  // }
+
+
   return (
     <div className="mb-6">
       <h3 className="mb-2 text-lg font-semibold">LilGuy Color</h3>
@@ -153,10 +170,10 @@ function TestLilGuyColor({ currentColor, changeLilGuyColor }: any) {
                 color === 'green'
                   ? '#4CAF50'
                   : color === 'blue'
-                  ? '#2196F3'
-                  : color === 'black'
-                  ? '#333'
-                  : '#fff',
+                    ? '#2196F3'
+                    : color === 'black'
+                      ? '#333'
+                      : '#fff',
               border:
                 currentColor === color
                   ? '2px solid #FFD700'
@@ -210,7 +227,7 @@ export default function TestWindow() {
     if (typeof window !== 'undefined') {
       localStorage.setItem(key, typeof value === 'object' || typeof value === 'number' ? JSON.stringify(value) : value);
       // let other components know localStorage changed
-      const event = new CustomEvent('localStorageChanged', { 
+      const event = new CustomEvent('localStorageChanged', {
         detail: { key, value }
       });
       window.dispatchEvent(event);
@@ -236,7 +253,7 @@ export default function TestWindow() {
     const storedStage = getLocalStorageItem("lilGuyStage", "normal");
     const storedName = getLocalStorageItem("lilGuyName", "LilGuy");
     const storedMessage = getLocalStorageItem("lilGuyMessage", "");
-    
+
     setCurrentColor(storedColor as LilGuyColor);
     setCurrentStage(storedStage as LilGuyStage);
     setName(storedName);
@@ -250,14 +267,14 @@ export default function TestWindow() {
     setLocalStorageItem("lilGuyColor", color);
     emitEmotion("idle", 100, "button");
   };
-  
+
   // change lilguy stage and save to localStorage
   const changeStage = (stage: LilGuyStage) => {
     setCurrentStage(stage);
     setLocalStorageItem("lilGuyStage", stage);
-    
+
     // trigger different animations based on stage changes
-    switch(stage) {
+    switch (stage) {
       case 'egg':
         emitEmotion("idle", 100, "button");
         break;
@@ -321,9 +338,9 @@ export default function TestWindow() {
     localStorage.setItem('lilGuyFirstGoalSet', 'true');
     localStorage.setItem('lilGuyProductivity', '60');
     localStorage.setItem('lilGuyTrackedHours', '3');
-    localStorage.setItem('productive_seconds', (125*60+94*60+67*60).toString());
-    localStorage.setItem('unproductive_seconds', (103*60+45*60+86*60).toString());
-    localStorage.setItem('total_seconds', (125*60+94*60+67*60+103*60+45*60+86*60).toString());
+    localStorage.setItem('productive_seconds', (125 * 60 + 94 * 60 + 67 * 60).toString());
+    localStorage.setItem('unproductive_seconds', (103 * 60 + 45 * 60 + 86 * 60).toString());
+    localStorage.setItem('total_seconds', (125 * 60 + 94 * 60 + 67 * 60 + 103 * 60 + 45 * 60 + 86 * 60).toString());
     localStorage.setItem('weeklyAverage', '60');
     localStorage.setItem('streak', '1');
     // Also reset health and name for consistency
@@ -333,9 +350,9 @@ export default function TestWindow() {
     window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'lilGuyStage', value: 'normal' } }));
     window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'goals', value: JSON.stringify(sampleGoals) } }));
     window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'websites', value: JSON.stringify(sampleWebsites) } }));
-    window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'productive_seconds', value: (125*60+94*60+67*60).toString() } }));
-    window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'unproductive_seconds', value: (103*60+45*60+86*60).toString() } }));
-    window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'total_seconds', value: (125*60+94*60+67*60+103*60+45*60+86*60).toString() } }));
+    window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'productive_seconds', value: (125 * 60 + 94 * 60 + 67 * 60).toString() } }));
+    window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'unproductive_seconds', value: (103 * 60 + 45 * 60 + 86 * 60).toString() } }));
+    window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'total_seconds', value: (125 * 60 + 94 * 60 + 67 * 60 + 103 * 60 + 45 * 60 + 86 * 60).toString() } }));
     window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'weeklyAverage', value: '60' } }));
     window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'streak', value: '1' } }));
     window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'lilGuyProductivity', value: '60' } }));

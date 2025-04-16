@@ -1,12 +1,14 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { Button } from "@/components/UI/Button/Button";
 import { Input } from "@/components/UI/Input/Input";
 import { Label } from "@/components/UI/Label/Label";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/UI/Select/Select";
-import { Trash } from "lucide-react";
 import { SimpleContainer, SimpleItem } from '@/components/UI/SimpleContainer/SimpleContainer';
 import { useHealth } from "@/context/HealthContext";
-import Tag from '@/components/UI/Tag';
+import { Trash } from "lucide-react";
+import React, { useEffect, useMemo, useState } from 'react';
+import { Button } from "../ui/Button/Button";
+import { Id } from "../../../convex/_generated/dataModel";
+import { api } from "../../../convex/_generated/api";
+import { useMutation, useQuery } from "convex/react";
 
 // PlusIcon component from Goals.tsx
 const PlusIcon = () => (
@@ -19,6 +21,61 @@ const PlusIcon = () => (
     </svg>
   </div>
 );
+
+interface Sitevisit {
+  _id: Id<"sitevisits">;
+  _creationTime: number;
+  classification: string;
+  hostname: string;
+  sessions: number;
+  totalDuration: number;
+  userId: string;
+  visits: number;
+  goalId?: number;
+}
+// placeholder sites for simulation
+const initialWebsites: Sitevisit[] = [
+  {
+    _id: "j97d6vkyrtb7rrv5pspp9cy8tx7e0hkg" as Id<"sitevisits">,
+    classification: "productive",
+    hostname: "stackoverflow.com",
+    sessions: 1,
+    totalDuration: 60,
+    userId: "clerk:user_2vhLHFwbblBU9J4M5qWkEKQKcFK", //fake user id
+    visits: 1,
+    _creationTime: 1744592598694.1118,
+  },
+  {
+    _id: "j97d6vkyrtb7rrv5pspp9cy8tx7e0hkh" as Id<"sitevisits">,
+    classification: "productive",
+    hostname: "github.com",
+    sessions: 1,
+    totalDuration: 120,
+    userId: "clerk:user_2vhLHFwbblBU9J4M5qWkEKQKcFK", //fake use
+    visits: 1,
+    _creationTime: 1744592598694.1118,
+  },
+  {
+    _id: "j97d6vkyrtb7rrv5pspp9cy8tx7e0hki" as Id<"sitevisits">,
+    classification: "productive",
+    hostname: "docs.google.com",
+    sessions: 1,
+    totalDuration: 300,
+    userId: "clerk:user_2vhLHFwbblBU9J4M5qWkEKQKcFK", //fake use
+    visits: 1,
+    _creationTime: 1744592598694.1118,
+  },
+  {
+    _id: "j97d6vkyrtb7rrv5pspp9cy8tx7e0hkj" as Id<"sitevisits">,
+    classification: "unproductive",
+    hostname: "youtube.com",
+    sessions: 1,
+    totalDuration: 500,
+    userId: "clerk:user_2vhLHFwbblBU9J4M5qWkEKQKcFK", //fake use
+    visits: 1,
+    _creationTime: 1744592598694.1118,
+  },
+];
 
 interface Website {
   id: number;
@@ -59,20 +116,33 @@ export const unproductiveWebsites: Website[] = [
   { id: 7, name: 'localhost', category: 'productive', timeSpent: 0 },
 ];
 
-// For user: start with no sites except localhost (for dev)
-const initialWebsites: Website[] = [
-  { id: 7, name: 'localhost', category: 'productive', timeSpent: 0 },
-];
 
 export type { Website };
 
-const SiteList: React.FC = () => {
-  const [websites, setWebsites] = useState<Website[]>(initialWebsites);
+interface SiteListProps {
+  userId: Id<"users"> | undefined;
+}
+
+
+const SiteList: React.FC = ({ userId }: SiteListProps) => {
+  const [websites, setWebsites] = useState<Sitevisit[]>(initialWebsites);
   const [newWebsite, setNewWebsite] = useState('');
   const [category, setCategory] = useState<'productive' | 'unproductive' | 'neutral'>('neutral');
   const [filter, setFilter] = useState<'all' | 'productive' | 'unproductive' | 'neutral'>('all');
   const [localhostSeconds, setLocalhostSeconds] = useState(() => parseInt(localStorage.getItem('localhost_seconds') || '0', 10));
   const { health, setHealth } = useHealth();
+
+
+  const updateClassification = useMutation(api.sitevisits.updateClassification);
+  const addSitevisit = useMutation(api.sitevisits.addSiteVisit);
+  const getSiteVisits = useQuery(api.sitevisits.getSiteVisits, userId ? { userId: userId } : "skip");
+
+
+  useEffect(() => {
+    if (getSiteVisits !== undefined) {
+      setWebsites(getSiteVisits);
+    }
+  }, [getSiteVisits]);
 
   // Add support for attributing websites to a goal
   const [goals, setGoals] = useState<{ id: number; title: string }[]>(() => {
@@ -82,7 +152,7 @@ const SiteList: React.FC = () => {
         if (raw) {
           return JSON.parse(raw).map((g: any) => ({ id: g.id, title: g.title }));
         }
-      } catch {}
+      } catch { }
     }
     return [];
   });
@@ -95,7 +165,7 @@ const SiteList: React.FC = () => {
         if (raw) {
           return JSON.parse(raw).map((g: any) => ({ id: g.id, title: g.title }));
         }
-      } catch {}
+      } catch { }
     }
     return [];
   }
@@ -112,65 +182,80 @@ const SiteList: React.FC = () => {
   }, []);
 
   // Attribution handler
-  const handleGoalAttribution = (websiteId: number, goalId: number|null) => {
-    setWebsites(ws => {
-      const updated = ws.map(site =>
-        site.id === websiteId ? { ...site, goalId: goalId ?? undefined } : site
-      );
-      localStorage.setItem('websites', JSON.stringify(updated));
-      return updated;
-    });
+  const handleGoalAttribution = (websiteId: Id<"sitevisits">, goalId: Id<"goals"> | null) => {
+    // TODO sync GOAL in backend
+    // 
+    // setWebsites(ws => {
+    //   const updated = ws.map(site =>
+    //     site.id === websiteId ? { ...site, goalId: goalId ?? undefined } : site
+    //   );
+    //   localStorage.setItem('websites', JSON.stringify(updated));
+    //   return updated;
+    // });
   };
 
   // --- Ensure all modifications to websites are persisted ---
   const persistWebsites = (updated: Website[]) => {
-    setWebsites(updated);
+    // TODO sync in backend
+    // setWebsites(updated);
     localStorage.setItem('websites', JSON.stringify(updated));
   };
 
   // Patch: When adding or removing websites, persist to localStorage
-  const handleAddWebsite = () => {
+  const handleAddWebsite = async () => {
     if (newWebsite.trim() === '') return;
-    const websiteExists = websites.some(site => site.name === newWebsite.trim());
+    const websiteExists = websites.some(site => site.hostname === newWebsite.trim());
     if (websiteExists) return;
-    const newSite: Website = {
-      id: Math.max(0, ...websites.map(w => w.id)) + 1,
-      name: newWebsite.trim(),
-      category,
-      timeSpent: 0
-    };
-    const updated = [...websites, newSite];
-    persistWebsites(updated);
+
+
+    try {
+      await addSitevisit({
+        userId,
+        hostname: newWebsite.trim(),
+        classification: category
+      });
+      setNewWebsite('');
+    } catch (err) {
+      console.error("Error adding website:", err);
+    }
+
     setNewWebsite('');
   };
 
-  const handleRemoveWebsite = (id: number) => {
-    const updated = websites.filter(site => site.id !== id);
-    persistWebsites(updated);
+  const handleRemoveWebsite = (id: Id<"sitevisits">) => {
+    // const updated = websites.filter(site => site._id !== id);
+    console.log('TODO:DLETE', id)
+    // TODO: delete backings
+    // persistWebsites(updated);
   };
 
-  const handleCategoryChange = (id: number, newCategory: 'productive' | 'unproductive' | 'neutral') => {
-    const updated = websites.map(site =>
-      site.id === id ? { ...site, category: newCategory } : site
-    );
-    persistWebsites(updated);
+  const handleCategoryChange = async (id: Id<"sitevisits">, newClassification: 'productive' | 'unproductive' | 'neutral') => {
+    try {
+      await updateClassification({ sitevisitId: id, classification: newClassification });
+      setWebsites(websites.map(site =>
+        site._id === id ? { ...site, classification: newClassification } : site
+      ));
+    } catch (err) {
+      console.error('Error updating classification:', err);
+    }
   };
 
   // FOR DEV TESTING - Add localhost to websites if not present
-  useEffect(() => {
-    setWebsites(ws => {
-      const filtered = ws.filter((site, idx, arr) =>
-        site.name !== 'localhost' || arr.findIndex(s => s.name === 'localhost') === idx
-      );
-      if (!filtered.some(site => site.name === 'localhost')) {
-        return [
-          ...filtered,
-          { id: Math.max(0, ...filtered.map(w => w.id)) + 1, name: 'localhost', category: 'productive', timeSpent: 0 }
-        ];
-      }
-      return filtered;
-    });
-  }, []); // Only run on mount
+  // useEffect(() => {
+  //   setWebsites(ws => {
+  //     const filtered = ws.filter((site, idx, arr) =>
+  //       site.hostname !== 'localhost' || arr.findIndex(s => s.hostname === 'localhost') === idx
+  //     );
+  //     if (!filtered.some(site => site.hostname === 'localhost')) {
+  //       return [
+  //         ...filtered,
+  //         { category: 'productive', hostname: 'localhost', timeSpent: 0, _id: 0, _creationTime: 0, classification: 'productive', sessions: 0, totalDuration: 0, userId: 'localhost', visits: 0 }
+  //       ];
+  //     }
+  //     return filtered;
+  //   });
+  // }, []); // Only run on mount
+
 
   // Sync websites state with localStorage 'websites' key
   useEffect(() => {
@@ -201,11 +286,11 @@ const SiteList: React.FC = () => {
   useEffect(() => {
     if (window.location.hostname !== 'localhost') return;
     let seconds = localhostSeconds;
-    let timer = setInterval(() => {
+    const timer = setInterval(() => {
       seconds += 1;
       setLocalhostSeconds(seconds);
       localStorage.setItem('localhost_seconds', seconds.toString());
-      setWebsites(ws => ws.map(site => site.name === 'localhost' ? { ...site, timeSpent: Math.floor(seconds / 60) } : site));
+      setWebsites(ws => ws.map(site => site.hostname === 'localhost' ? { ...site, timeSpent: Math.floor(seconds / 60) } : site));
       if (seconds % 30 === 0) {
         // Increment health and log
         setHealth((h: number) => {
@@ -254,9 +339,10 @@ const SiteList: React.FC = () => {
     return `${hours}h ${mins}m`;
   };
 
+
   return (
-    <SimpleContainer 
-      title="Website Tracker" 
+    <SimpleContainer
+      title="Website Tracker"
       description="Categorize websites and track time spent on them"
       instructionText="Click on a category to change it or remove a website"
       renderInstructionAfterInput={true}
@@ -270,8 +356,8 @@ const SiteList: React.FC = () => {
             className="w-full"
           />
         </div>
-        <Select 
-          value={category} 
+        <Select
+          value={category}
           onValueChange={(value) => setCategory(value as 'productive' | 'unproductive' | 'neutral')}
         >
           <SelectTrigger className="w-[180px] bg-white">
@@ -291,18 +377,18 @@ const SiteList: React.FC = () => {
           <span className="ml-1 text-pixel-sm">ADD</span>
         </Button>
       </div>
-      
+
       <div className="mb-4">
         <Label>Filter:</Label>
         <div className="flex gap-2 mt-1">
-          <Button 
-            variant={filter === 'all' ? 'default' : 'outline'} 
+          <Button
+            variant={filter === 'all' ? 'default' : 'outline'}
             onClick={() => setFilter('all')}
             size="sm"
           >
             All
           </Button>
-          <Button 
+          <Button
             variant={filter === 'productive' ? 'default' : 'outline'}
             onClick={() => setFilter('productive')}
             size="sm"
@@ -310,7 +396,7 @@ const SiteList: React.FC = () => {
           >
             Productive
           </Button>
-          <Button 
+          <Button
             variant={filter === 'unproductive' ? 'default' : 'outline'}
             onClick={() => setFilter('unproductive')}
             size="sm"
@@ -318,7 +404,7 @@ const SiteList: React.FC = () => {
           >
             Unproductive
           </Button>
-          <Button 
+          <Button
             variant={filter === 'neutral' ? 'default' : 'outline'}
             onClick={() => setFilter('neutral')}
             size="sm"
@@ -328,7 +414,7 @@ const SiteList: React.FC = () => {
           </Button>
         </div>
       </div>
-      
+
       <div className="space-y-2">
         {/* Show yellow box if no goals, but always show website list below */}
         {goals.length === 0 && (
@@ -354,27 +440,27 @@ const SiteList: React.FC = () => {
         ) : (
           filteredWebsites.map((website) => (
             <SimpleItem
-              key={website.id}
-              id={`website-${website.id}`}
+              key={website._id}
+              id={`website-${website._id}`}
               backgroundColor={
-                website.category === 'productive' ? 'rgba(16, 185, 129, 0.1)' : 
-                website.category === 'unproductive' ? 'rgba(239, 68, 68, 0.1)' : 
-                'rgba(245, 158, 11, 0.1)'
+                website.classification === 'productive' ? 'rgba(16, 185, 129, 0.1)' :
+                  website.classification === 'unproductive' ? 'rgba(239, 68, 68, 0.1)' :
+                    'rgba(245, 158, 11, 0.1)'
               }
             >
               <div className="flex items-center justify-between">
                 <div className="flex-1">
-                  <div className="font-medium">{website.name}</div>
+                  <div className="font-medium">{website.hostname}</div>
                   <div className="text-xs text-muted-foreground">
-                    Time spent: {formatTime(website.timeSpent)}
+                    Time spent: {formatTime(website.totalDuration)}
                   </div>
                   {/* Only allow goal attribution for productive sites */}
-                  {website.category === 'productive' && goals.length > 0 && (
+                  {website.classification === 'productive' && goals.length > 0 && (
                     <div className="mt-1 flex items-center gap-2">
                       <span className="text-xs font-bold mr-1">Goal:</span>
                       <Select
                         value={website.goalId ? String(website.goalId) : undefined}
-                        onValueChange={value => handleGoalAttribution(website.id, value === 'none' ? null : Number(value))}
+                        onValueChange={value => handleGoalAttribution(website._id, value === 'none' ? null : Number(value))}
                         disabled={goals.length === 0}
                       >
                         <SelectTrigger className="w-[140px] h-8 text-xs bg-white site-goal-select">
@@ -391,10 +477,10 @@ const SiteList: React.FC = () => {
                   )}
                 </div>
                 <div className="flex items-center gap-2">
-                  <Select 
-                    value={website.category} 
+                  <Select
+                    value={website.classification}
                     onValueChange={(value) => handleCategoryChange(
-                      website.id, 
+                      website._id,
                       value as 'productive' | 'unproductive' | 'neutral'
                     )}
                   >
@@ -407,11 +493,11 @@ const SiteList: React.FC = () => {
                       <SelectItem value="neutral">Neutral</SelectItem>
                     </SelectContent>
                   </Select>
-                  <Button 
-                    variant="destructive" 
-                    size="icon" 
+                  <Button
+                    variant="destructive"
+                    size="icon"
                     className="h-8 w-8 pixel-button pixel-button-danger"
-                    onClick={() => handleRemoveWebsite(website.id)}
+                    onClick={() => handleRemoveWebsite(website._id)}
                   >
                     <Trash className="h-4 w-4" />
                   </Button>
