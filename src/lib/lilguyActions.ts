@@ -1,6 +1,8 @@
 // src/lib/lilguyActions.ts
 // Shared LilGuy action logic for first goal sequence and more
 
+import { getRandomColor } from "@/components/LilGuy/LilGuy";
+
 export function triggerFirstGoalSequence({
   emitEmotion,
   setAndSyncMessage,
@@ -9,6 +11,14 @@ export function triggerFirstGoalSequence({
   setAndSyncMessage: (msg: string) => void,
 }) {
   if (typeof window === 'undefined') return;
+
+  // Randomize LilGuy color if not already set
+  if (!localStorage.getItem('lilGuyColor')) {
+    const color = getRandomColor();
+    localStorage.setItem('lilGuyColor', color);
+    window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'lilGuyColor', value: color } }));
+  }
+
   localStorage.setItem('lilGuyFirstGoalSet', 'true');
   localStorage.setItem('lilGuyStage', 'egg');
   emitEmotion('hatch', 100, 'button');

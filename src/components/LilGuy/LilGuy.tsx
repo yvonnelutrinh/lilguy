@@ -81,11 +81,12 @@ function LilGuyCanvas({
   health: controlledHealth,
   stage: controlledStage,
   animation: controlledAnimation,
-}: LilGuyProps & { stage?: LilGuyStage; animation?: LilGuyAnimation }) {
+  color,
+}: LilGuyProps & { stage?: LilGuyStage; animation?: LilGuyAnimation; color?: LilGuyColor }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const animRef = useRef<number | null>(null);
   const [animation, setAnimation] = useState<LilGuyAnimation>(controlledAnimation || initialAnimation);
-  const [lilGuyColor, setLilGuyColor] = useState<LilGuyColor>(() => getLocalStorageItem('lilGuyColor', 'green'));
+  const [lilGuyColor, setLilGuyColor] = useState<LilGuyColor | null>(() => getLocalStorageItem('lilGuyColor', null));
   const [lilGuyStage, setLilGuyStage] = useState<LilGuyStage>(() => getLocalStorageItem('lilGuyStage', 'normal'));
   const [message, setMessage] = useState<string>("");
   const [lilGuyName, setLilGuyName] = useState<string>("");
@@ -432,7 +433,7 @@ const getInitialLilGuyState = () => {
 // --- Main LilGuy Component ---
 function LilGuy({ showControls = true, showHealthBar = true, size = "normal", className = "", initialAnimation = "idle", health: controlledHealth }: LilGuyProps) {
   const [lilGuyStage, setLilGuyStage] = useState<LilGuyStage>(() => getLocalStorageItem('lilGuyStage', 'egg'));
-  const [lilGuyColor, setLilGuyColor] = useState<LilGuyColor>(() => getLocalStorageItem('lilGuyColor', 'green'));
+  const [lilGuyColor, setLilGuyColor] = useState<LilGuyColor | null>(() => getLocalStorageItem('lilGuyColor', null));
   const [animation, setAnimation] = useState<LilGuyAnimation>(initialAnimation);
   const [firstGoalSet, setFirstGoalSet] = useState(() => getLocalStorageItem('lilGuyFirstGoalSet', false) === 'true');
   const [hatching, setHatching] = useState(false);
@@ -474,6 +475,19 @@ function LilGuy({ showControls = true, showHealthBar = true, size = "normal", cl
     return () => {
       window.removeEventListener('storage', handleStorage);
       window.removeEventListener('localStorageChanged', handleStorage);
+    };
+  }, []);
+
+  // Listen for lilGuyColor changes in localStorage
+  useEffect(() => {
+    const handleColorChange = (e: any) => {
+      if (e.detail && e.detail.key === 'lilGuyColor') {
+        setLilGuyColor(e.detail.value);
+      }
+    };
+    window.addEventListener('localStorageChanged', handleColorChange);
+    return () => {
+      window.removeEventListener('localStorageChanged', handleColorChange);
     };
   }, []);
 
@@ -552,12 +566,21 @@ function LilGuy({ showControls = true, showHealthBar = true, size = "normal", cl
   const controlsVisible = showControls && lilGuyStage !== 'egg';
 
   // Always show health bar in the canvas
+  if (!lilGuyColor) {
+    return (
+      <div className="flex items-center justify-center h-48">
+        <span className="text-pixel-sm text-gray-500">Loading LilGuy...</span>
+      </div>
+    );
+  }
+
   return (
     <div>
       <LilGuyCanvas
         {...{ showControls: false, showHealthBar: true, size, className, initialAnimation }}
         stage={hatching ? "egg" : lilGuyStage}
         animation={hatching ? "hatch" : animation}
+        color={lilGuyColor}
       />
 
       {/* Message Container */}
@@ -623,4 +646,4 @@ function WidgetLilGuy(props: { health?: number; stage?: LilGuyStage; animation?:
   return <LilGuyCanvas size="widget" showHealthBar={false} {...props} />;
 }
 
-export { LilGuy, WidgetLilGuy };
+export { LilGuy, WidgetLilGuy, getRandomColor };
