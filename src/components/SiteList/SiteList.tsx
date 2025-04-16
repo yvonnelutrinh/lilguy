@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/Card/Card";
 import { Button } from "@/components/ui/Button/Button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/Card/Card";
 import { Input } from "@/components/ui/Input/Input";
 import { Label } from "@/components/ui/Label/Label";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/Select/Select";
-import { Trash, Plus } from "lucide-react";
-import { User } from '@clerk/nextjs/server';
-import { Id } from '../../../convex/_generated/dataModel';
 import { useMutation, useQuery } from "convex/react";
+import { Plus, Trash } from "lucide-react";
+import React, { useEffect, useState } from 'react';
 import { api } from "../../../convex/_generated/api";
+import { Id } from '../../../convex/_generated/dataModel';
 
 interface Sitevisit {
   _id: Id<"sitevisits">;
@@ -19,7 +18,7 @@ interface Sitevisit {
   totalDuration: number;
   userId: string;
   visits: number;
-} 
+}
 // TODO: remove placeholder sites
 const initialWebsites: Sitevisit[] = [
   {
@@ -65,10 +64,10 @@ const initialWebsites: Sitevisit[] = [
 ];
 
 interface SiteListProps {
-  user?: User;
+  userId: Id<"users"> | undefined;
 }
 
-const SiteList: React.FC = ({ user }: SiteListProps) => {
+const SiteList: React.FC = ({ userId }: SiteListProps) => {
   const [websites, setWebsites] = useState<Sitevisit[]>(initialWebsites);
   const [newWebsite, setNewWebsite] = useState('');
   const [category, setCategory] = useState<'productive' | 'unproductive' | 'neutral'>('neutral');
@@ -81,7 +80,7 @@ const SiteList: React.FC = ({ user }: SiteListProps) => {
 
   const updateClassification = useMutation(api.sitevisits.updateClassification);
   const addSitevisit = useMutation(api.sitevisits.addSiteVisit);
-  const getSiteVisits = useQuery(api.sitevisits.getSiteVisits, user ? { userId: `clerk:${user.id}` } : "skip");
+  const getSiteVisits = useQuery(api.sitevisits.getSiteVisits, userId ? { userId: userId } : "skip");
 
   useEffect(() => {
     if (getSiteVisits !== undefined) {
@@ -92,7 +91,7 @@ const SiteList: React.FC = ({ user }: SiteListProps) => {
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const handler = (event:any) => {
+    const handler = (event: any) => {
       if (event.data?.from === "extension") {
         console.log("Received data from extension:", event.data.data);
       }
@@ -103,14 +102,13 @@ const SiteList: React.FC = ({ user }: SiteListProps) => {
 
   const handleAddWebsite = async () => {
     if (newWebsite.trim() === '') return;
-    if (!user) return;
-    
+    if (!userId) return;
+
     try {
-      const userId = `clerk:${user.id}`;
-      await addSitevisit({ 
-        userId, 
-        hostname: newWebsite.trim(), 
-        classification: category 
+      await addSitevisit({
+        userId,
+        hostname: newWebsite.trim(),
+        classification: category
       });
       setNewWebsite('');
     } catch (err) {
@@ -150,7 +148,7 @@ const SiteList: React.FC = ({ user }: SiteListProps) => {
 
     return parts.join(' ');
   }
-  
+
 
 
   // const addSitevisit = useMutation(api.sitevisits.addSiteVisit);

@@ -7,6 +7,9 @@ export default defineSchema({
     email: v.string(),
     customColor: v.string(),
     tokenIdentifier: v.string(),
+    localIdentifier: v.string(),
+    lastSeenIp: v.string(),
+    updatedAt: v.number(),
   }).index("by_token", ["tokenIdentifier"]),
 
   sitevisits: defineTable({
@@ -15,7 +18,8 @@ export default defineSchema({
     visits: v.number(),
     totalDuration: v.number(),
     sessions: v.number(),
-    classification: v.string()
+    classification: v.string(),
+    updatedAt: v.number(),
   }).index("by_user", ["userId"]),
 
   goals: defineTable({

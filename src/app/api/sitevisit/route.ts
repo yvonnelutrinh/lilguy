@@ -5,79 +5,28 @@ import { api } from "../../../../convex/_generated/api";
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
 
-// {
-//   hostname: "example.com",
-//   siteData: {
-//     visits: 5,
-//     sessions: 3,
-//     totalDuration: 1200000,
-//     userId: "clerk:user_2vhLHFwbblBU9J4M5qWkEKQKcFK"
-//   },
-//   userId: "clerk:user_2vhLHFwbblBU9J4M5qWkEKQKcFK"
-// }
-
 export async function POST(request: Request) {
   try {
     const body = await request.json();
 
-
     const { hostname, siteData } = body;
-    let { userId } = body;
+    const userId = request.headers.get('x-user-id');
 
-    if (!hostname || !siteData) {
+    if (!hostname || !siteData || !userId) {
       return NextResponse.json(
         {
           success: false,
-          message: 'hostname, and siteData are required'
+          message: 'hostname, siteData, and userId are required to track a site visit'
         },
         { status: 400 }
       );
     }
-    if (!userId){
-      // Get identifiable information from request headers
-      const userAgent = request.headers.get('user-agent') || '';
-      const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '';
-      const acceptLanguage = request.headers.get('accept-language') || '';
-      const platform = request.headers.get('sec-ch-ua-platform') || '';
-      
-      // create a unique identifier using header information
-      const identifierParts = [
-        hostname,
-        userAgent,
-        ip,
-        acceptLanguage,
-        platform,
-        Date.now()
-      ].filter(Boolean); // Remove empty values
-      
-      const localIdentifier = `local:${identifierParts.join('-')}`;
-      
-      // Check if user already exists
-      const existingUser = await convex.query(api.users.getUser, {
-        tokenIdentifier: localIdentifier
-      });
-
-      if (existingUser) {
-        // If user exists, use their identifier
-        userId = localIdentifier;
-      } else {
-        // Create a new user with the unique identifier
-        const newUserId = await convex.mutation(api.users.createUser, {
-          tokenIdentifier: localIdentifier,
-          name: "Anonymous User",
-          email: "",
-          customColor: "#3B82F6"
-        });
-        userId = localIdentifier;
-      }
-    }
-
 
     // First, check if a site visit record already exists for this user and hostname
     const existingSiteVisits = await convex.query(api.sitevisits.getSiteVisits, {
       userId
     });
-    
+
     const existingSiteVisit = existingSiteVisits.find(
       (visit) => visit.hostname === hostname
     );
@@ -88,7 +37,7 @@ export async function POST(request: Request) {
         sitevisitId: existingSiteVisit._id,
         visits: siteData.visits,
         sessions: siteData.sessions,
-        totalDuration: siteData.totalDuration
+        totalDuration: siteData.totalDuration,
       });
 
       return NextResponse.json({
@@ -101,7 +50,7 @@ export async function POST(request: Request) {
       const sitevisitId = await convex.mutation(api.sitevisits.addSiteVisit, {
         userId,
         hostname,
-        classification: "uncategorized" // Default classification
+        classification: "neutral" // default classification
       });
 
       // Update the newly created record with the site data

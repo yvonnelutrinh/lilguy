@@ -18,9 +18,12 @@ import { api } from "../../convex/_generated/api";
 export const generateLocalTokenIdentifier = () => {
   if (typeof window === 'undefined') return 'local:unknown';
   const userAgent = window.navigator.userAgent;
-  const screenInfo = `${window.screen.width}x${window.screen.height}`;
-  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  return `local:${userAgent}-${screenInfo}-${timeZone}`;
+  // const acceptLanguage = window.navigator.language; // different for front/backend
+  const identifierParts = [
+    userAgent,
+    // acceptLanguage,
+  ].filter(Boolean);
+  return `local:${identifierParts.join('-')}`;
 };
 
 export default function Home() {
@@ -35,11 +38,12 @@ export default function Home() {
   const { isAuthenticated, isLoading } = useConvexAuth();
   const { user, isLoaded } = useUser();
 
+  const localIdentifier =  generateLocalTokenIdentifier();
   const convexUser = useQuery(
     api.users.getUser,
     user?.id
       ? { tokenIdentifier: `clerk:${user?.id}` }
-      : { tokenIdentifier: generateLocalTokenIdentifier() }
+      : { localIdentifier: localIdentifier }
   );
 
   // Update customColor when convexUser data is loaded
@@ -59,15 +63,16 @@ export default function Home() {
           name: user.fullName || "",
           email: user.primaryEmailAddress?.emailAddress || "",
           customColor: "#3B82F6",
+          localIdentifier: localIdentifier,
         }).catch(err => console.error("Error creating user:", err));
       } else {
         // Create local user in Convex
-        const localIdentifier = `local:${window.navigator.userAgent}-${window.screen.width}x${window.screen.height}-${Intl.DateTimeFormat().resolvedOptions().timeZone}`;
         createUser({
           tokenIdentifier: localIdentifier,
           name: "Local User",
           email: "",
           customColor: "#3B82F6",
+          localIdentifier: localIdentifier,
         }).catch(err => console.error("Error creating local user:", err));
       }
     }
@@ -120,7 +125,7 @@ export default function Home() {
                     {/* <div className="grid grid-rows-[1.25rem_1fr_1.25rem] items-center justify-items-center p-8 pb-20 font-[family-name:var(--font-geist-sans)]"> */}
                     <main className="flex flex-col gap-[2rem] row-start-2 items-center sm:items-start">
                       <h2 className="text-xl font-semibold mb-4" style={{ color: customColor }}>
-                        Welcome, {user?.fullName || user?.firstName || "User"}
+                        Welcome, {user?.fullName || user?.firstName || convexUser?.name || "User"}
                       </h2>
                       <div className="mb-4">
                         <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -156,7 +161,7 @@ export default function Home() {
                 </TabsContent>
 
                 <TabsContent value="websites" className="mt-4">
-                  <SiteList user={user} />
+                  <SiteList userId={convexUser?._id}/>
                 </TabsContent>
 
                 <TabsContent value="goals" className="mt-4">
