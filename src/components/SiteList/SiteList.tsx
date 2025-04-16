@@ -82,6 +82,25 @@ const SiteList: React.FC = () => {
     return () => clearInterval(timer);
   }, [localhostSeconds, setHealth]);
 
+  // --- Listen for LilGuy reset and clear websites ---
+  useEffect(() => {
+    const handler = (e: Event) => {
+      // Clear websites if reset event or localStorageChanged with cleared websites
+      if (
+        (e instanceof CustomEvent && e.detail && e.detail.key === 'lilguyReset') ||
+        (e instanceof Event && localStorage.getItem('websites') === null)
+      ) {
+        setWebsites([]);
+      }
+    };
+    window.addEventListener('localStorageChanged', handler as EventListener);
+    window.addEventListener('lilguyReset', handler as EventListener);
+    return () => {
+      window.removeEventListener('localStorageChanged', handler as EventListener);
+      window.removeEventListener('lilguyReset', handler as EventListener);
+    };
+  }, []);
+
   const handleAddWebsite = () => {
     if (newWebsite.trim() === '') return;
     

@@ -372,17 +372,34 @@ const getInitialLilGuyState = () => {
 };
 
 // --- Main LilGuy Component ---
-function LilGuy(props: LilGuyProps) {
-  const [lilGuyColor, setLilGuyColor] = useState<LilGuyColor>();
-  const [lilGuyStage, setLilGuyStage] = useState<LilGuyStage>();
-  const [firstGoalSet, setFirstGoalSet] = useState(false);
-  const [productivity, setProductivity] = useState(50);
-  const [hoursTracked, setHoursTracked] = useState(0);
+function LilGuy({ showControls = true, showHealthBar = true, size = "normal", className = "", initialAnimation = "idle", health: controlledHealth }: LilGuyProps) {
+  const [lilGuyStage, setLilGuyStage] = useState<LilGuyStage>(() => getLocalStorageItem('lilGuyStage', 'egg'));
+  const [lilGuyColor, setLilGuyColor] = useState<LilGuyColor>(() => getLocalStorageItem('lilGuyColor', 'green'));
+  const [animation, setAnimation] = useState<LilGuyAnimation>(initialAnimation);
+  const [firstGoalSet, setFirstGoalSet] = useState(() => getLocalStorageItem('lilGuyFirstGoalSet', false) === 'true');
   const [hatching, setHatching] = useState(false);
-  const [simulateProductive, setSimulateProductive] = useState(false);
-  const [message, setMessage] = useState<string>("");
+  const [evolution, setEvolution] = useState<'angel' | 'devil' | null>(null);
   const [lilGuyName, setLilGuyName] = useState<string>("");
-  const [isChilling, setIsChilling] = useState(false);
+  const [lilGuyMessage, setLilGuyMessage] = useState<string>("");
+
+  // Listen for lilGuyMessage changes in localStorage
+  useEffect(() => {
+    const syncMessage = () => {
+      const msg = typeof window !== 'undefined' ? localStorage.getItem('lilGuyMessage') || '' : '';
+      setLilGuyMessage(msg);
+    };
+    syncMessage();
+    window.addEventListener('storage', syncMessage);
+    window.addEventListener('localStorageChanged', (e: any) => {
+      if (e.detail && e.detail.key === 'lilGuyMessage') {
+        setLilGuyMessage(e.detail.value);
+      }
+    });
+    return () => {
+      window.removeEventListener('storage', syncMessage);
+    };
+  }, []);
+
   useEffect(() => {
     const storedName = getLocalStorageItem("lilGuyName", "LilGuy");
     setLilGuyName(storedName);
@@ -408,153 +425,79 @@ function LilGuy(props: LilGuyProps) {
     setLilGuyColor(color);
     setLilGuyStage(stage);
     setFirstGoalSet(firstGoalSet);
-    setProductivity(productivity);
-    setHoursTracked(hoursTracked);
-    setSimulateProductive(false);
     console.log("[LilGuy] useEffect - initial state", { color, stage, firstGoalSet, productivity, hoursTracked });
   }, []);
 
-  // --- Animation on Simulate: always play idle for new stage ---
-  const setStageAndIdle = (stage: LilGuyStage) => {
-    setLilGuyStage(stage);
-    setLocalStorageItem("lilGuyStage", stage);
-    setAnimation("idle");
-    setLocalStorageItem("lilGuyAnimation", "idle");
-  };
-
-  // Simulate goal and productivity events for testing
-  const simulateNoGoals = () => {
-    setFirstGoalSet(false);
-    setLocalStorageItem("lilGuyFirstGoalSet", "false");
-    setStageAndIdle("egg");
-    setSimulateProductive(false);
-    setProductivity(50);
-    setHoursTracked(0);
-    setLocalStorageItem("lilGuyProductivity", 50);
-    setLocalStorageItem("lilGuyTrackedHours", 0);
-    setMessage("No goals set. LilGuy is an egg!");
-    setLocalStorageItem("lilGuyMessage", "No goals set. LilGuy is an egg!");
-    window.dispatchEvent(new CustomEvent('lilguySimulationMessage', { detail: { message: "No goals set. LilGuy is an egg!" } }));
-    window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'lilGuyStage', value: 'egg' } }));
-  };
-  const simulateFirstGoal = () => {
-    setFirstGoalSet(true);
-    setLocalStorageItem("lilGuyFirstGoalSet", "true");
-    setHatching(true);
-    setStageAndIdle("egg");
-    setSimulateProductive(false);
+  // Helper: Play animation once then callback
+  function playAnimationOnce(setAnimation: any, animation: string, onEnd: () => void, durationMs: number) {
+    setAnimation(animation);
     setTimeout(() => {
-      setHatching(false);
-      setStageAndIdle("normal");
-      setProductivity(50);
-      setHoursTracked(0);
-      setLocalStorageItem("lilGuyProductivity", 50);
-      setLocalStorageItem("lilGuyTrackedHours", 0);
-      setMessage("LilGuy hatched! Ready to work.");
-      setLocalStorageItem("lilGuyMessage", "LilGuy hatched! Ready to work.");
-      window.dispatchEvent(new CustomEvent('lilguySimulationMessage', { detail: { message: "LilGuy hatched! Ready to work." } }));
-      window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'lilGuyStage', value: 'normal' } }));
-    }, 1400); // 1.4s for hatch animation
-    setMessage("First goal set! LilGuy is hatching...");
-    setLocalStorageItem("lilGuyMessage", "First goal set! LilGuy is hatching...");
-    window.dispatchEvent(new CustomEvent('lilguySimulationMessage', { detail: { message: "First goal set! LilGuy is hatching..." } }));
-    window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'lilGuyStage', value: 'egg' } }));
-  };
-  const simulateLowProductivity = () => {
-    setProductivity(20);
-    setHoursTracked(4);
-    setLocalStorageItem("lilGuyProductivity", 20);
-    setLocalStorageItem("lilGuyTrackedHours", 4);
-    setStageAndIdle("devil");
-    setSimulateProductive(false);
-    setMessage("Uh oh! Productivity is low. Devil form!");
-    setLocalStorageItem("lilGuyMessage", "Uh oh! Productivity is low. Devil form!");
-    window.dispatchEvent(new CustomEvent('lilguySimulationMessage', { detail: { message: "Uh oh! Productivity is low. Devil form!" } }));
-    window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'lilGuyStage', value: 'devil' } }));
-  };
-  const simulateHighProductivity = () => {
-    setProductivity(90);
-    setHoursTracked(4);
-    setLocalStorageItem("lilGuyProductivity", 90);
-    setLocalStorageItem("lilGuyTrackedHours", 4);
-    setStageAndIdle("angel");
-    setSimulateProductive(false);
-    setMessage("Amazing! Productivity is high. Angel form!");
-    setLocalStorageItem("lilGuyMessage", "Amazing! Productivity is high. Angel form!");
-    window.dispatchEvent(new CustomEvent('lilguySimulationMessage', { detail: { message: "Amazing! Productivity is high. Angel form!" } }));
-    window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'lilGuyStage', value: 'angel' } }));
-  };
-  const simulateProductiveState = () => {
-    setProductivity(60);
-    setHoursTracked(4);
-    setLocalStorageItem("lilGuyProductivity", 60);
-    setLocalStorageItem("lilGuyTrackedHours", 4);
-    setStageAndIdle("normal");
-    setSimulateProductive(true);
-    setMessage("Productive day! LilGuy is normal.");
-    setLocalStorageItem("lilGuyMessage", "Productive day! LilGuy is normal.");
-    window.dispatchEvent(new CustomEvent('lilguySimulationMessage', { detail: { message: "Productive day! LilGuy is normal." } }));
-    window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'lilGuyStage', value: 'normal' } }));
-  };
+      onEnd();
+    }, durationMs);
+  }
 
-  // --- Patch: always use animation state from localStorage ---
-  const [animation, setAnimation] = useState<LilGuyAnimation>("idle");
+  // --- Effect: No Goals Egg State ---
   useEffect(() => {
-    const storedAnimation = getLocalStorageItem("lilGuyAnimation", "idle");
-    setAnimation(storedAnimation as LilGuyAnimation);
-  }, [lilGuyStage]);
-
-  // --- Patch: ensure only egg animations available in egg state ---
-  // (Handled in CharacterStyles, but ensure animation is only 'idle' or 'hatch' if egg)
-  useEffect(() => {
-    if (lilGuyStage === "egg" && animation !== "idle" && animation !== "hatch") {
-      setAnimation("idle");
-      setLocalStorageItem("lilGuyAnimation", "idle");
+    if (!firstGoalSet) {
+      setLilGuyStage('egg');
+      setAnimation('shake');
     }
-  }, [lilGuyStage, animation]);
+  }, [firstGoalSet]);
 
-  // Watch productivity and hoursTracked for real evolution (if not simulating)
+  // --- Effect: First Goal Set (Hatch Sequence) ---
   useEffect(() => {
-    console.log("[LilGuy] useEffect - evolution check", { productivity, hoursTracked, firstGoalSet, lilGuyStage });
-    if (!firstGoalSet) return;
-    if (hoursTracked >= 4) {
-      if (productivity >= 80 && lilGuyStage !== "angel") {
-        setLilGuyStage("angel");
-        setLocalStorageItem("lilGuyStage", "angel");
-        console.log("[LilGuy] Evolved to angel");
-      } else if (productivity <= 30 && lilGuyStage !== "devil") {
-        setLilGuyStage("devil");
-        setLocalStorageItem("lilGuyStage", "devil");
-        console.log("[LilGuy] Evolved to devil");
-      } else if (productivity > 30 && productivity < 80 && lilGuyStage !== "normal") {
-        setLilGuyStage("normal");
-        setLocalStorageItem("lilGuyStage", "normal");
-        console.log("[LilGuy] Evolved to normal");
+    if (firstGoalSet && lilGuyStage === 'egg' && !hatching) {
+      // Assign random color if not set
+      let color = getLocalStorageItem('lilGuyColor', null);
+      if (!color) {
+        color = getRandomColor();
+        setLocalStorageItem('lilGuyColor', color);
+        setLilGuyColor(color);
+      }
+      setHatching(true);
+      playAnimationOnce(setAnimation, 'hatch', () => {
+        setHatching(false);
+        setLilGuyStage('normal');
+        setAnimation('idle');
+        setLocalStorageItem('lilGuyStage', 'normal');
+        setLocalStorageItem('lilGuyAnimation', 'idle');
+      }, 2000); // 2s hatch
+    }
+  }, [firstGoalSet, lilGuyStage, hatching]);
+
+  // --- Effect: Productivity Evolution ---
+  useEffect(() => {
+    const prod = Number(getLocalStorageItem('lilGuyProductivity', 50));
+    const hours = Number(getLocalStorageItem('lilGuyTrackedHours', 0));
+    if (lilGuyStage === 'normal') {
+      if (prod >= 80 && hours >= 2 && evolution !== 'angel') {
+        setEvolution('angel');
+        playAnimationOnce(setAnimation, 'happy', () => {
+          setLilGuyStage('angel');
+          setAnimation('idle');
+          setLocalStorageItem('lilGuyStage', 'angel');
+          setLocalStorageItem('lilGuyAnimation', 'idle');
+        }, 1200);
+      } else if (prod < 30 && hours >= 2 && evolution !== 'devil') {
+        setEvolution('devil');
+        playAnimationOnce(setAnimation, 'angry', () => {
+          setLilGuyStage('devil');
+          setAnimation('idle');
+          setLocalStorageItem('lilGuyStage', 'devil');
+          setLocalStorageItem('lilGuyAnimation', 'idle');
+        }, 1200);
       }
     }
-  }, [productivity, hoursTracked, firstGoalSet]);
+  }, [lilGuyStage, evolution]);
 
-  // --- Listen for message changes in localStorage (for simulation and cross-component updates) ---
-  useEffect(() => {
-    const updateMessageFromStorage = () => {
-      const msg = getLocalStorageItem("lilGuyMessage", "");
-      setMessage(msg);
-    };
-    window.addEventListener("storage", updateMessageFromStorage);
-    window.addEventListener("localStorageChanged", updateMessageFromStorage);
-    updateMessageFromStorage();
-    return () => {
-      window.removeEventListener("storage", updateMessageFromStorage);
-      window.removeEventListener("localStorageChanged", updateMessageFromStorage);
-    };
-  }, []);
+  // --- Hide Controls in Egg State ---
+  const controlsVisible = showControls && lilGuyStage !== 'egg';
 
   // Always show health bar in the canvas
   return (
     <div>
       <LilGuyCanvas
-        {...props}
-        showHealthBar={true}
+        {...{ showControls: false, showHealthBar: true, size, className, initialAnimation }}
         stage={hatching ? "egg" : lilGuyStage}
         animation={hatching ? "hatch" : animation}
       />
@@ -567,48 +510,33 @@ function LilGuy(props: LilGuyProps) {
           contentClassName="p-3 text-xs text-black text-center bg-white/95"
           showControls={false}
         >
-          {message || `${lilGuyName || 'LilGuy'} is doing OK, but he knows you can do better.`}
+          {lilGuyMessage || lilGuyName || 'LilGuy'} is doing OK, but he knows you can do better.
         </PixelWindow>
       </div>
 
       {/* Actions (WALK and PET) */}
-      <div className="flex flex-row gap-4 justify-center mt-2">
-        <button
-          className="pixel-button bg-blue-200 border-black border-2 px-8 py-2 text-lg font-pixel"
-          onClick={() => {
-            if (!isChilling) {
-              setIsChilling(true);
+      {controlsVisible && (
+        <div className="flex flex-row gap-4 justify-center mt-2">
+          <button
+            className="pixel-button bg-blue-200 border-black border-2 px-8 py-2 text-lg font-pixel"
+            onClick={() => {
               setAnimation('walk');
               setLocalStorageItem('lilGuyAnimation', 'walk');
-              if (!simulateProductive) {
-                setMessage(`${lilGuyName || 'LilGuy'} is going for a walk!`);
-              }
-            } else {
-              setIsChilling(false);
-              setAnimation('idle');
-              setLocalStorageItem('lilGuyAnimation', 'idle');
-              if (!simulateProductive) {
-                setMessage(`${lilGuyName || 'LilGuy'} is chilling!`);
-              }
-            }
-          }}
-        >
-          {isChilling ? 'Chill' : 'Walk'}
-        </button>
-        <button
-          className="pixel-button green border-black border-2 px-8 py-2 text-lg font-pixel"
-          onClick={() => {
-            setAnimation('happy');
-            setLocalStorageItem('lilGuyAnimation', 'happy');
-            // Only set message if not in simulation
-            if (!simulateProductive) {
-              setMessage(`${lilGuyName || 'LilGuy'} loves pets!`);
-            }
-          }}
-        >
-          Pet
-        </button>
-      </div>
+            }}
+          >
+            Walk
+          </button>
+          <button
+            className="pixel-button green border-black border-2 px-8 py-2 text-lg font-pixel"
+            onClick={() => {
+              setAnimation('happy');
+              setLocalStorageItem('lilGuyAnimation', 'happy');
+            }}
+          >
+            Pet
+          </button>
+        </div>
+      )}
     </div>
   );
 }

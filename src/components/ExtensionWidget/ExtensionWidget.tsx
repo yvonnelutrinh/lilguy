@@ -201,6 +201,32 @@ const ExtensionWidget: React.FC<WidgetProps> = ({ onClose, onExpand, activeTab }
     { url: 'netflix.com', label: 'Netflix', type: 'unproductive', seconds: 0 },
   ];
 
+  // --- Productivity/Unproductivity Tracking for LilGuy Evolution ---
+  // On mount and when productive/unproductive time changes, update localStorage for lilGuyProductivity and lilGuyTrackedHours
+  useEffect(() => {
+    // Parse productive/unproductive time in seconds
+    const prodSeconds = parseTimeStringToSeconds(productiveTime);
+    const unprodSeconds = parseTimeStringToSeconds(unproductiveTime);
+    // Convert to hours
+    const prodHours = prodSeconds / 3600;
+    const unprodHours = unprodSeconds / 3600;
+    // Set productivity as a percent (for evolution logic)
+    const productivityPercent = prodHours >= 2 ? 90 : (unprodHours >= 2 ? 20 : 50);
+    localStorage.setItem('lilGuyProductivity', productivityPercent.toString());
+    localStorage.setItem('lilGuyTrackedHours', (prodHours + unprodHours).toString());
+    window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'lilGuyProductivity', value: productivityPercent } }));
+    window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'lilGuyTrackedHours', value: (prodHours + unprodHours) } }));
+  }, [productiveTime, unproductiveTime]);
+
+  // Helper to parse time string like '3h 25m' to seconds
+  function parseTimeStringToSeconds(time: string): number {
+    const hMatch = time.match(/(\d+)h/);
+    const mMatch = time.match(/(\d+)m/);
+    const hours = hMatch ? parseInt(hMatch[1]) : 0;
+    const mins = mMatch ? parseInt(mMatch[1]) : 0;
+    return hours * 3600 + mins * 60;
+  }
+
   return (
     <PixelWindow
       title={`${name} - LVL 2`}

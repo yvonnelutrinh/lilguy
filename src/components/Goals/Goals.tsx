@@ -4,6 +4,7 @@ import { Input } from "@/components/UI/Input/Input";
 import { Slider } from "@/components/UI/Slider/Slider";
 import { useEmitEmotion } from '@/lib/emotionContext';
 import { SimpleContainer, SimpleItem } from '@/components/UI/SimpleContainer/SimpleContainer';
+import { triggerFirstGoalSequence } from '@/lib/lilguyActions';
 
 // Helper function to safely access localStorage
 const getLocalStorageItem = (key: string, defaultValue: any) => {
@@ -36,11 +37,7 @@ const setHealth = (value: number) => {
 };
 
 // Mock data for goals
-const initialGoals = [
-  { id: 1, title: 'Study documentation for 2 hours', completed: false, progress: 45 },
-  { id: 2, title: 'Complete 3 coding challenges', completed: false, progress: 50 },
-  { id: 3, title: 'Limit social media to 30 minutes', completed: false, progress: 60 },
-];
+const initialGoals: Goal[] = [];
 
 export interface Goal {
   id: number;
@@ -161,6 +158,16 @@ const Goals: React.FC= () => {
     setNewGoalTitle("");
     // Emit a happy emotion and increase health when adding a new goal
     emitEmotionWithHealth("happy", 50, "newGoal", 5);
+    // If this is the first goal, trigger the full first-goal sequence
+    if (goals.length === 0) {
+      triggerFirstGoalSequence({
+        emitEmotion,
+        setAndSyncMessage: (msg: string) => {
+          setLocalStorageItem('lilGuyMessage', msg);
+          window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'lilGuyMessage', value: msg } }));
+        }
+      });
+    }
   };
 
   const handleRemoveGoal = (id: number) => {

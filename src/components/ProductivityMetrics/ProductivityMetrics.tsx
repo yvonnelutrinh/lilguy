@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     LineChart,
     Line,
@@ -18,16 +18,46 @@ const setLocalStorageItem = (key: string, value: any) => {
   }
 };
 
-// placeholder data for tracking metrics
-const weekData = [
-    { day: 'Mon', productive: 65, unproductive: 35 },
-    { day: 'Tue', productive: 59, unproductive: 41 },
-    { day: 'Wed', productive: 80, unproductive: 20 },
-    { day: 'Thu', productive: 81, unproductive: 19 },
-    { day: 'Fri', productive: 56, unproductive: 44 },
-    { day: 'Sat', productive: 55, unproductive: 45 },
-    { day: 'Sun', productive: 40, unproductive: 60 },
-];
+// Helper to get week productivity data from localStorage
+const getWeekDataFromStorage = () => {
+  if (typeof window === 'undefined') return [
+    { day: 'Mon', productive: 0, unproductive: 0 },
+    { day: 'Tue', productive: 0, unproductive: 0 },
+    { day: 'Wed', productive: 0, unproductive: 0 },
+    { day: 'Thu', productive: 0, unproductive: 0 },
+    { day: 'Fri', productive: 0, unproductive: 0 },
+    { day: 'Sat', productive: 0, unproductive: 0 },
+    { day: 'Sun', productive: 0, unproductive: 0 },
+  ];
+  const stored = localStorage.getItem('weekProductivity');
+  if (!stored) {
+    return [
+      { day: 'Mon', productive: 0, unproductive: 0 },
+      { day: 'Tue', productive: 0, unproductive: 0 },
+      { day: 'Wed', productive: 0, unproductive: 0 },
+      { day: 'Thu', productive: 0, unproductive: 0 },
+      { day: 'Fri', productive: 0, unproductive: 0 },
+      { day: 'Sat', productive: 0, unproductive: 0 },
+      { day: 'Sun', productive: 0, unproductive: 0 },
+    ];
+  }
+  try {
+    const parsed = JSON.parse(stored);
+    // Validate and fill missing days
+    const weekDays = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+    return weekDays.map((day, idx) => parsed[idx] ? { ...parsed[idx], day } : { day, productive: 0, unproductive: 0 });
+  } catch {
+    return [
+      { day: 'Mon', productive: 0, unproductive: 0 },
+      { day: 'Tue', productive: 0, unproductive: 0 },
+      { day: 'Wed', productive: 0, unproductive: 0 },
+      { day: 'Thu', productive: 0, unproductive: 0 },
+      { day: 'Fri', productive: 0, unproductive: 0 },
+      { day: 'Sat', productive: 0, unproductive: 0 },
+      { day: 'Sun', productive: 0, unproductive: 0 },
+    ];
+  }
+};
 
 interface ProductivityMetricsProps {
     className?: string;
@@ -86,8 +116,19 @@ const TrophyIcon = () => (
 );
 
 const ProductivityMetrics: React.FC<ProductivityMetricsProps> = ({ className }) => {
+    // State for weekData
+    const [weekData, setWeekData] = useState(getWeekDataFromStorage());
+
+    // Listen for localStorage changes (for reset/simulate)
+    useEffect(() => {
+      const handler = () => setWeekData(getWeekDataFromStorage());
+      window.addEventListener('localStorageChanged', handler);
+      return () => window.removeEventListener('localStorageChanged', handler);
+    }, []);
+
     // calculate today's productive time
-    const todayData = weekData[new Date().getDay() === 0 ? 6 : new Date().getDay() - 1];
+    const todayIdx = new Date().getDay() === 0 ? 6 : new Date().getDay() - 1;
+    const todayData = weekData[todayIdx];
     const todayProductiveHours = (todayData.productive / 100) * 8; // assuming an 8h workday
 
     // calculate weekly average

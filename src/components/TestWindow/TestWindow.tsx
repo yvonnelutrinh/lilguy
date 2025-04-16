@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import type { LilGuyColor, LilGuyStage } from "@/components/LilGuy/LilGuy";
 import { useEmitEmotion } from "@/lib/emotionContext";
 import { SimpleContainer } from "../UI/SimpleContainer/SimpleContainer";
+import { triggerFirstGoalSequence } from '@/lib/lilguyActions';
 
 export default function TestWindow() {
   const emitEmotion = useEmitEmotion();
@@ -104,21 +105,15 @@ export default function TestWindow() {
     setAndSyncMessage("No goals set. LilGuy is an egg!");
     window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { lilGuyStage: 'egg' } }));
   };
+
+  // --- Simulate First Goal ---
   const simulateFirstGoal = () => {
-    setLocalStorageItem("lilGuyFirstGoalSet", "true");
-    setLocalStorageItem("lilGuyStage", "egg");
-    emitEmotion("hatch", 100, "button");
-    setAndSyncMessage("First goal set! LilGuy is hatching...");
-    window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { lilGuyStage: 'egg' } }));
-    setTimeout(() => {
-      setLocalStorageItem("lilGuyStage", "normal");
-      setLocalStorageItem("lilGuyProductivity", 50);
-      setLocalStorageItem("lilGuyTrackedHours", 0);
-      emitEmotion("idle", 100, "button");
-      setAndSyncMessage("LilGuy hatched! Ready to work.");
-      window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { lilGuyStage: 'normal' } }));
-    }, 1400);
+    triggerFirstGoalSequence({
+      emitEmotion,
+      setAndSyncMessage
+    });
   };
+
   const simulateLowProductivity = () => {
     setLocalStorageItem("lilGuyProductivity", 20);
     setLocalStorageItem("lilGuyTrackedHours", 4);
@@ -144,6 +139,108 @@ export default function TestWindow() {
     window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { lilGuyStage: 'normal' } }));
   };
 
+  // --- Simulate Normal State with Sample Goals and Websites ---
+  const handleSimulateNormal = () => {
+    // Sample goals (not completed, progress < 100)
+    const sampleGoals = [
+      { id: 1, title: 'Study documentation for 2 hours', completed: false, progress: 45 },
+      { id: 2, title: 'Complete 3 coding challenges', completed: false, progress: 50 },
+      { id: 3, title: 'Limit social media to 30 minutes', completed: false, progress: 60 },
+    ];
+    // Sample websites (productive/unproductive, < 4h each)
+    const sampleWebsites = [
+      { id: 1, name: 'github.com', category: 'productive', timeSpent: 125 }, // 2h 5m
+      { id: 2, name: 'stackoverflow.com', category: 'productive', timeSpent: 94 }, // 1h 34m
+      { id: 3, name: 'docs.google.com', category: 'productive', timeSpent: 67 }, // 1h 7m
+      { id: 4, name: 'youtube.com', category: 'unproductive', timeSpent: 103 }, // 1h 43m
+      { id: 5, name: 'netflix.com', category: 'unproductive', timeSpent: 45 }, // 45m
+      { id: 6, name: 'twitter.com', category: 'unproductive', timeSpent: 86 }, // 1h 26m
+      { id: 7, name: 'localhost', category: 'productive', timeSpent: 0 },
+    ];
+    localStorage.setItem('goals', JSON.stringify(sampleGoals));
+    localStorage.setItem('websites', JSON.stringify(sampleWebsites));
+    localStorage.setItem('lilGuyStage', 'normal');
+    localStorage.setItem('lilGuyFirstGoalSet', 'true');
+    localStorage.setItem('lilGuyProductivity', '60');
+    localStorage.setItem('lilGuyTrackedHours', '3');
+    localStorage.setItem('productive_seconds', (125*60+94*60+67*60).toString());
+    localStorage.setItem('unproductive_seconds', (103*60+45*60+86*60).toString());
+    localStorage.setItem('total_seconds', (125*60+94*60+67*60+103*60+45*60+86*60).toString());
+    localStorage.setItem('weeklyAverage', '60');
+    localStorage.setItem('streak', '1');
+    // Also reset health and name for consistency
+    localStorage.setItem('health', '100');
+    localStorage.setItem('lilGuyName', 'LilGuy');
+    // Fire events for key state changes
+    window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'lilGuyStage', value: 'normal' } }));
+    window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'goals', value: JSON.stringify(sampleGoals) } }));
+    window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'websites', value: JSON.stringify(sampleWebsites) } }));
+    window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'productive_seconds', value: (125*60+94*60+67*60).toString() } }));
+    window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'unproductive_seconds', value: (103*60+45*60+86*60).toString() } }));
+    window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'total_seconds', value: (125*60+94*60+67*60+103*60+45*60+86*60).toString() } }));
+    window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'weeklyAverage', value: '60' } }));
+    window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'streak', value: '1' } }));
+    window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'lilGuyProductivity', value: '60' } }));
+    window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'lilGuyTrackedHours', value: '3' } }));
+    // Full reload for clean state
+    window.location.reload();
+  };
+
+  // --- LilGuy Reset Button for Simulation ---
+  const handleLilGuyReset = () => {
+    // Remove all relevant LilGuy and productivity state keys
+    [
+      'lilGuyColor',
+      'lilGuyStage',
+      'lilGuyFirstGoalSet',
+      'lilGuyProductivity',
+      'lilGuyTrackedHours',
+      'lilGuyAnimation',
+      'lilGuyMessage',
+      'health',
+      'goals',
+      'lilGuyName',
+      'productive_seconds',
+      'unproductive_seconds',
+      'total_seconds',
+      'weeklyAverage',
+      'streak',
+      'localhost_seconds',
+      'github_seconds',
+      'netflix_seconds',
+      'websiteTracker',
+      'websites',
+    ].forEach(key => localStorage.removeItem(key));
+    // Set all time and streak values to 0
+    localStorage.setItem('productive_seconds', '0');
+    localStorage.setItem('unproductive_seconds', '0');
+    localStorage.setItem('total_seconds', '0');
+    localStorage.setItem('weeklyAverage', '0');
+    localStorage.setItem('streak', '0');
+    localStorage.setItem('localhost_seconds', '0');
+    localStorage.setItem('github_seconds', '0');
+    localStorage.setItem('netflix_seconds', '0');
+    // Set empty goals and websites
+    localStorage.setItem('goals', '[]');
+    localStorage.setItem('websites', '[]');
+    // Set all dashboard metrics to zero for egg state
+    localStorage.setItem('lilGuyProductivity', '0');
+    localStorage.setItem('lilGuyTrackedHours', '0');
+    // Fire events for key state changes
+    window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'lilGuyStage', value: 'egg' } }));
+    window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'goals', value: '[]' } }));
+    window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'websites', value: '[]' } }));
+    window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'productive_seconds', value: '0' } }));
+    window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'unproductive_seconds', value: '0' } }));
+    window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'total_seconds', value: '0' } }));
+    window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'weeklyAverage', value: '0' } }));
+    window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'streak', value: '0' } }));
+    window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'lilGuyProductivity', value: '0' } }));
+    window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'lilGuyTrackedHours', value: '0' } }));
+    // Full reload for clean state
+    window.location.reload();
+  };
+
   // Dynamically update animation buttons based on current stage
   useEffect(() => {
     const handleStorage = () => {
@@ -167,6 +264,16 @@ export default function TestWindow() {
         <button className="pixel-button" onClick={simulateLowProductivity}>Simulate Low Productivity</button>
         <button className="pixel-button" onClick={simulateHighProductivity}>Simulate High Productivity</button>
         <button className="pixel-button" onClick={simulateProductiveState}>Simulate Normal</button>
+      </div>
+
+      {/* --- LilGuy Reset Button for Simulation --- */}
+      <div className="flex flex-row gap-2 mt-4">
+        <button className="pixel-button red border-black border-2 px-3 py-1 text-xs" onClick={handleLilGuyReset}>
+          Reset LilGuy
+        </button>
+        <button className="pixel-button green border-black border-2 px-3 py-1 text-xs" onClick={handleSimulateNormal}>
+          Simulate Normal State
+        </button>
       </div>
 
       {/* Name customization */}
@@ -360,3 +467,5 @@ export default function TestWindow() {
     </SimpleContainer>
   );
 }
+
+export { triggerFirstGoalSequence };
