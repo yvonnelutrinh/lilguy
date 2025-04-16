@@ -81,3 +81,19 @@ export const updateClassification = mutation({
     return true;
   },
 });
+
+export const removeSiteVisit = mutation({
+  args: {
+    sitevisitId: v.id("sitevisits"),
+  },
+  handler: async (ctx, args) => {
+    const sitevisit = await ctx.db.get(args.sitevisitId);
+    
+    if (!sitevisit) {
+      throw new ConvexError("Site visit not found");
+    }
+
+    await ctx.db.delete(args.sitevisitId);
+    return true;
+  },
+});
