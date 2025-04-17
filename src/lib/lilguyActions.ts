@@ -19,7 +19,6 @@ export function triggerFirstGoalSequence({
     window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'lilGuyColor', value: color } }));
   }
 
-  localStorage.setItem('lilGuyFirstGoalSet', 'true');
   localStorage.setItem('lilGuyStage', 'egg');
   emitEmotion('hatch', 100, 'button');
   setAndSyncMessage('First goal set! LilGuy is hatching...');

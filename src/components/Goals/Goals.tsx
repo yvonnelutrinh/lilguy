@@ -272,6 +272,7 @@ const Goals: React.FC<{ userId?: Id<"users">; }> = ({ userId }) => {
     const goal = goals.find(g => g.id === id);
     if (goal?.convexId) {
       updateGoal({ goalId: goal.convexId, completed: !goal.completed });
+
     }
   };
 
@@ -322,7 +323,7 @@ const Goals: React.FC<{ userId?: Id<"users">; }> = ({ userId }) => {
     if (goal?.convexId) {
       updateGoal({ goalId: goal.convexId, title: editTitle.trim() });
     }
-    
+
     setEditingId(null);
     setEditTitle("");
   };

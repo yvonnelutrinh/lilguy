@@ -350,19 +350,17 @@ const getInitialLilGuyState = () => {
   } else {
     console.log("[LilGuy] Loaded stage from localStorage:", stage);
   }
-  // First goal
-  const firstGoalSet = getLocalStorageItem("lilGuyFirstGoalSet", false) === "true";
-  console.log("[LilGuy] First goal set:", firstGoalSet);
   // Productivity
   const productivity = Number(getLocalStorageItem("lilGuyProductivity", 50));
   const hoursTracked = Number(getLocalStorageItem("lilGuyTrackedHours", 0));
   console.log("[LilGuy] Productivity:", productivity, "Hours tracked:", hoursTracked);
-  return { color, stage, firstGoalSet, productivity, hoursTracked };
+  return { color, stage, productivity, hoursTracked };
 };
 
 // --- Main LilGuy Component ---
 function LilGuy({ size = "normal", className = "", initialAnimation = "idle", userId }: LilGuyProps) {
   const lilguy = useQuery(api.lilguys.get, userId ? { userId } : "skip");
+  const goals = useQuery(api.goals.getGoals, userId ? { userId } : "skip");
 
   // Convex mutations
   const updateLilguy = useMutation(api.lilguys.update);
@@ -383,7 +381,6 @@ function LilGuy({ size = "normal", className = "", initialAnimation = "idle", us
     lilguy?.color || getLocalStorageItem('lilGuyColor', null)
   );
   const [animation, setAnimation] = useState<LilGuyAnimation>(initialAnimation);
-  const [firstGoalSet, setFirstGoalSet] = useState(() => getLocalStorageItem('lilGuyFirstGoalSet', false) === 'true');
   const [hatching, setHatching] = useState(false);
   const [evolution, setEvolution] = useState<'angel' | 'devil' | null>(null);
   const [lilGuyName, setLilGuyName] = useState<string>(() =>
@@ -475,11 +472,10 @@ function LilGuy({ size = "normal", className = "", initialAnimation = "idle", us
   // On mount, initialize state // TODO: remove this?
   useEffect(() => {
     if (!lilguy) {
-      const { color, stage, firstGoalSet, productivity, hoursTracked } = getInitialLilGuyState();
+      const { color, stage, productivity, hoursTracked } = getInitialLilGuyState();
       setLilGuyColor(color);
       setLilGuyStage(stage);
-      setFirstGoalSet(firstGoalSet);
-      console.log("[LilGuy] useEffect - initial state", { color, stage, firstGoalSet, productivity, hoursTracked });
+      console.log("[LilGuy] useEffect - initial state", { color, stage, productivity, hoursTracked });
     }
   }, [lilguy]);
 
@@ -491,29 +487,9 @@ function LilGuy({ size = "normal", className = "", initialAnimation = "idle", us
     }, durationMs);
   }
 
-
-
-  // --- Effect: No Goals Egg State ---
-  // useEffect(() => {
-  //   if (!firstGoalSet) {
-  //     setLilGuyStage('egg');
-  //     setAnimation('shake');
-
-  //     // Update stage in Convex if userId is available // TODO: remove this?
-  //     if (userId) {
-  //       try {
-  //         updateLilguyStage({ userId, stage: 'egg' });
-  //       } catch (error) {
-  //         console.error("Failed to update LilGuy stage in Convex:", error);
-  //       }
-  //     }
-  //   }
-  // }, [firstGoalSet, userId]);
-
   // --- Effect: First Goal Set (Hatch Sequence) ---
   useEffect(() => {
-    if (firstGoalSet && lilGuyStage === 'egg' && !hatching) {
-
+    if (goals && goals.length > 0 && lilGuyStage === 'egg' && !hatching) {
       setHatching(true);
       playAnimationOnce(setAnimation, 'hatch', () => {
         setHatching(false);
@@ -534,7 +510,7 @@ function LilGuy({ size = "normal", className = "", initialAnimation = "idle", us
         }
       }, 2000); // 2s hatch
     }
-  }, [firstGoalSet, lilGuyStage, hatching, userId, lilguy]);
+  }, [goals, lilGuyStage, hatching, userId, lilguy, updateLilguyAnimation, updateLilguyStage]);
 
   // --- Effect: Productivity Evolution ---
   useEffect(() => {
