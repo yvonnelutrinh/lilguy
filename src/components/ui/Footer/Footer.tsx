@@ -15,7 +15,7 @@ const Footer: React.FC<FooterProps> = ({ className = '' }) => {
   ];
 
   return (
-    <footer className={`pixel-footer ${className}`}>
+    <div className={`pixel-footer ${className}`}>
       <div className="pixel-footer-content">
         {contributors.map((contributor, index) => (
           <Link 
@@ -34,7 +34,7 @@ const Footer: React.FC<FooterProps> = ({ className = '' }) => {
           </Link>
         ))}
       </div>
-    </footer>
+    </div>
   );
 };
 
