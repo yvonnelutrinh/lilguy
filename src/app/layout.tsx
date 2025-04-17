@@ -4,6 +4,9 @@ import "./globals.css";
 import ConvexClientProvider from "./providers";
 import "@/styles/pixel-theme.css";
 import "@/styles/font.css";
+import DevSimulatePanel from "@/components/DevSimulatePanel";
+import { ProductivityDataProvider } from "@/context/ProductivityDataContext";
+import FooterWrapper from "@/components/UI/FooterWrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -20,14 +23,10 @@ export const metadata: Metadata = {
   description: "Track your productivity with your virtual pet LilGuy",
   icons: {
     icon: [
-      { url: '/favicon.png', sizes: '32x32', type: 'image/png' },
-      { url: '/icons/icon16.png', sizes: '16x16', type: 'image/png' },
-      { url: '/icons/icon32.png', sizes: '32x32', type: 'image/png' },
-      { url: '/icons/icon48.png', sizes: '48x48', type: 'image/png' },
-      { url: '/icons/icon192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/icons/lilguy-logo.svg', sizes: 'any', type: 'image/svg+xml' }
     ],
     apple: [
-      { url: '/icons/icon192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/icons/lilguy-logo.svg', sizes: 'any', type: 'image/svg+xml' }
     ],
   },
 };
@@ -38,16 +37,35 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="h-full">
       <head>
-        <link rel="icon" href="/favicon.png" />
-        <link rel="apple-touch-icon" href="/icons/icon192.png" />
+        <link rel="icon" href="/icons/lilguy-logo.svg" />
+        <link rel="apple-touch-icon" href="/icons/lilguy-logo.svg" />
+        <style>{`
+          body, html {
+            background-color: var(--background);
+            min-height: 100vh;
+          }
+          /* Override any background colors that might be affecting the footer */
+          .pixel-footer, .pixel-footer-content, .pixel-footer-link {
+            background: none !important;
+            background-color: transparent !important;
+          }
+        `}</style>
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`bg-pixel-pattern ${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
       >
         <ConvexClientProvider>
-          {children}
+          <ProductivityDataProvider>
+            <main className="flex-grow" style={{ backgroundColor: 'transparent' }}>
+              <FooterWrapper>
+                {children}
+              </FooterWrapper>
+            </main>
+            {/* TODO: DevSimulatePanel temporarily hidden; needs to be fixed before re-enabling */}
+            {/* {process.env.NODE_ENV === "development" && <DevSimulatePanel />} */}
+          </ProductivityDataProvider>
         </ConvexClientProvider>
       </body>
     </html>

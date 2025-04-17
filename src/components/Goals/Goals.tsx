@@ -10,6 +10,10 @@ import Tag from '@/components/UI/Tag';
 import { Id } from '../../../convex/_generated/dataModel';
 import { useMutation, useQuery } from 'convex/react';
 import { api } from '../../../convex/_generated/api';
+import { Plus, Pencil, Trash2, Check, Save } from "lucide-react";
+
+const PlusIcon = (props: any) => <Plus color="currentColor" {...props} />;
+
 
 // Helper function to safely access localStorage
 const getLocalStorageItem = (key: string, defaultValue: any) => {
@@ -51,76 +55,6 @@ export interface Goal {
   progress: number;
   convexId?: Id<"goals">; // Optional Convex ID for server-side persistence
 }
-
-// Pixel art icon components
-const CheckIcon = () => (
-  <div className="w-5 h-5 flex items-center justify-center">
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="pixelated">
-      <rect x="4" y="4" width="12" height="12" fill="white" stroke="currentColor" strokeWidth="2" />
-      <rect x="6" y="8" width="2" height="2" fill="currentColor" />
-      <rect x="8" y="10" width="2" height="2" fill="currentColor" />
-      <rect x="10" y="8" width="2" height="2" fill="currentColor" />
-      <rect x="12" y="6" width="2" height="2" fill="currentColor" />
-    </svg>
-  </div>
-);
-
-const EmptyCheckIcon = () => (
-  <div className="w-5 h-5 flex items-center justify-center">
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="pixelated">
-      <rect x="4" y="4" width="12" height="12" fill="white" stroke="currentColor" strokeWidth="2" />
-    </svg>
-  </div>
-);
-
-const EditIcon = () => (
-  <div className="w-5 h-5 flex items-center justify-center">
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="pixelated">
-      <rect x="4" y="4" width="12" height="12" fill="currentColor" />
-      <rect x="6" y="6" width="8" height="8" fill="white" />
-      <rect x="8" y="8" width="2" height="2" fill="currentColor" />
-      <rect x="10" y="6" width="2" height="2" fill="currentColor" />
-      <rect x="12" y="8" width="2" height="2" fill="currentColor" />
-      <rect x="10" y="10" width="2" height="2" fill="currentColor" />
-      <rect x="8" y="12" width="2" height="2" fill="currentColor" />
-      <rect x="6" y="10" width="2" height="2" fill="currentColor" />
-    </svg>
-  </div>
-);
-
-const TrashIcon = () => (
-  <div className="w-5 h-5 flex items-center justify-center">
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="pixelated">
-      <rect x="6" y="4" width="8" height="2" fill="currentColor" />
-      <rect x="4" y="6" width="2" height="10" fill="currentColor" />
-      <rect x="6" y="14" width="8" height="2" fill="currentColor" />
-      <rect x="14" y="6" width="2" height="10" fill="currentColor" />
-      <rect x="6" y="8" width="2" height="2" fill="currentColor" />
-      <rect x="10" y="8" width="2" height="2" fill="currentColor" />
-    </svg>
-  </div>
-);
-
-const PlusIcon = () => (
-  <div className="w-5 h-5 flex items-center justify-center">
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="pixelated">
-      <rect x="8" y="5" width="4" height="2" fill="currentColor" />
-      <rect x="8" y="13" width="4" height="2" fill="currentColor" />
-      <rect x="5" y="8" width="2" height="4" fill="currentColor" />
-      <rect x="13" y="8" width="2" height="4" fill="currentColor" />
-    </svg>
-  </div>
-);
-
-const SaveIcon = () => (
-  <div className="w-5 h-5 flex items-center justify-center">
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="pixelated">
-      <rect x="4" y="4" width="12" height="12" fill="currentColor" />
-      <rect x="6" y="6" width="8" height="8" fill="white" />
-      <rect x="8" y="8" width="4" height="4" fill="currentColor" />
-    </svg>
-  </div>
-);
 
 const Goals: React.FC<{ userId?: Id<"users">; }> = ({ userId }) => {
   const emitEmotion = useEmitEmotion();
@@ -335,6 +269,12 @@ const Goals: React.FC<{ userId?: Id<"users">; }> = ({ userId }) => {
     setEditTitle("");
   };
 
+  const handleGoalInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleAddGoal();
+    }
+  };
+
   return (
     <SimpleContainer
       title="Productivity Goals"
@@ -349,11 +289,17 @@ const Goals: React.FC<{ userId?: Id<"users">; }> = ({ userId }) => {
             value={newGoalTitle}
             onChange={(e) => setNewGoalTitle(e.target.value)}
             className="w-full"
+            onKeyDown={handleGoalInputKeyDown}
           />
         </div>
-        <Button onClick={handleAddGoal} className="pixel-button">
-          <PlusIcon />
-          <span className="ml-1 text-pixel-sm">ADD</span>
+        <Button
+          onClick={handleAddGoal}
+          variant="add"
+          size="icon"
+          color="bg-[var(--pixel-green)] hover:bg-[var(--pixel-green-light)] text-black border-2 border-black shadow-pixel"
+          className="pixel-button flex-shrink-0"
+        >
+          <Plus className="w-5 h-5" />
         </Button>
       </div>
 
@@ -380,9 +326,13 @@ const Goals: React.FC<{ userId?: Id<"users">; }> = ({ userId }) => {
                       className="flex-shrink-0"
                     >
                       {goal.completed ? (
-                        <CheckIcon />
+                        <Check />
                       ) : (
-                        <EmptyCheckIcon />
+                        <div className="w-5 h-5 flex items-center justify-center">
+                          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="pixelated">
+                            <rect x="4" y="4" width="12" height="12" fill="white" stroke="currentColor" strokeWidth="2"/>
+                          </svg>
+                        </div>
                       )}
                     </button>
 
@@ -409,7 +359,7 @@ const Goals: React.FC<{ userId?: Id<"users">; }> = ({ userId }) => {
                         size="sm"
                         className="pixel-button pixel-button-success flex-shrink-0 whitespace-nowrap"
                       >
-                        <SaveIcon />
+                        <Save />
                       </Button>
                     ) : (
                       <Button
@@ -417,7 +367,7 @@ const Goals: React.FC<{ userId?: Id<"users">; }> = ({ userId }) => {
                         size="sm"
                         className="pixel-button pixel-button-secondary flex-shrink-0 whitespace-nowrap"
                       >
-                        <EditIcon />
+                        <Pencil />
                       </Button>
                     )}
                     <Button
@@ -425,7 +375,7 @@ const Goals: React.FC<{ userId?: Id<"users">; }> = ({ userId }) => {
                       size="sm"
                       className="pixel-button pixel-button-danger flex-shrink-0 whitespace-nowrap"
                     >
-                      <TrashIcon />
+                      <Trash2 />
                     </Button>
                   </div>
                 </div>
@@ -455,14 +405,14 @@ const Goals: React.FC<{ userId?: Id<"users">; }> = ({ userId }) => {
                   <div className="mt-2 text-xs text-pixel-warning bg-yellow-50 border border-yellow-200 rounded px-2 py-1 flex items-center gap-2 justify-between">
                     <span>No websites attributed yet. <b>Add productive websites and assign them to this goal!</b></span>
                     <button
-                      className="pixel-button text-xs px-2 py-1 bg-pixel-accent border-black border-2 ml-2"
+                      className="pixel-button pink text-xs px-2 py-1 bg-pixel-accent border-black border-2 ml-2"
                       onClick={() => {
                         const webTabBtn = document.querySelector('[data-tab="websites"]') as HTMLElement;
                         if (webTabBtn) webTabBtn.click();
                       }}
                       type="button"
                     >
-                      Go to Site List
+                      View Sites
                     </button>
                   </div>
                 )}

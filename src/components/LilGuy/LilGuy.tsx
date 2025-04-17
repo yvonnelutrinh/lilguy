@@ -8,6 +8,8 @@ import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
 import { HealthBar } from "../HealthBar/HealthBar";
 import PixelWindow from '../ui/PixelWindow';
+import { Pencil } from "lucide-react";
+import { Button } from "@/components/UI/Button/Button";
 
 // helper function to safely access localStorage
 const getLocalStorageItem = (key: string, defaultValue: any) => {
@@ -288,12 +290,14 @@ function CharacterNameEditor({ userId, name, setName }: { userId?: Id<"users">, 
     return (
       <div className="flex items-center justify-center gap-2 w-full">
         <div className="flex-1 text-center font-bold">{name}</div>
-        <button
-          className="pixel-button text-pixel-sm px-2 py-1"
+        <Button
+          color="bg-[var(--pixel-beige)] hover:bg-[var(--pixel-beige-light)] text-black border-2 border-black shadow-pixel"
+          size="icon"
+          className="pixel-button flex items-center justify-center"
           onClick={() => setShowInput(true)}
         >
-          Edit
-        </button>
+          <Pencil className="w-4 h-4" />
+        </Button>
       </div>
     );
   }
@@ -306,21 +310,21 @@ function CharacterNameEditor({ userId, name, setName }: { userId?: Id<"users">, 
         className="flex-1 px-2 py-1 border-2 border-black text-center"
         maxLength={15}
       />
-      <button
-        className="pixel-button bg-pixel-accent text-pixel-sm px-2 py-1"
+      <Button
+        className="text-pixel-sm px-2 py-1"
         onClick={saveName}
       >
         Save
-      </button>
-      <button
-        className="pixel-button pink text-pixel-sm px-2 py-1"
+      </Button>
+      <Button
+        className="pink text-pixel-sm px-2 py-1"
         onClick={() => {
           setNewName(name);
           setShowInput(false);
         }}
       >
         Cancel
-      </button>
+      </Button>
     </div>
   );
 }
@@ -598,8 +602,9 @@ function LilGuy({ size = "normal", className = "", initialAnimation = "idle", us
       {/* Actions (WALK and PET) */}
       {controlsVisible && (
         <div className="flex flex-row gap-4 justify-center mt-2">
-          <button
-            className="pixel-button bg-blue-200 border-black border-2 px-8 py-2 text-lg font-pixel"
+          <Button
+            color="blue"
+            className="pixel-button blue text-xs px-2 py-0.5 whitespace-nowrap"
             onClick={() => {
               setAnimation('walk');
               setLilGuyMessage('LilGuy is going for a walk!');
@@ -609,9 +614,10 @@ function LilGuy({ size = "normal", className = "", initialAnimation = "idle", us
             }}
           >
             Walk
-          </button>
-          <button
-            className="pixel-button green border-black border-2 px-8 py-2 text-lg font-pixel"
+          </Button>
+          <Button
+            color="green"
+            className="pixel-button green text-xs px-2 py-0.5 whitespace-nowrap"
             onClick={() => {
               setAnimation('happy');
               setLilGuyMessage('LilGuy Loves pets!');
@@ -622,7 +628,7 @@ function LilGuy({ size = "normal", className = "", initialAnimation = "idle", us
             }}
           >
             Pet
-          </button>
+          </Button>
         </div>
       )}
     </div>
