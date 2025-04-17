@@ -25,8 +25,10 @@ const contributorsList = [
 
 const Footer: React.FC<FooterProps> = ({ className = '' }) => {
   const [visible, setVisible] = useState(false);
+  const [fade, setFade] = useState(false);
   const [shuffledContributors, setShuffledContributors] = useState(contributorsList);
   const footerRef = useRef<HTMLDivElement>(null);
+  const fadeTimeout = useRef<NodeJS.Timeout | null>(null);
 
   // Shuffle contributors every time the footer becomes visible
   useEffect(() => {
@@ -45,16 +47,48 @@ const Footer: React.FC<FooterProps> = ({ className = '' }) => {
       // If user is at the bottom (within 10px)
       if (windowHeight + scrollY >= docHeight - 10) {
         setVisible(true);
+        setFade(false);
+        if (fadeTimeout.current) clearTimeout(fadeTimeout.current);
+        fadeTimeout.current = setTimeout(() => {
+          setFade(true);
+        }, 5000);
       } else {
         setVisible(false);
+        setFade(false);
+        if (fadeTimeout.current) clearTimeout(fadeTimeout.current);
       }
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Show on hover
-  const handleMouseEnter = () => setVisible(true);
+  // Fade after 5s if not hovered
+  useEffect(() => {
+    if (visible) {
+      setFade(false);
+      if (fadeTimeout.current) clearTimeout(fadeTimeout.current);
+      fadeTimeout.current = setTimeout(() => {
+        setFade(true);
+      }, 5000);
+    } else {
+      setFade(false);
+      if (fadeTimeout.current) clearTimeout(fadeTimeout.current);
+    }
+    return () => {
+      if (fadeTimeout.current) clearTimeout(fadeTimeout.current);
+    };
+  }, [visible]);
+
+  // Show on hover and cancel fade
+  const handleMouseEnter = () => {
+    setVisible(true);
+    setFade(false);
+    if (fadeTimeout.current) clearTimeout(fadeTimeout.current);
+    // Restart fade timer when hovered again after fade
+    fadeTimeout.current = setTimeout(() => {
+      setFade(true);
+    }, 5000);
+  };
   const handleMouseLeave = () => {
     // Only hide if not at bottom
     const scrollY = window.scrollY;
@@ -62,6 +96,12 @@ const Footer: React.FC<FooterProps> = ({ className = '' }) => {
     const docHeight = document.documentElement.scrollHeight;
     if (!(windowHeight + scrollY >= docHeight - 10)) {
       setVisible(false);
+    } else {
+      // Restart fade timer
+      if (fadeTimeout.current) clearTimeout(fadeTimeout.current);
+      fadeTimeout.current = setTimeout(() => {
+        setFade(true);
+      }, 5000);
     }
   };
 
@@ -69,7 +109,11 @@ const Footer: React.FC<FooterProps> = ({ className = '' }) => {
     <div
       className={`pixel-footer ${className}`}
       ref={footerRef}
-      style={{ opacity: visible ? 1 : 0, pointerEvents: visible ? 'auto' : 'none', transition: 'opacity 0.3s' }}
+      style={{
+        opacity: visible && !fade ? 1 : 0,
+        pointerEvents: visible && !fade ? 'auto' : 'none',
+        transition: 'opacity 0.5s',
+      }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >

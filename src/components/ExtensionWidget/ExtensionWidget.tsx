@@ -324,7 +324,7 @@ const ExtensionWidget: React.FC<WidgetProps> = ({ onClose, onExpand, activeTab }
         </div>
 
         {/* Reminder */}
-        {/*
+        
         <div className="bg-pixel-primary bg-opacity-10 p-2 border-2 border-black flex items-center gap-2">
           <BellIcon />
           <div className="flex-1">
@@ -332,7 +332,7 @@ const ExtensionWidget: React.FC<WidgetProps> = ({ onClose, onExpand, activeTab }
             <div className="text-xs font-medium">In 25 minutes</div>
           </div>
         </div>
-        */}
+       
 
         {/* Website Tracker UI */}
         <div className="bg-white p-3 border-t border-dashed border-gray-300">
