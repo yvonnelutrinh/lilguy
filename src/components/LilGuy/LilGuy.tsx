@@ -394,6 +394,7 @@ function LilGuy({ size = "normal", className = "", initialAnimation = "idle", us
   // Create a new LilGuy in Convex if one doesn't exist
   useEffect(() => {
     if (userId && !lilguy) {
+      console.log("[LilGuy] Creating new LilGuy in Convex");
       const color = getRandomColor();
       const name = "LilGuy";
 

@@ -57,15 +57,13 @@ export async function POST(request: Request) {
           })
           break;
         default:
-          if (duration > 10) {
-            convex.mutation(api.messages.createMessage, {
-              userId,
-              body: `Interesting! You visited ${hostname} for ${duration} seconds`,
-              type: "sitevisit",
-              source: hostname,
-              durationSeconds: duration,
-            })
-          }
+          convex.mutation(api.messages.createMessage, {
+            userId,
+            body: `Interesting! You visited ${hostname} for ${duration} seconds`,
+            type: "sitevisit",
+            source: hostname,
+            durationSeconds: duration,
+          })
           break;
       }
       //  use the existing classification

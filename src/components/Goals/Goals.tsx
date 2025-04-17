@@ -7,6 +7,9 @@ import { SimpleContainer, SimpleItem } from '@/components/UI/SimpleContainer/Sim
 import { triggerFirstGoalSequence } from '@/lib/lilguyActions';
 import type { Website } from '@/components/SiteList/SiteList';
 import Tag from '@/components/UI/Tag';
+import { Id } from '../../../convex/_generated/dataModel';
+import { useMutation, useQuery } from 'convex/react';
+import { api } from '../../../convex/_generated/api';
 
 // Helper function to safely access localStorage
 const getLocalStorageItem = (key: string, defaultValue: any) => {
@@ -46,13 +49,14 @@ export interface Goal {
   title: string;
   completed: boolean;
   progress: number;
+  convexId?: Id<"goals">; // Optional Convex ID for server-side persistence
 }
 
 // Pixel art icon components
 const CheckIcon = () => (
   <div className="w-5 h-5 flex items-center justify-center">
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="pixelated">
-      <rect x="4" y="4" width="12" height="12" fill="white" stroke="currentColor" strokeWidth="2"/>
+      <rect x="4" y="4" width="12" height="12" fill="white" stroke="currentColor" strokeWidth="2" />
       <rect x="6" y="8" width="2" height="2" fill="currentColor" />
       <rect x="8" y="10" width="2" height="2" fill="currentColor" />
       <rect x="10" y="8" width="2" height="2" fill="currentColor" />
@@ -64,7 +68,7 @@ const CheckIcon = () => (
 const EmptyCheckIcon = () => (
   <div className="w-5 h-5 flex items-center justify-center">
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="pixelated">
-      <rect x="4" y="4" width="12" height="12" fill="white" stroke="currentColor" strokeWidth="2"/>
+      <rect x="4" y="4" width="12" height="12" fill="white" stroke="currentColor" strokeWidth="2" />
     </svg>
   </div>
 );
@@ -118,7 +122,7 @@ const SaveIcon = () => (
   </div>
 );
 
-const Goals: React.FC= () => {
+const Goals: React.FC<{ userId?: Id<"users">; }> = ({ userId }) => {
   const emitEmotion = useEmitEmotion();
 
   // Helper: Emit emotion and update health
@@ -262,8 +266,8 @@ const Goals: React.FC= () => {
   };
 
   return (
-    <SimpleContainer 
-      title="Productivity Goals" 
+    <SimpleContainer
+      title="Productivity Goals"
       description="Set productivity goals and track your progress"
       instructionText="Drag the slider to update progress, or click the buttons"
       renderInstructionAfterInput={true}
@@ -320,9 +324,8 @@ const Goals: React.FC= () => {
                       />
                     ) : (
                       <span
-                        className={`text-sm ${
-                          goal.completed ? "line-through text-gray-500" : ""
-                        }`}
+                        className={`text-sm ${goal.completed ? "line-through text-gray-500" : ""
+                          }`}
                       >
                         {goal.title}
                       </span>
@@ -403,10 +406,10 @@ const Goals: React.FC= () => {
                       className="h-full"
                       style={{
                         width: `${goal.progress}%`,
-                        backgroundColor: 
-                          goal.progress > 75 ? 'var(--pixel-green)' : 
-                          goal.progress > 25 ? 'var(--pixel-blue)' : 
-                          'var(--pixel-pink)'
+                        backgroundColor:
+                          goal.progress > 75 ? 'var(--pixel-green)' :
+                            goal.progress > 25 ? 'var(--pixel-blue)' :
+                              'var(--pixel-pink)'
                       }}
                     />
                   </div>

@@ -196,7 +196,7 @@ export default function Home() {
                   <div className="p-4">
                     {activeTab === 'dashboard' && <ProductivityMetrics userId={convexUser?._id} />}
                     {activeTab === 'websites' && <SiteList userId={convexUser?._id} />}
-                    {activeTab === 'goals' && <Goals />}
+                    {activeTab === 'goals' && <Goals userId={convexUser?._id} />}
                     {activeTab === 'widget' && (
                       <div className="flex justify-center py-6">
                         <ExtensionWidget activeTab={activeTab} />
