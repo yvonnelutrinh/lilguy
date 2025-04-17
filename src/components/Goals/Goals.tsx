@@ -261,6 +261,12 @@ const Goals: React.FC= () => {
     setEditTitle("");
   };
 
+  const handleGoalInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleAddGoal();
+    }
+  };
+
   return (
     <SimpleContainer 
       title="Productivity Goals" 
@@ -275,6 +281,7 @@ const Goals: React.FC= () => {
             value={newGoalTitle}
             onChange={(e) => setNewGoalTitle(e.target.value)}
             className="w-full"
+            onKeyDown={handleGoalInputKeyDown}
           />
         </div>
         <Button onClick={handleAddGoal} className="pixel-button">

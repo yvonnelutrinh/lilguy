@@ -139,15 +139,20 @@ const SiteList: React.FC<SiteListProps> = ({ userId }) => {
   const [category, setCategory] = useState<'productive' | 'unproductive' | 'neutral'>('neutral');
   const [filter, setFilter] = useState<'all' | 'productive' | 'unproductive' | 'neutral'>('all');
   const [localhostSeconds, setLocalhostSeconds] = useState(() => parseInt(localStorage.getItem('localhost_seconds') || '0', 10));
+  const [inputError, setInputError] = useState<string | null>(null);
+  const inputRef = React.useRef<HTMLInputElement>(null);
+  const selectRef = React.useRef<HTMLButtonElement>(null);
+  const addBtnRef = React.useRef<HTMLButtonElement>(null);
   const { health, setHealth } = useHealth();
 
+  // Regex for simple domain validation: must contain a dot and at least 2 chars after it
+  const websiteRegex = /^.+\.[a-zA-Z]{2,}$/;
 
   const updateClassification = useMutation(api.sitevisits.updateClassification);
   const addSitevisit = useMutation(api.sitevisits.addSiteVisit);
   const removeSiteVisit = useMutation(api.sitevisits.removeSiteVisit);
   const getSiteVisits = useQuery(api.sitevisits.getSiteVisits, userId ? { userId: userId } : "skip");
   const updateGoalId = useMutation(api.sitevisits.updateGoalId);
-
 
   useEffect(() => {
     if (getSiteVisits !== undefined) {
@@ -217,9 +222,13 @@ const SiteList: React.FC<SiteListProps> = ({ userId }) => {
   // Patch: When adding or removing websites, persist to localStorage
   const handleAddWebsite = async () => {
     if (newWebsite.trim() === '') return;
+    if (!websiteRegex.test(newWebsite.trim())) {
+      setInputError('Please enter a valid website (e.g., example.com)');
+      return;
+    }
+    setInputError(null);
     const websiteExists = websites.some(site => site.hostname === newWebsite.trim());
     if (websiteExists) return;
-
 
     try {
       await addSitevisit({
@@ -231,7 +240,6 @@ const SiteList: React.FC<SiteListProps> = ({ userId }) => {
     } catch (err) {
       console.error("Error adding website:", err);
     }
-
     setNewWebsite('');
   };
 
@@ -270,7 +278,6 @@ const SiteList: React.FC<SiteListProps> = ({ userId }) => {
   //     return filtered;
   //   });
   // }, []); // Only run on mount
-
 
   // Sync websites state with localStorage 'websites' key
   useEffect(() => {
@@ -348,6 +355,35 @@ const SiteList: React.FC<SiteListProps> = ({ userId }) => {
     return websites.filter(site => site.classification === filter);
   }, [websites, filter]);
 
+  // Keyboard functionality for input
+  const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleAddWebsite();
+      addBtnRef.current?.focus(); // Move focus to Add button after submit
+    } else if (e.key === 'Tab') {
+      if (!e.shiftKey) {
+        setTimeout(() => {
+          selectRef.current?.focus();
+        }, 0);
+      }
+    }
+  };
+
+  const handleSelectKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
+    if (e.key === 'Tab' && !e.shiftKey) {
+      setTimeout(() => {
+        addBtnRef.current?.focus();
+      }, 0);
+    }
+  };
+
+  // Focus Add button when dropdown is closed via selection
+  const handleSelectValueChange = (value: string) => {
+    setCategory(value as 'productive' | 'unproductive' | 'neutral');
+    setTimeout(() => {
+      addBtnRef.current?.focus();
+    }, 0);
+  };
 
   function formatTime(seconds: number) {
     const totalMinutes = Math.ceil(seconds / 60);
@@ -362,7 +398,6 @@ const SiteList: React.FC<SiteListProps> = ({ userId }) => {
     return parts.join(" ");
   }
 
-
   return (
     <SimpleContainer
       title="Website Tracker"
@@ -373,29 +408,45 @@ const SiteList: React.FC<SiteListProps> = ({ userId }) => {
       <div className="flex gap-2 mb-3">
         <div className="flex-1">
           <Input
+            ref={inputRef}
             placeholder="Enter website URL (e.g., example.com)"
             value={newWebsite}
-            onChange={(e) => setNewWebsite(e.target.value)}
+            onChange={(e) => { setNewWebsite(e.target.value); setInputError(null); }}
+            onKeyDown={handleInputKeyDown}
             className="w-full site-input"
+            aria-label="Website URL"
           />
+          {inputError && (
+            <div className="text-red-600 text-xs mt-1 px-1">{inputError}</div>
+          )}
         </div>
         <Select
           value={category}
-          onValueChange={(value) => setCategory(value as 'productive' | 'unproductive' | 'neutral')}
+          onValueChange={handleSelectValueChange}
         >
-          <SelectTrigger className="w-[180px] bg-white site-category-select">
-            <SelectValue placeholder="Category" />
+          <SelectTrigger
+            ref={selectRef}
+            tabIndex={0}
+            onKeyDown={handleSelectKeyDown}
+            aria-label="Website category"
+          >
+            <SelectValue />
           </SelectTrigger>
-          <SelectContent className="bg-white">
+          <SelectContent>
             <SelectGroup>
-              <SelectLabel>Category</SelectLabel>
+              <SelectItem value="neutral">Neutral</SelectItem>
               <SelectItem value="productive">Productive</SelectItem>
               <SelectItem value="unproductive">Unproductive</SelectItem>
-              <SelectItem value="neutral">Neutral</SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>
-        <Button onClick={handleAddWebsite} className="pixel-button">
+        <Button
+          ref={addBtnRef}
+          onClick={handleAddWebsite}
+          tabIndex={0}
+          aria-label="Add website"
+          className="pixel-button"
+        >
           <PlusIcon />
           <span className="ml-1 text-pixel-sm">ADD</span>
         </Button>

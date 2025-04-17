@@ -421,13 +421,34 @@
 /* On desktop, default to normal sizing */
 @media (min-width: 1025px) {
   .site-input {
-    min-width: 340px;
-    max-width: 480px;
+    min-width: 380px;
+    max-width: 540px;
     width: 100%;
   }
-  .site-goal-select,
   .site-category-select {
-    min-width: 120px;
+    min-width: 0;
+    width: auto;
+    max-width: 140px;
+    background: white !important;
+    border: 1.5px solid #222 !important;
+    box-shadow: 2px 2px 0 #222;
+    padding-left: 12px;
+    padding-right: 28px;
+  }
+  .site-goal-select {
+    min-width: 0;
+    width: auto;
     max-width: 180px;
   }
+}
+
+.site-category-select {
+  background: white !important;
+  border: 1.5px solid #222 !important;
+  box-shadow: 2px 2px 0 #222;
+  padding-left: 12px;
+  padding-right: 28px;
+  width: auto;
+  min-width: 0;
+  max-width: 140px;
 }
