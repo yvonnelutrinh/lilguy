@@ -114,7 +114,7 @@ function LilGuyCanvas({
       setAnimation(lilguy.lastAnimation as LilGuyAnimation);
       setHealth(lilguy.health);
     }
-  }, [lilguy]);
+  }, [lilguy, setHealth]);
 
 
   const { health, setHealth } = useHealth();
@@ -563,7 +563,7 @@ function LilGuy({ size = "normal", className = "", initialAnimation = "idle", us
         }, 1200);
       }
     }
-  }, [lilGuyStage, evolution, userId, updateLilguyAnimation, setHealth, updateLilguyStage]);
+  }, [lilGuyStage, evolution, userId, updateLilguyAnimation, updateLilguyStage]);
 
   // --- Hide Controls in Egg State ---
   const controlsVisible = lilGuyStage !== 'egg';

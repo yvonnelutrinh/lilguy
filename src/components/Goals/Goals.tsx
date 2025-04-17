@@ -1,4 +1,3 @@
-import { Button } from "@/components/UI/Button/Button";
 import { Input } from "@/components/UI/Input/Input";
 import { SimpleContainer, SimpleItem } from '@/components/UI/SimpleContainer/SimpleContainer';
 import { Slider } from "@/components/UI/Slider/Slider";
@@ -10,6 +9,7 @@ import { Check, Pencil, Plus, Save, Trash2 } from "lucide-react";
 import React, { useEffect, useRef, useState } from 'react';
 import { api } from '../../../convex/_generated/api';
 import { Id } from '../../../convex/_generated/dataModel';
+import { Button } from "../ui/Button/Button";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
