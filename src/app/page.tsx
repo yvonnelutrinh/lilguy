@@ -8,7 +8,7 @@ import { LilGuy } from "@/components/LilGuy/LilGuy";
 import ProductivityMetrics from "@/components/ProductivityMetrics/ProductivityMetrics";
 import SiteList from "@/components/SiteList/SiteList";
 import TestWindow from "@/components/TestWindow/TestWindow";
-import PixelWindow from "@/components/ui/PixelWindow";
+import PixelWindow from "@/components/UI/PixelWindow";
 import { HealthProvider } from "@/context/HealthContext";
 import { useUser } from "@clerk/nextjs";
 import { useConvexAuth, useMutation, useQuery } from "convex/react";

@@ -1,6 +1,4 @@
-import { Button } from '@/components/ui/Button/Button';
 import { classNameMerge } from '@/lib/utils';
-import { Bell, Clock, X, Settings } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { HealthBar } from '../HealthBar/HealthBar';
 import { WidgetLilGuy } from '../LilGuy/LilGuy';
@@ -18,22 +16,6 @@ const SettingsIcon = () => (
       <rect x="9" y="9" width="2" height="2" fill="currentColor" />
       <rect x="5" y="9" width="2" height="2" fill="currentColor" />
       <rect x="9" y="5" width="2" height="2" fill="currentColor" />
-    </svg>
-  </div>
-);
-
-const CloseIcon = () => (
-  <div className="w-4 h-4 flex items-center justify-center">
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" className="pixelated">
-      <rect x="4" y="4" width="2" height="2" fill="currentColor" />
-      <rect x="6" y="6" width="2" height="2" fill="currentColor" />
-      <rect x="8" y="8" width="2" height="2" fill="currentColor" />
-      <rect x="6" y="10" width="2" height="2" fill="currentColor" />
-      <rect x="4" y="12" width="2" height="2" fill="currentColor" />
-      <rect x="10" y="6" width="2" height="2" fill="currentColor" />
-      <rect x="12" y="4" width="2" height="2" fill="currentColor" />
-      <rect x="10" y="10" width="2" height="2" fill="currentColor" />
-      <rect x="12" y="12" width="2" height="2" fill="currentColor" />
     </svg>
   </div>
 );
@@ -77,8 +59,6 @@ const ExtensionWidget: React.FC<WidgetProps> = ({ onClose, onExpand, activeTab }
   // placeholder for preview
   const productiveTime = '3h 25m';
   const unproductiveTime = '1h 05m';
-  const totalTime = '4h 30m';
-  const productivityPercent = 76; // (3h 25m / 4h 30m) * 100
 
   const name = localStorage.getItem("lilGuyName") || "LilGuy";
 
@@ -161,10 +141,10 @@ const ExtensionWidget: React.FC<WidgetProps> = ({ onClose, onExpand, activeTab }
       setWidgetAnimation(animation);
     }
     window.addEventListener('storage', updateFromStorage);
-    window.addEventListener('localStorageChanged', updateFromStorage as any);
+    window.addEventListener('localStorageChanged', updateFromStorage as unknown as EventListener);
     return () => {
       window.removeEventListener('storage', updateFromStorage);
-      window.removeEventListener('localStorageChanged', updateFromStorage as any);
+      window.removeEventListener('localStorageChanged', updateFromStorage as unknown as EventListener);
     };
   }, []);
 
@@ -227,6 +207,10 @@ const ExtensionWidget: React.FC<WidgetProps> = ({ onClose, onExpand, activeTab }
     return hours * 3600 + mins * 60;
   }
 
+  // Ensure widgetStage and widgetAnimation are cast to correct types
+  const safeWidgetStage = (widgetStage === "normal" || widgetStage === "egg" || widgetStage === "angel" || widgetStage === "devil") ? widgetStage : undefined;
+  const safeWidgetAnimation = (widgetAnimation === "idle" || widgetAnimation === "walk" || widgetAnimation === "happy" || widgetAnimation === "angry" || widgetAnimation === "sad" || widgetAnimation === "shocked" || widgetAnimation === "shake" || widgetAnimation === "hatch" || widgetAnimation === "roll") ? widgetAnimation : undefined;
+
   return (
     <PixelWindow
       title={`${name} - LVL 2`}
@@ -266,8 +250,8 @@ const ExtensionWidget: React.FC<WidgetProps> = ({ onClose, onExpand, activeTab }
         >
           <WidgetLilGuy 
             health={widgetHealth} 
-            stage={widgetStage as any} 
-            animation={widgetAnimation as any} 
+            stage={safeWidgetStage} 
+            animation={safeWidgetAnimation} 
           />
         </div>
         <div className="flex-1">

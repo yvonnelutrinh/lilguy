@@ -1,5 +1,6 @@
 import React from 'react';
 import EditIcon from './EditIcon';
+import { cn } from '../../../lib/utils';
 
 interface TagProps {
   label: string;
@@ -13,14 +14,28 @@ interface TagProps {
   contrast?: boolean; 
 }
 
-const Tag: React.FC<TagProps> = ({ label, onClick, icon, className = '', asButton = false, children, editMode = false, onEditClick, contrast = false }) => {
-  const base =
-    `inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs border-2 border-black pixel-button transition select-none ${contrast ? 'bg-black text-white' : 'bg-pixel-accent text-black hover:bg-pixel-blue-light cursor-pointer'}`;
+const Tag: React.FC<TagProps> = ({ 
+  label, 
+  onClick, 
+  icon, 
+  className = '', 
+  asButton = false, 
+  children, 
+  editMode = false, 
+  onEditClick, 
+  contrast = false 
+}) => {
   const TagEl = asButton || onClick ? 'button' : 'span';
+  
   return (
     <TagEl
       type={TagEl === 'button' ? 'button' : undefined}
-      className={`${base} ${className}`}
+      className={cn(
+        "inline-flex items-center gap-1 px-2 py-1 border-pixel border-black font-pixel text-pixel-sm transition-all duration-100 select-none",
+        contrast ? 'bg-black text-white' : 'bg-pixel-blue text-black hover:bg-pixel-blue-light',
+        onClick ? 'cursor-pointer' : '',
+        className
+      )}
       onClick={onClick}
     >
       {icon}

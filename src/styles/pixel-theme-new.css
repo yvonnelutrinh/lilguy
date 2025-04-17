@@ -1,0 +1,53 @@
+/* Pixel Art Theme for LilGuy Dashboard - CSS Variables Only */
+
+:root {
+  /* Color Palette */
+  --pixel-teal: #5ebdb2;
+  --pixel-teal-dark: #4a9d93;
+  --pixel-teal-light: #7fd4ca;
+  --pixel-green: #7cc47f;
+  --pixel-green-dark: #5eaa61;
+  --pixel-green-light: #9edd9f;
+  --pixel-beige: #e8dab2;
+  --pixel-beige-dark: #d6c89c;
+  --pixel-beige-light: #f5ecd4;
+  --pixel-blue: #68b0d8;
+  --pixel-blue-dark: #4a99c7;
+  --pixel-blue-light: #8bc5e4;
+  --pixel-pink: #f5b0bd;
+  --pixel-pink-dark: #e8899b;
+  --pixel-pink-light: #fccbd5;
+  
+  /* UI Element Colors */
+  --window-bg: white;
+  --window-header-bg: var(--pixel-teal);
+  --window-header-text: white;
+  --window-border: black;
+  --window-shadow: rgba(0, 0, 0, 0.3);
+  
+  /* Button Colors */
+  --button-primary-bg: var(--pixel-blue);
+  --button-primary-hover: var(--pixel-blue-light);
+  --button-primary-active: var(--pixel-blue-dark);
+  --button-secondary-bg: var(--pixel-beige);
+  --button-secondary-hover: var(--pixel-beige-light);
+  --button-secondary-active: var(--pixel-beige-dark);
+  --button-danger-bg: #ff6b6b;
+  --button-success-bg: var(--pixel-green);
+  --button-green-bg: var(--pixel-green);
+  --button-beige-bg: var(--pixel-beige);
+  --button-pink-bg: var(--pixel-pink);
+  --button-contrast-bg: #222;
+  --button-contrast-text: #fff;
+  
+  /* Progress Bar Colors */
+  --progress-bg: #f9f9f9;
+  --progress-fill-good: var(--pixel-green);
+  --progress-fill-medium: #f5d76e;
+  --progress-fill-bad: #ff6b6b;
+  
+  /* Text Colors */
+  --text-primary: black;
+  --text-secondary: #555555;
+  --text-light: #888888;
+}

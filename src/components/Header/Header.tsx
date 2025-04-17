@@ -1,8 +1,7 @@
 import React from 'react';
 import { DropdownMenu } from "radix-ui";
 import AuthButton from '../AuthButton/AuthButton';
-import { Button } from '../ui/Button/Button';
-
+import { Button } from "../UI/Button/Button";
 
 const notifications = [
     { id: 1, message: "You've been productive for 2 hours today!", isRead: false },
@@ -48,16 +47,14 @@ const SettingsIcon = () => (
 
 const Header: React.FC = () => {
     return (
-
-        <header className="bg-white border-b-2 border-black px-4 py-2 flex justify-between items-center">
-           
+        <header className="bg-white border-pixel border-black px-4 py-2 flex justify-between items-center">
             <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-white border-2 border-black flex items-center justify-center">
+                <div className="w-8 h-8 bg-white border-pixel border-black flex items-center justify-center">
                     <div className="w-6 h-6 bg-pixel-green flex items-center justify-center">
-                        <span className="text-black text-xs font-bold">LG</span>
+                        <span className="text-black text-xs font-bold font-pixel">LG</span>
                     </div>
                 </div>
-                <h1 className="text-base font-bold sm:block text-pixel">LilGuy</h1>
+                <h1 className="text-base font-bold sm:block font-pixel">LilGuy</h1>
             </div>
 
             <div className="text-right">
@@ -70,7 +67,7 @@ const Header: React.FC = () => {
                         <Button
                             variant="ghost"
                             size="icon"
-                            className="relative pixel-button pixel-button-secondary p-1"
+                            className="relative p-1 bg-pixel-beige border-pixel border-black shadow-pixel-btn hover:translate-y-[-1px] hover:translate-x-[-1px] hover:shadow-pixel-btn-hover active:translate-y-[1px] active:translate-x-[1px] active:shadow-pixel-btn-active"
                         >
                             <BellIcon />
                             {notifications.some(n => !n.isRead) && (
@@ -80,7 +77,7 @@ const Header: React.FC = () => {
                     </DropdownMenu.Trigger>
                     <DropdownMenu.Content align="end" className="pixel-window w-80 z-50">
                         <div className="pixel-window-header bg-pixel-pink">
-                            <div className="text-pixel-sm">A MESSAGE FOR YOU</div>
+                            <div className="font-pixel text-pixel-sm">A MESSAGE FOR YOU</div>
                             <div className="pixel-window-controls">
                                 <div className="pixel-window-button"></div>
                                 <div className="pixel-window-button"></div>
@@ -89,7 +86,7 @@ const Header: React.FC = () => {
                         </div>
                         <div className="pixel-window-content">
                             {notifications.length === 0 ? (
-                                <div className="py-2 px-4 text-sm text-pixel-sm text-center">
+                                <div className="py-2 px-4 text-sm font-pixel text-center">
                                     No notifications
                                 </div>
                             ) : (
@@ -103,22 +100,22 @@ const Header: React.FC = () => {
                                                 <div
                                                     className={`w-2 h-2 mt-1.5 border border-black flex-shrink-0 ${notification.isRead ? 'bg-transparent' : 'bg-red-500'}`}
                                                 />
-                                                <div className="text-pixel-sm">{notification.message}</div>
+                                                <div className="font-pixel text-pixel-sm">{notification.message}</div>
                                             </div>
                                         </DropdownMenu.Item>
                                     ))}
                                 </div>
                             )}
                             <div className="mt-3 flex justify-center">
-                                <button className="pixel-button text-pixel-sm">OK</button>
+                                <button className="bg-pixel-beige border-pixel border-black px-3 py-2 font-pixel text-pixel-sm shadow-pixel-btn hover:translate-y-[-1px] hover:translate-x-[-1px] hover:shadow-pixel-btn-hover active:translate-y-[1px] active:translate-x-[1px] active:shadow-pixel-btn-active">OK</button>
                             </div>
                         </div>
                     </DropdownMenu.Content>
                 </DropdownMenu.Root>
 
-                <Button variant="outline" size="sm" className="pixel-button gap-1 p-1">
+                <Button variant="outline" size="sm" className="gap-1 p-1 bg-pixel-beige border-pixel border-black shadow-pixel-btn hover:translate-y-[-1px] hover:translate-x-[-1px] hover:shadow-pixel-btn-hover active:translate-y-[1px] active:translate-x-[1px] active:shadow-pixel-btn-active">
                     <SettingsIcon />
-                    <span className="hidden sm:inline text-pixel-sm">Settings</span>
+                    <span className="hidden sm:inline font-pixel text-pixel-sm">Settings</span>
                 </Button>
             </div>
         </header>

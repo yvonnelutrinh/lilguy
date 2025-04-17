@@ -9,44 +9,48 @@ import { useProductivityData } from "../context/ProductivityDataContext";
 const DevSimulatePanel: React.FC = () => {
   const { data, setData } = useProductivityData();
   // Backup ref persists across renders but does not trigger rerender
-  const backupRef = useRef<any | null>(null);
-  const lilGuyBackupRef = useRef<any | null>(null);
+  const backupRef = useRef<unknown | null>(null);
+  const lilGuyBackupRef = useRef<unknown | null>(null);
 
   // Helper: set LilGuy-related localStorage keys
-  function setLilGuyLocalStorage(sim: any) {
+  function setLilGuyLocalStorage(sim: Record<string, unknown>) {
     // Always set a valid color for egg stage, never random/null
-    let color = sim.lilGuyColor;
+    let color = typeof sim.lilGuyColor === 'string' ? sim.lilGuyColor : undefined;
     if (sim.lilGuyStage === "egg" || color === "random" || !color) {
       const colors = ["green", "blue", "black"];
       color = colors[Math.floor(Math.random() * colors.length)];
     }
-    localStorage.setItem("lilGuyColor", color);
+    if (color) localStorage.setItem("lilGuyColor", color);
 
     // Set stage after color
     const prevStage = localStorage.getItem("lilGuyStage");
     if (prevStage === sim.lilGuyStage) {
       localStorage.setItem("lilGuyStage", "");
     }
-    localStorage.setItem("lilGuyStage", sim.lilGuyStage);
+    if (typeof sim.lilGuyStage === 'string') {
+      localStorage.setItem("lilGuyStage", sim.lilGuyStage);
+    }
 
     // Set animation after stage
     const prevAnim = localStorage.getItem("lilGuyAnimation");
     if (prevAnim === sim.lilGuyAnimation) {
       localStorage.setItem("lilGuyAnimation", "");
     }
-    localStorage.setItem("lilGuyAnimation", sim.lilGuyAnimation);
+    if (typeof sim.lilGuyAnimation === 'string') {
+      localStorage.setItem("lilGuyAnimation", sim.lilGuyAnimation);
+    }
 
     // Set animation speed if present
-    if (sim.lilGuyAnimationSpeed !== undefined) {
+    if (typeof sim.lilGuyAnimationSpeed === 'number' || typeof sim.lilGuyAnimationSpeed === 'string') {
       localStorage.setItem("lilGuyAnimationSpeed", String(sim.lilGuyAnimationSpeed));
     }
 
-    if (sim.lilGuyFirstGoalSet !== undefined) localStorage.setItem("lilGuyFirstGoalSet", String(sim.lilGuyFirstGoalSet));
-    if (sim.lilGuyTrackedHours !== undefined) localStorage.setItem("lilGuyTrackedHours", String(sim.lilGuyTrackedHours));
-    if (sim.lilGuyMessage) localStorage.setItem("lilGuyMessage", sim.lilGuyMessage);
-    if (sim.lilGuyProductivity !== undefined) localStorage.setItem("lilGuyProductivity", String(sim.lilGuyProductivity));
-    if (sim.health !== undefined) localStorage.setItem("lilGuyHealth", String(sim.health));
-    if (sim.showHealth !== undefined) localStorage.setItem("lilGuyShowHealth", String(sim.showHealth));
+    if (typeof sim.lilGuyFirstGoalSet !== 'undefined') localStorage.setItem("lilGuyFirstGoalSet", String(sim.lilGuyFirstGoalSet));
+    if (typeof sim.lilGuyTrackedHours !== 'undefined') localStorage.setItem("lilGuyTrackedHours", String(sim.lilGuyTrackedHours));
+    if (typeof sim.lilGuyMessage === 'string') localStorage.setItem("lilGuyMessage", sim.lilGuyMessage);
+    if (typeof sim.lilGuyProductivity !== 'undefined') localStorage.setItem("lilGuyProductivity", String(sim.lilGuyProductivity));
+    if (typeof sim.health !== 'undefined') localStorage.setItem("lilGuyHealth", String(sim.health));
+    if (typeof sim.showHealth !== 'undefined') localStorage.setItem("lilGuyShowHealth", String(sim.showHealth));
     // Add more keys as needed
 
     // Trigger custom and storage events for all keys
@@ -59,7 +63,17 @@ const DevSimulatePanel: React.FC = () => {
   // Helper: backup user data if not already backed up
   const backupIfNeeded = () => {
     if (!backupRef.current) {
-      backupRef.current = data;
+      // Provide a full default backup object with all required fields to avoid type errors
+      backupRef.current = {
+        weekData: [],
+        today: { productive: 0, unproductive: 0 },
+        streak: 0,
+        weeklyAverage: 0,
+        health: 100,
+        mood: "neutral",
+        goals: [],
+        websites: [],
+      };
     }
     if (!lilGuyBackupRef.current) {
       // Backup all relevant LilGuy keys

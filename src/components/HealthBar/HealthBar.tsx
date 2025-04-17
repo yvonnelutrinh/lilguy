@@ -69,7 +69,7 @@ function WidgetHealth() {
         window.addEventListener("storage", handleStorageEvent);
         
         // Custom event listener
-        const handleCustomEvent = (e: any) => {
+        const handleCustomEvent = (e: CustomEvent<{ key: string; value: string }>) => {
             if (e.detail?.key === "modifiedHealth") {
                 const value = parseInt(e.detail.value, 10);
                 if (!isNaN(value)) {

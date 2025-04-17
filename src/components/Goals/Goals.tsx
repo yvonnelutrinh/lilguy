@@ -9,7 +9,7 @@ import type { Website } from '@/components/SiteList/SiteList';
 import Tag from '@/components/UI/Tag';
 
 // Helper function to safely access localStorage
-const getLocalStorageItem = (key: string, defaultValue: any) => {
+const getLocalStorageItem = (key: string, defaultValue: unknown) => {
   if (typeof window !== 'undefined') {
     const item = localStorage.getItem(key);
     return item ? (typeof defaultValue === 'object' ? JSON.parse(item) : item) : defaultValue;
@@ -18,9 +18,9 @@ const getLocalStorageItem = (key: string, defaultValue: any) => {
 };
 
 // Helper function to safely set localStorage item
-const setLocalStorageItem = (key: string, value: any) => {
+const setLocalStorageItem = (key: string, value: unknown) => {
   if (typeof window !== 'undefined') {
-    localStorage.setItem(key, typeof value === 'object' ? JSON.stringify(value) : value);
+    localStorage.setItem(key, typeof value === 'object' ? JSON.stringify(value) : value as string);
   }
 };
 
@@ -127,7 +127,7 @@ const Goals: React.FC= () => {
     let newHealth = prevHealth + delta;
     newHealth = Math.max(0, Math.min(100, newHealth));
     setHealth(newHealth);
-    emitEmotion(type as any, intensity, source, newHealth);
+    emitEmotion(type as unknown, intensity, source, newHealth);
   };
 
   const [goals, setGoals] = useState<Goal[]>(() => {

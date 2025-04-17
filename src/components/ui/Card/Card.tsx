@@ -1,6 +1,6 @@
 import * as React from "react"
 import { classNameMerge } from "@/lib/utils"
-import PixelWindow from "../PixelWindow"
+import PixelWindow from '../UI/PixelWindow';
 
 // Pixel Card component that uses the PixelWindow internally
 const Card = React.forwardRef<

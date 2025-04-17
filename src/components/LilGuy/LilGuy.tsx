@@ -5,7 +5,7 @@ import { EmotionEvent } from "@/lib/emotionEventBus";
 import { useEffect, useRef, useState } from "react";
 import { HealthBar } from "../HealthBar/HealthBar";
 import LilGuyInteractor from "../LilGuyInteractor/LilGuyInteractor";
-import PixelWindow from '../ui/PixelWindow';
+import PixelWindow from '../UI/PixelWindow';
 
 // helper function to safely access localStorage
 const getLocalStorageItem = (key: string, defaultValue: any) => {
@@ -651,4 +651,3 @@ function WidgetLilGuy(props: { health?: number; stage?: LilGuyStage; animation?:
 }
 
 export { getRandomColor, LilGuy, WidgetLilGuy };
-

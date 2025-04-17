@@ -2,6 +2,7 @@
 
 import { useAuth, useUser } from "@clerk/nextjs";
 import { useCallback } from "react";
+import { PixelButton } from "../UI/PixelButton";
 
 export default function AuthButton() {
   const { isSignedIn, signOut } = useAuth();
@@ -26,20 +27,22 @@ export default function AuthButton() {
 
   return isSignedIn ? (
     <div className="flex items-center gap-4">
-      <span className="text-sm text-gray-600">Signed in as {user?.primaryEmailAddress?.emailAddress}</span>
-      <button
+      <span className="font-pixel text-pixel-sm text-pixel-blue-dark">Signed in as {user?.primaryEmailAddress?.emailAddress}</span>
+      <PixelButton 
+        variant="beige" 
+        size="sm"
         onClick={handleSignOut}
-        className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition-colors"
       >
         Sign Out
-      </button>
+      </PixelButton>
     </div>
   ) : (
-    <button
+    <PixelButton 
+      variant="primary" 
+      size="sm"
       onClick={handleSignIn}
-      className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
     >
       Sign In
-    </button>
+    </PixelButton>
   );
 }

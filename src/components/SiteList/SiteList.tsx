@@ -8,7 +8,7 @@ import { Trash } from "lucide-react";
 import React, { useEffect, useMemo, useState } from 'react';
 import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
-import { Button } from "../ui/Button/Button";
+import { Button } from "../UI/Button/Button";
 
 // PlusIcon component from Goals.tsx
 const PlusIcon = () => (
