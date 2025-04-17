@@ -493,41 +493,26 @@ function LilGuy({ size = "normal", className = "", initialAnimation = "idle", us
 
 
   // --- Effect: No Goals Egg State ---
-  useEffect(() => {
-    if (!firstGoalSet) {
-      setLilGuyStage('egg');
-      setAnimation('shake');
+  // useEffect(() => {
+  //   if (!firstGoalSet) {
+  //     setLilGuyStage('egg');
+  //     setAnimation('shake');
 
-      // Update stage in Convex if userId is available // TODO: remove this?
-      if (userId) {
-        try {
-          updateLilguyStage({ userId, stage: 'egg' });
-        } catch (error) {
-          console.error("Failed to update LilGuy stage in Convex:", error);
-        }
-      }
-    }
-  }, [firstGoalSet, userId]);
+  //     // Update stage in Convex if userId is available // TODO: remove this?
+  //     if (userId) {
+  //       try {
+  //         updateLilguyStage({ userId, stage: 'egg' });
+  //       } catch (error) {
+  //         console.error("Failed to update LilGuy stage in Convex:", error);
+  //       }
+  //     }
+  //   }
+  // }, [firstGoalSet, userId]);
 
   // --- Effect: First Goal Set (Hatch Sequence) ---
   useEffect(() => {
     if (firstGoalSet && lilGuyStage === 'egg' && !hatching) {
-      // Assign random color if not set
-      let color = lilguy?.color || getLocalStorageItem('lilGuyColor', null); // TODO: remove this?
-      if (!color) {
-        color = getRandomColor();
-        setLocalStorageItem('lilGuyColor', color);
-        setLilGuyColor(color);
-
-        // Update color in Convex if userId is available
-        if (userId) {
-          try {
-            updateLilguy({ userId, color });
-          } catch (error) {
-            console.error("Failed to update LilGuy color in Convex:", error);
-          }
-        }
-      }
+  
       setHatching(true);
       playAnimationOnce(setAnimation, 'hatch', () => {
         setHatching(false);

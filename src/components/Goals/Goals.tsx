@@ -172,31 +172,48 @@ const Goals: React.FC<{ userId?: Id<"users">; }> = ({ userId }) => {
 
   const lastProgressRef = useRef<{ [id: number]: number }>({});
 
-  const handleAddGoal = () => {
+  const createGoal = useMutation(api.goals.createGoal);
+
+  const handleAddGoal = async () => {
     if (newGoalTitle.trim() === "") return;
 
-    const newGoal: Goal = {
-      id: Math.max(0, ...goals.map((g) => g.id)) + 1,
-      title: newGoalTitle.trim(),
-      completed: false,
-      progress: 0,
-    };
-
-    const updatedGoals = [...goals, newGoal];
-    setGoals(updatedGoals);
-    updateLocalStorage(updatedGoals);
-    setNewGoalTitle("");
-    // Emit a happy emotion and increase health when adding a new goal
-    emitEmotionWithHealth("happy", 50, "newGoal", 5);
-    // If this is the first goal, trigger the full first-goal sequence
-    if (goals.length === 0) {
-      triggerFirstGoalSequence({
-        emitEmotion,
-        setAndSyncMessage: (msg: string) => {
-          setLocalStorageItem('lilGuyMessage', msg);
-          window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'lilGuyMessage', value: msg } }));
-        }
+    try {
+      const goalId = await createGoal({
+        userId: userId || "",
+        title: newGoalTitle.trim(),
+        completed: false,
+        progress: 0,
       });
+
+      const newGoal: Goal = {
+        id: Math.max(0, ...goals.map((g) => g.id)) + 1,
+        title: newGoalTitle.trim(),
+        completed: false,
+        progress: 0,
+        convexId: goalId,
+      };
+
+      const updatedGoals = [...goals, newGoal];
+      setGoals(updatedGoals);
+
+      updateLocalStorage(updatedGoals);
+      setNewGoalTitle("");
+      // Emit a happy emotion and increase health when adding a new goal
+      emitEmotionWithHealth("happy", 50, "newGoal", 5);
+      // If this is the first goal, trigger the full first-goal sequence
+      if (goals.length === 0) {
+        triggerFirstGoalSequence({
+          emitEmotion,
+          setAndSyncMessage: (msg: string) => {
+            setLocalStorageItem('lilGuyMessage', msg);
+            window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'lilGuyMessage', value: msg } }));
+          }
+        });
+      }
+    } catch (error) {
+      console.error("Failed to create goal:", error);
+      // Optionally emit a sad emotion if the goal creation fails
+      emitEmotionWithHealth("sad", 30, "goalCreationFailed", -5);
     }
   };
 
