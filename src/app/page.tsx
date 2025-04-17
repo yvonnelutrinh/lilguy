@@ -18,10 +18,10 @@ import { api } from "../../convex/_generated/api";
 export const generateLocalTokenIdentifier = () => {
   if (typeof window === 'undefined') return 'local:unknown';
   const userAgent = window.navigator.userAgent;
-  // const acceptLanguage = window.navigator.language; // different for front/backend
+
+  console.log(window.navigator);
   const identifierParts = [
     userAgent,
-    // acceptLanguage,
   ].filter(Boolean);
   return `local:${identifierParts.join('-')}`;
 };

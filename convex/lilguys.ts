@@ -1,77 +1,131 @@
 import { v } from "convex/values";
-import { query, mutation } from "./_generated/server";
-import { ConvexError } from "convex/values";
+import { mutation, query } from "./_generated/server";
 
-export const getLilGuys = query({
-  args: { userId: v.string() },
-  handler: async (ctx, args) => {
-    const lilguys = await ctx.db
-      .query("lilguys")
-      .withIndex("by_user", (q) => q.eq("userId", args.userId))
-      .collect();
-
-    return lilguys;
-  },
-});
-
-export const createLilGuy = mutation({
+// Create a new lilguy for a user
+export const create = mutation({
   args: {
     userId: v.string(),
+    color: v.string(),
     name: v.string(),
-    health: v.optional(v.boolean()),
-    progress: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
     const lilguyId = await ctx.db.insert("lilguys", {
       userId: args.userId,
+      color: args.color,
       name: args.name,
-      health: args.health || true,
-      progress: args.progress || 0,
+      health: 100,
+      stage: "egg",
+      lastAnimation: "idle",
+      updatedAt: Date.now(),
     });
-
     return lilguyId;
   },
 });
 
-export const updateLilGuy = mutation({
-  args: {
-    lilguyId: v.id("lilguys"),
-    name: v.optional(v.string()),
-    health: v.optional(v.boolean()),
-    progress: v.optional(v.number()),
-  },
+// Get a user's lilguy
+export const get = query({
+  args: { userId: v.string() },
   handler: async (ctx, args) => {
-    const lilguy = await ctx.db.get(args.lilguyId);
-    
-    if (!lilguy) {
-      throw new ConvexError("LilGuy not found");
-    }
-
-    const updates: any = {};
-    
-    if (args.name !== undefined) updates.name = args.name;
-    if (args.health !== undefined) updates.health = args.health;
-    if (args.progress !== undefined) updates.progress = args.progress;
-
-    await ctx.db.patch(args.lilguyId, updates);
-
-    return true;
+    const lilguy = await ctx.db
+      .query("lilguys")
+      .withIndex("by_user", (q) => q.eq("userId", args.userId))
+      .first();
+    return lilguy;
   },
 });
 
-export const deleteLilGuy = mutation({
+// Update a lilguy's basic properties
+export const update = mutation({
   args: {
-    lilguyId: v.id("lilguys"),
+    userId: v.string(),
+    color: v.optional(v.string()),
+    name: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const lilguy = await ctx.db.get(args.lilguyId);
-    
+    const lilguy = await ctx.db
+      .query("lilguys")
+      .withIndex("by_user", (q) => q.eq("userId", args.userId))
+      .first();
+
     if (!lilguy) {
-      throw new ConvexError("LilGuy not found");
+      throw new Error("Lilguy not found");
     }
 
-    await ctx.db.delete(args.lilguyId);
-
-    return true;
+    await ctx.db.patch(lilguy._id, {
+      ...(args.color && { color: args.color }),
+      ...(args.name && { name: args.name }),
+      updatedAt: Date.now(),
+    });
   },
-}); 
+});
+
+// Update a lilguy's health
+export const updateHealth = mutation({
+  args: {
+    userId: v.string(),
+    healthChange: v.number(),
+  },
+  handler: async (ctx, args) => {
+    const lilguy = await ctx.db
+      .query("lilguys")
+      .withIndex("by_user", (q) => q.eq("userId", args.userId))
+      .first();
+
+    if (!lilguy) {
+      throw new Error("Lilguy not found");
+    }
+
+    const newHealth = Math.max(0, Math.min(100, lilguy.health + args.healthChange));
+    
+    await ctx.db.patch(lilguy._id, {
+      health: newHealth,
+      updatedAt: Date.now(),
+    });
+  },
+});
+
+// Update a lilguy's stage
+export const updateStage = mutation({
+  args: {
+    userId: v.string(),
+    stage: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const lilguy = await ctx.db
+      .query("lilguys")
+      .withIndex("by_user", (q) => q.eq("userId", args.userId))
+      .first();
+
+    if (!lilguy) {
+      throw new Error("Lilguy not found");
+    }
+
+    await ctx.db.patch(lilguy._id, {
+      stage: args.stage,
+      updatedAt: Date.now(),
+    });
+  },
+});
+
+// Update a lilguy's animation
+export const updateAnimation = mutation({
+  args: {
+    userId: v.string(),
+    animation: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const lilguy = await ctx.db
+      .query("lilguys")
+      .withIndex("by_user", (q) => q.eq("userId", args.userId))
+      .first();
+
+    if (!lilguy) {
+      throw new Error("Lilguy not found");
+    }
+
+    await ctx.db.patch(lilguy._id, {
+      lastAnimation: args.animation,
+      updatedAt: Date.now(),
+    });
+  },
+});

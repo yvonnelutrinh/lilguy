@@ -298,25 +298,25 @@ const SiteList: React.FC<SiteListProps> = ({ userId }) => {
   }, []);
 
   // Timer for localhost
-  useEffect(() => {
-    if (window.location.hostname !== 'localhost') return;
-    let seconds = localhostSeconds;
-    const timer = setInterval(() => {
-      seconds += 1;
-      setLocalhostSeconds(seconds);
-      localStorage.setItem('localhost_seconds', seconds.toString());
-      setWebsites(ws => ws.map(site => site.hostname === 'localhost' ? { ...site, timeSpent: Math.floor(seconds / 60) } : site));
-      if (seconds % 30 === 0) {
-        // Increment health and log
-        setHealth((h: number) => {
-          const newHealth = Math.min(100, (typeof h === 'number' ? h : 100) + 1);
-          console.log('[WebsiteTracker] +1 health for 30s on localhost. Action: productive. New health:', newHealth);
-          return newHealth;
-        });
-      }
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [localhostSeconds, setHealth]);
+  // useEffect(() => {
+  //   if (window.location.hostname !== 'localhost') return;
+  //   let seconds = localhostSeconds;
+  //   const timer = setInterval(() => {
+  //     seconds += 1;
+  //     setLocalhostSeconds(seconds);
+  //     localStorage.setItem('localhost_seconds', seconds.toString());
+  //     setWebsites(ws => ws.map(site => site.hostname === 'localhost' ? { ...site, timeSpent: Math.floor(seconds / 60) } : site));
+  //     if (seconds % 30 === 0) {
+  //       // Increment health and log
+  //       setHealth((h: number) => {
+  //         const newHealth = Math.min(100, (typeof h === 'number' ? h : 100) + 1);
+  //         console.log('[WebsiteTracker] +1 health for 30s on localhost. Action: productive. New health:', newHealth);
+  //         return newHealth;
+  //       });
+  //     }
+  //   }, 1000);
+  //   return () => clearInterval(timer);
+  // }, [localhostSeconds, setHealth]);
 
   // --- Listen for LilGuy reset and clear websites ---
   useEffect(() => {

@@ -14,8 +14,6 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as goals from "../goals.js";
-import type * as lilguys from "../lilguys.js";
-import type * as messages from "../messages.js";
 import type * as sitevisit from "../sitevisit.js";
 import type * as sitevisits from "../sitevisits.js";
 import type * as users from "../users.js";
@@ -30,8 +28,6 @@ import type * as users from "../users.js";
  */
 declare const fullApi: ApiFromModules<{
   goals: typeof goals;
-  lilguys: typeof lilguys;
-  messages: typeof messages;
   sitevisit: typeof sitevisit;
   sitevisits: typeof sitevisits;
   users: typeof users;
