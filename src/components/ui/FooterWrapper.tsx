@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { usePathname } from 'next/navigation';
-import Footer from './Footer';
+import Footer from '../Footer';
 
 interface FooterWrapperProps {
   children: React.ReactNode;
@@ -11,11 +11,16 @@ interface FooterWrapperProps {
 const FooterWrapper: React.FC<FooterWrapperProps> = ({ children }) => {
   const pathname = usePathname();
   const isAuthPage = pathname?.includes('/sign-in') || pathname?.includes('/sign-up');
-  
+  const [pageLoaded, setPageLoaded] = React.useState(false);
+
+  React.useEffect(() => {
+    setPageLoaded(true);
+  }, []);
+
   return (
     <>
       {children}
-      {!isAuthPage && <Footer />}
+      {/* Footer removed to prevent duplicate/white background version */}
     </>
   );
 };

@@ -4,7 +4,8 @@
   padding: 1rem;
   display: flex;
   justify-content: flex-end;
-  background: none !important;
+  background: none;
+  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.2);
 }
 
 .pixel-footer-content {
@@ -13,7 +14,7 @@
   flex-wrap: wrap;
   justify-content: flex-end;
   max-width: 1200px;
-  background: none !important;
+  background: rgba(0, 0, 0, 0.2);
 }
 
 .pixel-footer-link {
@@ -21,41 +22,46 @@
   align-items: center;
   gap: 0.5rem;
   font-family: 'VT323', monospace;
-  font-size: 0.9rem;
-  color: var(--text-secondary);
+  font-size: 0.95rem;
+  color: #444;
   text-decoration: none;
-  transition: all 0.2s;
-  opacity: 0.8;
-  padding: 0.3rem 0.6rem;
-  border: 1px solid #888888;
+  transition: background 0.15s, color 0.15s;
+  opacity: 0.92;
+  padding: 0.18rem 0.9rem 0.12rem 0.7rem; /* smaller size */
+  border: 1.5px solid #6e6e6e;
   border-radius: 0;
-  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.2);
+  background: rgba(255,255,255,0.72); /* transparent white background */
+  box-shadow: none;
   justify-content: center;
-  margin-right: 4px;
-  background: none !important;
+  margin-right: 6px;
+  min-height: 24px;
+  min-width: 110px;
+  font-weight: 400;
+  outline: none;
 }
 
 .pixel-footer-link:hover {
+  background: rgba(255,255,255,0.92);
+  color: #222;
+  box-shadow: none;
   opacity: 1;
-  transform: translateY(-2px);
-  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.2);
 }
 
 .pixel-github-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
-  margin-right: 4px;
-  background: none !important;
+  width: 18px;
+  height: 18px;
+  margin-right: 6px;
+  background: none;
 }
 
 .pixel-github-icon svg {
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   image-rendering: pixelated;
-  fill: var(--text-secondary);
+  fill: #6e6e6e;
 }
 
 /* Media queries for responsive design */

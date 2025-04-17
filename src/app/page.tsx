@@ -9,6 +9,7 @@ import ProductivityMetrics from "@/components/ProductivityMetrics/ProductivityMe
 import SiteList from "@/components/SiteList/SiteList";
 import TestWindow from "@/components/TestWindow/TestWindow";
 import PixelWindow from "@/components/ui/PixelWindow";
+import Footer from "@/components/Footer/Footer"; // Correct import path for Footer
 import { HealthProvider } from "@/context/HealthContext";
 import { useUser } from "@clerk/nextjs";
 import { useConvexAuth, useMutation, useQuery } from "convex/react";
@@ -108,15 +109,6 @@ export default function Home() {
 
   return (
     <>
-      {/*
-      // TODO remove this ugly poo
-      <div className="text-center py-16 bg-gray-50 rounded-lg">
-        <h2 className="text-2xl font-bold mb-4">Welcome to Lilguy</h2>
-        <p className="mb-6 text-gray-600 max-w-lg mx-auto">
-          Track your habits, and grow your thoughts! Sign in to get started.
-        </p>
-      </div>
-      */}
       {isAuthenticated ? (
         <>
           <h2 className="text-xl font-semibold mb-4" style={{ color: characterColor }}>
@@ -219,6 +211,7 @@ export default function Home() {
               </div>
             </div>
           </main>
+          <Footer />
         </div>
       </HealthProvider>
     </>

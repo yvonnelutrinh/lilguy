@@ -46,7 +46,6 @@ export default function RootLayout({
             background-color: var(--background);
             min-height: 100vh;
           }
-          
           /* Override any background colors that might be affecting the footer */
           .pixel-footer, .pixel-footer-content, .pixel-footer-link {
             background: none !important;
@@ -55,7 +54,7 @@ export default function RootLayout({
         `}</style>
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
+        className={`bg-pixel-pattern ${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
       >
         <ConvexClientProvider>
           <ProductivityDataProvider>
