@@ -123,7 +123,7 @@ const catPage = async ({
   }
   return {
     hostname,
-    category: largestSimilarity >= 0.5 ? "helpful" : "not-helpful",
+    category: largestSimilarity >= 0.5 ? "productive" : "unproductive",
   };
 };
 
