@@ -1,15 +1,20 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Button } from "@/components/UI/Button/Button";
-import { Input } from "@/components/UI/Input/Input";
-import { Slider } from "@/components/UI/Slider/Slider";
+import { Input } from "@/components/ui/Input/Input";
+import { SimpleContainer, SimpleItem } from '@/components/ui/SimpleContainer/SimpleContainer';
+import { Slider } from "@/components/ui/Slider/Slider";
+import Tag from '@/components/ui/Tag';
 import { useEmitEmotion } from '@/lib/emotionContext';
-import { SimpleContainer, SimpleItem } from '@/components/UI/SimpleContainer/SimpleContainer';
 import { triggerFirstGoalSequence } from '@/lib/lilguyActions';
-import type { Website } from '@/components/SiteList/SiteList';
-import Tag from '@/components/UI/Tag';
-import { Plus, Pencil, Trash2, Check, Save } from "lucide-react";
+import { useMutation, useQuery } from 'convex/react';
+import { Check, Pencil, Plus, Save, Trash2 } from "lucide-react";
+import React, { useEffect, useRef, useState } from 'react';
+import { api } from '../../../convex/_generated/api';
+import { Id } from '../../../convex/_generated/dataModel';
+import { Button } from "../ui/Button/Button";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
 const PlusIcon = (props: any) => <Plus color="currentColor" {...props} />;
+
 
 // Helper function to safely access localStorage
 const getLocalStorageItem = (key: string, defaultValue: any) => {
@@ -49,10 +54,18 @@ export interface Goal {
   title: string;
   completed: boolean;
   progress: number;
+  convexId?: Id<"goals">; // Optional Convex ID for server-side persistence
 }
 
-const Goals: React.FC= () => {
+const Goals: React.FC<{ userId?: Id<"users">; }> = ({ userId }) => {
   const emitEmotion = useEmitEmotion();
+  const createGoal = useMutation(api.goals.createGoal);
+  const updateGoal = useMutation(api.goals.updateGoal);
+  const deleteGoal = useMutation(api.goals.deleteGoal);
+  // Fetch goals from Convex
+  const convexGoals = useQuery(api.goals.getGoals, userId ? { userId: userId } : "skip");
+  // Fetch site visits from Convex
+  const siteVisits = useQuery(api.sitevisits.getSiteVisits, userId ? { userId: userId } : "skip");
 
   // Helper: Emit emotion and update health
   const emitEmotionWithHealth = (type: string, intensity: number, source: string, delta: number) => {
@@ -63,37 +76,29 @@ const Goals: React.FC= () => {
     emitEmotion(type as any, intensity, source, newHealth);
   };
 
+  // Use Convex goals if available, otherwise fallback to localStorage
   const [goals, setGoals] = useState<Goal[]>(() => {
     const savedGoals = getLocalStorageItem("goals", initialGoals);
     return savedGoals;
   });
+  // Sync ui state with Convex goals
+  useEffect(() => {
+    if (convexGoals && Array.isArray(convexGoals)) {
+      setGoals(
+        convexGoals.map((g, idx) => ({
+          id: idx + 1, // or use a hash of convexId if you want stable ids
+          title: g.title,
+          completed: g.completed,
+          progress: g.progress,
+          convexId: g._id,
+        }))
+      );
+    }
+  }, [convexGoals]);
+
   const [newGoalTitle, setNewGoalTitle] = useState("");
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editTitle, setEditTitle] = useState("");
-  const [websites, setWebsites] = useState<Website[]>([]);
-
-  // Sync websites from localStorage
-  useEffect(() => {
-    const syncWebsites = () => {
-      const stored = localStorage.getItem('websites');
-      if (stored) {
-        try {
-          setWebsites(JSON.parse(stored));
-        } catch {
-          setWebsites([]);
-        }
-      } else {
-        setWebsites([]);
-      }
-    };
-    syncWebsites();
-    window.addEventListener('storage', syncWebsites);
-    window.addEventListener('localStorageChanged', syncWebsites);
-    return () => {
-      window.removeEventListener('storage', syncWebsites);
-      window.removeEventListener('localStorageChanged', syncWebsites);
-    };
-  }, []);
 
   const updateLocalStorage = (updatedGoals: Goal[]) => {
     setLocalStorageItem("goals", updatedGoals);
@@ -101,42 +106,68 @@ const Goals: React.FC= () => {
 
   const lastProgressRef = useRef<{ [id: number]: number }>({});
 
-  const handleAddGoal = () => {
+  const handleAddGoal = async () => {
     if (newGoalTitle.trim() === "") return;
 
-    const newGoal: Goal = {
-      id: Math.max(0, ...goals.map((g) => g.id)) + 1,
-      title: newGoalTitle.trim(),
-      completed: false,
-      progress: 0,
-    };
-
-    const updatedGoals = [...goals, newGoal];
-    setGoals(updatedGoals);
-    updateLocalStorage(updatedGoals);
-    setNewGoalTitle("");
-    // Emit a happy emotion and increase health when adding a new goal
-    emitEmotionWithHealth("happy", 50, "newGoal", 5);
-    // If this is the first goal, trigger the full first-goal sequence
-    if (goals.length === 0) {
-      triggerFirstGoalSequence({
-        emitEmotion,
-        setAndSyncMessage: (msg: string) => {
-          setLocalStorageItem('lilGuyMessage', msg);
-          window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'lilGuyMessage', value: msg } }));
-        }
+    try {
+      const goalId = await createGoal({
+        userId: userId || "",
+        title: newGoalTitle.trim(),
+        completed: false,
+        progress: 0,
       });
+
+      const newGoal: Goal = {
+        id: Math.max(0, ...goals.map((g) => g.id)) + 1,
+        title: newGoalTitle.trim(),
+        completed: false,
+        progress: 0,
+        convexId: goalId,
+      };
+
+      const updatedGoals = [...goals, newGoal];
+      setGoals(updatedGoals);
+
+      updateLocalStorage(updatedGoals);
+      setNewGoalTitle("");
+      // Emit a happy emotion and increase health when adding a new goal
+      emitEmotionWithHealth("happy", 50, "newGoal", 5);
+      // If this is the first goal, trigger the full first-goal sequence
+      if (goals.length === 0) {
+        triggerFirstGoalSequence({
+          emitEmotion,
+          setAndSyncMessage: (msg: string) => {
+            setLocalStorageItem('lilGuyMessage', msg);
+            window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'lilGuyMessage', value: msg } }));
+          }
+        });
+      }
+    } catch (error) {
+      console.error("Failed to create goal:", error);
+      // Optionally emit a sad emotion if the goal creation fails
+      emitEmotionWithHealth("sad", 30, "goalCreationFailed", -5);
     }
   };
 
-  const handleRemoveGoal = (id: number) => {
-    const updatedGoals = goals.filter((goal) => goal.id !== id);
-    setGoals(updatedGoals);
-    updateLocalStorage(updatedGoals);
-    // Emit a sad emotion and decrease health when removing a goal
-    emitEmotionWithHealth("sad", 30, "removeGoal", -10);
+  const handleRemoveGoal = async (id: number) => {
+    try {
+      const goal = goals.find(g => g.id === id);
+      if (goal?.convexId) {
+        await deleteGoal({ goalId: goal.convexId });
+      }
+      const updatedGoals = goals.filter((goal) => goal.id !== id);
+      setGoals(updatedGoals);
+      updateLocalStorage(updatedGoals);
+      // Emit a sad emotion and decrease health when removing a goal
+      emitEmotionWithHealth("sad", 30, "removeGoal", -10);
+    } catch (error) {
+      console.error("Failed to delete goal:", error);
+      // Optionally emit a sad emotion if the goal deletion fails
+      emitEmotionWithHealth("sad", 50, "goalDeletionFailed", -15);
+    }
   };
 
+  const createMessage = useMutation(api.messages.createMessage)
   const handleToggleComplete = (id: number) => {
     const updatedGoals = goals.map((goal) =>
       goal.id === id ? { ...goal, completed: !goal.completed } : goal
@@ -146,11 +177,23 @@ const Goals: React.FC= () => {
     // Emit appropriate emotion and health change based on completion state
     if (toggledGoal?.completed) {
       emitEmotionWithHealth("happy", 80, "completeGoal", 10);
+      createMessage({
+        userId: userId || "",
+        body: `LilGuy loves productivity! You completed ${toggledGoal?.title}`,
+        type: "goal-complete",
+        source: "manual-goal-completion",
+        durationSeconds: 0,
+      })
     } else {
       emitEmotionWithHealth("sad", 30, "uncompleteGoal", -5);
     }
     setGoals(updatedGoals);
     updateLocalStorage(updatedGoals);
+    // Call updateGoal mutation if convexId exists
+    const goal = goals.find(g => g.id === id);
+    if (goal?.convexId) {
+      updateGoal({ goalId: goal.convexId, completed: !goal.completed });
+    }
   };
 
   const handleProgressChange = (id: number, progress: number) => {
@@ -175,6 +218,11 @@ const Goals: React.FC= () => {
     }
     // Save latest progress
     lastProgressRef.current[id] = progress;
+    // Call updateGoal mutation if convexId exists
+    const goal = goals.find(g => g.id === id);
+    if (goal?.convexId) {
+      updateGoal({ goalId: goal.convexId, progress });
+    }
   };
 
   const startEditing = (goal: Goal) => {
@@ -190,6 +238,12 @@ const Goals: React.FC= () => {
     );
     setGoals(updatedGoals);
     updateLocalStorage(updatedGoals);
+    // Call updateGoal mutation if convexId exists
+    const goal = goals.find(g => g.id === editingId);
+    if (goal?.convexId) {
+      updateGoal({ goalId: goal.convexId, title: editTitle.trim() });
+    }
+
     setEditingId(null);
     setEditTitle("");
   };
@@ -201,8 +255,8 @@ const Goals: React.FC= () => {
   };
 
   return (
-    <SimpleContainer 
-      title="Productivity Goals" 
+    <SimpleContainer
+      title="Productivity Goals"
       description="Set productivity goals and track your progress"
       instructionText="Drag the slider to update progress, or click the buttons"
       renderInstructionAfterInput={true}
@@ -235,10 +289,11 @@ const Goals: React.FC= () => {
           </div>
         ) : (
           goals.map((goal) => {
-            // Find all productive websites attributed to this goal
-            const attributedWebsites = websites.filter(
-              (w) => w.goalId === goal.id && w.category === 'productive'
-            );
+            // Find all productive site visits attributed to this goal
+            const attributedSiteVisits = siteVisits?.filter(
+              (site) => site.goalId === goal.convexId && site.classification === 'productive'
+            ) || [];
+            
             return (
               <SimpleItem
                 key={goal.id}
@@ -269,9 +324,8 @@ const Goals: React.FC= () => {
                       />
                     ) : (
                       <span
-                        className={`text-sm ${
-                          goal.completed ? "line-through text-gray-500" : ""
-                        }`}
+                        className={`text-sm ${goal.completed ? "line-through text-gray-500" : ""
+                          }`}
                       >
                         {goal.title}
                       </span>
@@ -306,16 +360,16 @@ const Goals: React.FC= () => {
                   </div>
                 </div>
 
-                {/* Attributed websites as tags or prompt */}
-                {attributedWebsites.length > 0 ? (
+                {/* Attributed site visits as tags or prompt */}
+                {attributedSiteVisits.length > 0 ? (
                   <div className="flex flex-wrap gap-2 mt-2">
-                    {attributedWebsites.map(site => (
+                    {attributedSiteVisits.map(site => (
                       <Tag
-                        key={site.id}
-                        label={site.name}
+                        key={site._id}
+                        label={site.hostname}
                         asButton
                         onClick={() => {
-                          const el = document.getElementById(`website-${site.id}`);
+                          const el = document.getElementById(`website-${site._id}`);
                           if (el) {
                             el.scrollIntoView({ behavior: 'smooth', block: 'center' });
                             el.classList.add('ring-4', 'ring-pixel-accent');
@@ -352,10 +406,10 @@ const Goals: React.FC= () => {
                       className="h-full"
                       style={{
                         width: `${goal.progress}%`,
-                        backgroundColor: 
-                          goal.progress > 75 ? 'var(--pixel-green)' : 
-                          goal.progress > 25 ? 'var(--pixel-blue)' : 
-                          'var(--pixel-pink)'
+                        backgroundColor:
+                          goal.progress > 75 ? 'var(--pixel-green)' :
+                            goal.progress > 25 ? 'var(--pixel-blue)' :
+                              'var(--pixel-pink)'
                       }}
                     />
                   </div>

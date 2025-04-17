@@ -36,24 +36,27 @@ export default defineSchema({
     title: v.string(),
     completed: v.boolean(),
     progress: v.number(),
+    updatedAt: v.number(),
   }).index("by_user", ["userId"]),
 
   lilguys: defineTable({
     userId: v.string(),
+    color: v.string(),
     name: v.string(),
     health: v.number(),
-    progress: v.number(),
+    stage: v.string(),
     lastAnimation: v.string(),
+
+    updatedAt: v.number(),
   }).index("by_user", ["userId"]),
 
   messages: defineTable({
     userId: v.string(),
-    content: v.string(),
+    body: v.string(),
     type: v.string(),
     read: v.boolean(),
     source: v.string(),
-    health: v.number(),
-    intensity: v.number(),
+    durationSeconds: v.number(),
     timestamp: v.number(),
   }).index("by_user", ["userId"]),
 

@@ -1,5 +1,8 @@
+ 
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from 'react';
 import './widget.css';
+import Image from 'next/image';
 
 // Pixel-style SVG icons (inline for portability)
 const SettingsIcon = () => (
@@ -29,7 +32,7 @@ const ClockIcon = () => (
 );
 
 // Pixel window container
-function PixelWindow({ title, children, onClose }) {
+function PixelWindow({ title, children, onClose }: { title: string; children: React.ReactNode; onClose?: () => void }) {
   return (
     <div className="pixel-window">
       <div className="pixel-window-header bg-pixel-teal">
@@ -75,7 +78,7 @@ function WidgetLilGuy({ health = 100, stage = 'normal', animation = 'idle' }) {
   const spriteSrc = '/assets/sprites/sheets/green/lilguy_main_green.png';
   return (
     <div style={{ width: 48, height: 48, imageRendering: 'pixelated' }}>
-      <img
+      <Image
         src={spriteSrc}
         alt="LilGuy"
         width={48}
@@ -193,7 +196,7 @@ const Widget = () => {
             </span>
           </div>
         </div>
-        {/* Website Tracker UI */}
+        {/* Website Tracker ui */}
         <div className="bg-white p-3 border-t border-dashed border-gray-300">
           <div className="text-xs font-bold mb-2">Website Tracker</div>
           <div className="flex flex-col gap-2">

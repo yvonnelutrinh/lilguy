@@ -1,8 +1,10 @@
-import React from 'react';
-import { DropdownMenu } from "radix-ui";
-import { Button } from '../ui/Button/Button';
-import SignInButton from '../SignInButton/SignInButton';
 import Image from 'next/image';
+import { DropdownMenu } from "radix-ui";
+import React from 'react';
+import SignInButton from '../SignInButton/SignInButton';
+import { Button } from '../ui/Button/Button';
+ 
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
 const notifications = [
     { id: 1, message: "You've been productive for 2 hours today!", isRead: false },
@@ -30,27 +32,27 @@ const BellIcon = () => (
 );
 
 const SettingsIcon = () => (
-  <div className="w-6 h-6 relative flex items-center justify-center p-1">
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="pixelated">
-      <rect x="8" y="2" width="4" height="2" fill="currentColor" />
-      <rect x="8" y="16" width="4" height="2" fill="currentColor" />
-      <rect x="16" y="8" width="2" height="4" fill="currentColor" />
-      <rect x="2" y="8" width="2" height="4" fill="currentColor" />
-      <rect x="5" y="3" width="2" height="2" fill="currentColor" />
-      <rect x="13" y="3" width="2" height="2" fill="currentColor" />
-      <rect x="13" y="15" width="2" height="2" fill="currentColor" />
-      <rect x="5" y="15" width="2" height="2" fill="currentColor" />
-      <rect x="6" y="6" width="8" height="8" fill="currentColor" />
-      <rect x="8" y="8" width="4" height="4" fill="white" />
-    </svg>
-  </div>
+    <div className="w-6 h-6 relative flex items-center justify-center p-1">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="pixelated">
+            <rect x="8" y="2" width="4" height="2" fill="currentColor" />
+            <rect x="8" y="16" width="4" height="2" fill="currentColor" />
+            <rect x="16" y="8" width="2" height="4" fill="currentColor" />
+            <rect x="2" y="8" width="2" height="4" fill="currentColor" />
+            <rect x="5" y="3" width="2" height="2" fill="currentColor" />
+            <rect x="13" y="3" width="2" height="2" fill="currentColor" />
+            <rect x="13" y="15" width="2" height="2" fill="currentColor" />
+            <rect x="5" y="15" width="2" height="2" fill="currentColor" />
+            <rect x="6" y="6" width="8" height="8" fill="currentColor" />
+            <rect x="8" y="8" width="4" height="4" fill="white" />
+        </svg>
+    </div>
 );
 
-const Header: React.FC = () => {
-    return (
+const Header: React.FC<{ userId: string | undefined }> = ({ userId }) => {
 
+    return (
         <header className="bg-white border-b-2 border-black px-4 py-2 flex justify-between items-center">
-           
+
             <div className="flex items-center gap-2">
                 <div className="w-8 h-8 bg-white border-2 border-black flex items-center justify-center">
                     <Image src="/icons/lilguy-logo.svg" alt="LilGuy Logo" width={24} height={24} />
@@ -70,9 +72,6 @@ const Header: React.FC = () => {
                             className="relative pixel-button pixel-button-secondary p-1 flex items-center justify-center h-8 w-8"
                         >
                             <BellIcon />
-                            {notifications.some(n => !n.isRead) && (
-                                <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border border-black"></span>
-                            )}
                         </Button>
                     </DropdownMenu.Trigger>
                     <DropdownMenu.Content align="end" className="pixel-window w-80 z-50">

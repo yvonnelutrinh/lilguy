@@ -1,12 +1,10 @@
+import { ProductivityDataProvider } from "@/context/ProductivityDataContext";
+import "@/styles/font.css";
+import "@/styles/pixel-theme.css";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ConvexClientProvider from "./providers";
-import "@/styles/pixel-theme.css";
-import "@/styles/font.css";
-import DevSimulatePanel from "@/components/DevSimulatePanel";
-import { ProductivityDataProvider } from "@/context/ProductivityDataContext";
-import FooterWrapper from "@/components/UI/FooterWrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -59,9 +57,7 @@ export default function RootLayout({
         <ConvexClientProvider>
           <ProductivityDataProvider>
             <main className="flex-grow" style={{ backgroundColor: 'transparent' }}>
-              <FooterWrapper>
                 {children}
-              </FooterWrapper>
             </main>
             {/* TODO: DevSimulatePanel temporarily hidden; needs to be fixed before re-enabling */}
             {/* {process.env.NODE_ENV === "development" && <DevSimulatePanel />} */}

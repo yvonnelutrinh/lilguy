@@ -1,6 +1,6 @@
-import * as React from "react"
-import { classNameMerge } from "@/lib/utils"
-import PixelWindow from "../PixelWindow"
+import { classNameMerge } from "@/lib/utils";
+import * as React from "react";
+import PixelWindow from "../PixelWindow";
 
 // Pixel Card component that uses the PixelWindow internally
 const Card = React.forwardRef<
@@ -15,6 +15,7 @@ const Card = React.forwardRef<
         headerColor={headerColor}
         showControls={showControls}
         className={className}
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         ref={ref as any}
         {...props}
       >
@@ -97,4 +98,4 @@ const CardFooter = React.forwardRef<
 ))
 CardFooter.displayName = "CardFooter"
 
-export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }
+export { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle };

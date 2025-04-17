@@ -1,14 +1,17 @@
-import { Input } from "@/components/UI/Input/Input";
-import { Label } from "@/components/UI/Label/Label";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/UI/Select/Select";
-import { SimpleContainer, SimpleItem } from '@/components/UI/SimpleContainer/SimpleContainer';
+import { Input } from "@/components/ui/Input/Input";
+import { Label } from "@/components/ui/Label/Label";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/Select/Select";
+import { SimpleContainer, SimpleItem } from '@/components/ui/SimpleContainer/SimpleContainer';
 import { useHealth } from "@/context/HealthContext";
 import { useMutation, useQuery } from "convex/react";
-import { Plus, Pencil, Trash2 } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import React, { useEffect, useMemo, useState } from 'react';
 import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
 import { Button } from "../ui/Button/Button";
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
 // PlusIcon component from Goals.tsx
 const PlusIcon = (props: any) => <Plus color="currentColor" {...props} />;
@@ -223,7 +226,7 @@ const SiteList: React.FC<SiteListProps> = ({ userId }) => {
 
     try {
       await addSitevisit({
-        userId,
+        userId:userId||"",
         hostname: newWebsite.trim(),
         classification: category
       });
@@ -296,25 +299,25 @@ const SiteList: React.FC<SiteListProps> = ({ userId }) => {
   }, []);
 
   // Timer for localhost
-  useEffect(() => {
-    if (window.location.hostname !== 'localhost') return;
-    let seconds = localhostSeconds;
-    const timer = setInterval(() => {
-      seconds += 1;
-      setLocalhostSeconds(seconds);
-      localStorage.setItem('localhost_seconds', seconds.toString());
-      setWebsites(ws => ws.map(site => site.hostname === 'localhost' ? { ...site, timeSpent: Math.floor(seconds / 60) } : site));
-      if (seconds % 30 === 0) {
-        // Increment health and log
-        setHealth((h: number) => {
-          const newHealth = Math.min(100, (typeof h === 'number' ? h : 100) + 1);
-          console.log('[WebsiteTracker] +1 health for 30s on localhost. Action: productive. New health:', newHealth);
-          return newHealth;
-        });
-      }
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [localhostSeconds, setHealth]);
+  // useEffect(() => {
+  //   if (window.location.hostname !== 'localhost') return;
+  //   let seconds = localhostSeconds;
+  //   const timer = setInterval(() => {
+  //     seconds += 1;
+  //     setLocalhostSeconds(seconds);
+  //     localStorage.setItem('localhost_seconds', seconds.toString());
+  //     setWebsites(ws => ws.map(site => site.hostname === 'localhost' ? { ...site, timeSpent: Math.floor(seconds / 60) } : site));
+  //     if (seconds % 30 === 0) {
+  //       // Increment health and log
+  //       setHealth((h: number) => {
+  //         const newHealth = Math.min(100, (typeof h === 'number' ? h : 100) + 1);
+  //         console.log('[WebsiteTracker] +1 health for 30s on localhost. Action: productive. New health:', newHealth);
+  //         return newHealth;
+  //       });
+  //     }
+  //   }, 1000);
+  //   return () => clearInterval(timer);
+  // }, [localhostSeconds, setHealth]);
 
   // --- Listen for LilGuy reset and clear websites ---
   useEffect(() => {

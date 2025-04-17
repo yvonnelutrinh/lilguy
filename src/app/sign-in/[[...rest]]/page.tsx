@@ -37,7 +37,6 @@ export default function Page() {
                   socialButtonsBlockButton: "pixel-social-button",
                   formFieldInput: "pixel-input",
                   formButtonPrimary: "pixel-button-primary",
-                  footerActionLink: "pixel-link",
                   formFieldLabel: "font-pixel-body",
                   formButtonText: "font-pixel",
                   socialButtonsBlockButtonText: "font-pixel-body",

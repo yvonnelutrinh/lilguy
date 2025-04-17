@@ -25,8 +25,47 @@ export async function POST(request: Request) {
       userId,
       hostname,
     });
-    
+
     if (existingSiteVisit) {
+      switch (existingSiteVisit.classification) {
+        case "productive":
+          if (existingSiteVisit.goalId) {
+            convex.mutation(api.messages.createMessage, {
+              userId,
+              body: `LilGuy loves productivity! You visited ${hostname} for ${duration} seconds`,
+              type: "sitevisit-goal",
+              source: hostname,
+              durationSeconds: duration,
+            })
+          } else {
+            convex.mutation(api.messages.createMessage, {
+              userId,
+              body: `LilGuy loves productivity! You visited ${hostname} for ${duration} seconds`,
+              type: "sitevisit",
+              source: hostname,
+              durationSeconds: duration,
+            })
+          }
+          break;
+        case "unproductive":
+          convex.mutation(api.messages.createMessage, {
+            userId,
+            body: `LilGuy hates slackers! You visited ${hostname} for ${duration} seconds`,
+            type: "sitevisit",
+            source: hostname,
+            durationSeconds: duration,
+          })
+          break;
+        default:
+          convex.mutation(api.messages.createMessage, {
+            userId,
+            body: `Interesting! You visited ${hostname} for ${duration} seconds`,
+            type: "sitevisit",
+            source: hostname,
+            durationSeconds: duration,
+          })
+          break;
+      }
       //  use the existing classification
       const sitevisitId = await convex.mutation(api.sitevisit.addSiteVisit, {
         userId,
@@ -34,7 +73,7 @@ export async function POST(request: Request) {
         duration,
         classification: existingSiteVisit.classification,
       });
-      
+
       return NextResponse.json({
         success: true,
         message: 'Site visit updated successfully',
@@ -55,7 +94,7 @@ export async function POST(request: Request) {
         data: { sitevisitId }
       });
     }
-    
+
   } catch (error) {
     return NextResponse.json(
       {
