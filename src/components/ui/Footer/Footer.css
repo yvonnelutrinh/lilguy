@@ -1,0 +1,66 @@
+/* Pixel Art Footer Component Styling */
+.pixel-footer {
+  width: 100%;
+  padding: 1rem;
+  margin-top: 2rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.pixel-footer-content {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.pixel-footer-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'VT323', monospace;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: all 0.2s;
+  opacity: 0.7;
+}
+
+.pixel-footer-link:hover {
+  opacity: 1;
+  transform: translateY(-2px);
+}
+
+.pixel-github-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+
+.pixel-github-icon svg {
+  width: 16px;
+  height: 16px;
+  image-rendering: pixelated;
+  fill: var(--text-secondary);
+}
+
+/* Media queries for responsive design */
+@media (max-width: 768px) {
+  .pixel-footer {
+    justify-content: center;
+  }
+  
+  .pixel-footer-content {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 640px) {
+  .pixel-footer-content {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+}

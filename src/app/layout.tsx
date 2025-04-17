@@ -6,6 +6,7 @@ import "@/styles/pixel-theme.css";
 import "@/styles/font.css";
 import DevSimulatePanel from "@/components/DevSimulatePanel";
 import { ProductivityDataProvider } from "@/context/ProductivityDataContext";
+import Footer from "@/components/UI/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -47,6 +48,7 @@ export default function RootLayout({
         <ConvexClientProvider>
           <ProductivityDataProvider>
             {children}
+            <Footer />
             {/* TODO: DevSimulatePanel temporarily hidden; needs to be fixed before re-enabling */}
             {/* {process.env.NODE_ENV === "development" && <DevSimulatePanel />} */}
           </ProductivityDataProvider>
