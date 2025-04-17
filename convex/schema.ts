@@ -20,7 +20,7 @@ export default defineSchema({
     sessions: v.number(),
     classification: v.string(),
     updatedAt: v.number(),
-    goalId: v.optional(v.id("goals")),
+    goalId: v.optional(v.string()),
   }).index("by_user", ["userId"]),
 
   sitevisit: defineTable({

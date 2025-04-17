@@ -107,6 +107,27 @@ export const removeSiteVisit = mutation({
   },
 });
 
+export const updateGoalId = mutation({
+  args: {
+    sitevisitId: v.id("sitevisits"),
+    goalId: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const sitevisit = await ctx.db.get(args.sitevisitId);
+    
+    if (!sitevisit) {
+      throw new ConvexError("Site visit not found");
+    }
+
+    await ctx.db.patch(args.sitevisitId, {
+      goalId: args.goalId,
+      updatedAt: Date.now(),
+    });
+
+    return true;
+  },
+});
+
 export const getSiteVisit = query({
   args: { 
     userId: v.string(),
