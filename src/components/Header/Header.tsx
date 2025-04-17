@@ -1,8 +1,9 @@
-import React from 'react';
-import { DropdownMenu } from "radix-ui";
-import { Button } from '../ui/Button/Button';
-import SignInButton from '../SignInButton/SignInButton';
 import Image from 'next/image';
+import { DropdownMenu } from "radix-ui";
+import React from 'react';
+import SignInButton from '../SignInButton/SignInButton';
+import { Button } from '../UI/Button/Button';
+
 
 const notifications = [
     { id: 1, message: "You've been productive for 2 hours today!", isRead: false },
@@ -47,19 +48,6 @@ const SettingsIcon = () => (
 );
 
 const Header: React.FC<{ userId: string | undefined }> = ({ userId }) => {
-    const unreadMessages = useQuery(api.messages.getUnreadMessagesByUser, userId ? { userId } : "skip");
-    const markAllMessagesAsRead = useMutation(api.messages.markAllMessagesAsRead);
-    const markMessageAsRead = useMutation(api.messages.markMessageAsRead);
-
-    const handleMarkAllAsRead = () => {
-        if (userId) {
-            markAllMessagesAsRead({ userId });
-        }
-    };
-
-    const handleMarkMessageAsRead = (messageId: Id<"messages">) => {
-        markMessageAsRead({ messageId });
-    };
 
     return (
         <header className="bg-white border-b-2 border-black px-4 py-2 flex justify-between items-center">
@@ -83,9 +71,6 @@ const Header: React.FC<{ userId: string | undefined }> = ({ userId }) => {
                             className="relative pixel-button pixel-button-secondary p-1 flex items-center justify-center h-8 w-8"
                         >
                             <BellIcon />
-                            {unreadMessages && unreadMessages.length > 0 && (
-                                <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border border-black"></span>
-                            )}
                         </Button>
                     </DropdownMenu.Trigger>
                     <DropdownMenu.Content align="end" className="pixel-window w-80 z-50">

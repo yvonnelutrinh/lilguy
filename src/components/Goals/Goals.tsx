@@ -1,16 +1,15 @@
-import React, { useState, useRef, useEffect } from 'react';
 import { Button } from "@/components/UI/Button/Button";
 import { Input } from "@/components/UI/Input/Input";
-import { Slider } from "@/components/UI/Slider/Slider";
-import { useEmitEmotion } from '@/lib/emotionContext';
 import { SimpleContainer, SimpleItem } from '@/components/UI/SimpleContainer/SimpleContainer';
-import { triggerFirstGoalSequence } from '@/lib/lilguyActions';
-import type { Website } from '@/components/SiteList/SiteList';
+import { Slider } from "@/components/UI/Slider/Slider";
 import Tag from '@/components/UI/Tag';
-import { Id } from '../../../convex/_generated/dataModel';
+import { useEmitEmotion } from '@/lib/emotionContext';
+import { triggerFirstGoalSequence } from '@/lib/lilguyActions';
 import { useMutation, useQuery } from 'convex/react';
+import { Check, Pencil, Plus, Save, Trash2 } from "lucide-react";
+import React, { useEffect, useRef, useState } from 'react';
 import { api } from '../../../convex/_generated/api';
-import { Plus, Pencil, Trash2, Check, Save } from "lucide-react";
+import { Id } from '../../../convex/_generated/dataModel';
 
 const PlusIcon = (props: any) => <Plus color="currentColor" {...props} />;
 
@@ -63,6 +62,8 @@ const Goals: React.FC<{ userId?: Id<"users">; }> = ({ userId }) => {
   const deleteGoal = useMutation(api.goals.deleteGoal);
   // Fetch goals from Convex
   const convexGoals = useQuery(api.goals.getGoals, userId ? { userId: userId } : "skip");
+  // Fetch site visits from Convex
+  const siteVisits = useQuery(api.sitevisits.getSiteVisits, userId ? { userId: userId } : "skip");
 
   // Helper: Emit emotion and update health
   const emitEmotionWithHealth = (type: string, intensity: number, source: string, delta: number) => {
@@ -96,30 +97,6 @@ const Goals: React.FC<{ userId?: Id<"users">; }> = ({ userId }) => {
   const [newGoalTitle, setNewGoalTitle] = useState("");
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editTitle, setEditTitle] = useState("");
-  const [websites, setWebsites] = useState<Website[]>([]);
-
-  // Sync websites from localStorage
-  useEffect(() => {
-    const syncWebsites = () => {
-      const stored = localStorage.getItem('websites');
-      if (stored) {
-        try {
-          setWebsites(JSON.parse(stored));
-        } catch {
-          setWebsites([]);
-        }
-      } else {
-        setWebsites([]);
-      }
-    };
-    syncWebsites();
-    window.addEventListener('storage', syncWebsites);
-    window.addEventListener('localStorageChanged', syncWebsites);
-    return () => {
-      window.removeEventListener('storage', syncWebsites);
-      window.removeEventListener('localStorageChanged', syncWebsites);
-    };
-  }, []);
 
   const updateLocalStorage = (updatedGoals: Goal[]) => {
     setLocalStorageItem("goals", updatedGoals);
@@ -310,10 +287,11 @@ const Goals: React.FC<{ userId?: Id<"users">; }> = ({ userId }) => {
           </div>
         ) : (
           goals.map((goal) => {
-            // Find all productive websites attributed to this goal
-            const attributedWebsites = websites.filter(
-              (w) => w.goalId === goal.id && w.category === 'productive'
-            );
+            // Find all productive site visits attributed to this goal
+            const attributedSiteVisits = siteVisits?.filter(
+              (site) => site.goalId === goal.convexId && site.classification === 'productive'
+            ) || [];
+            
             return (
               <SimpleItem
                 key={goal.id}
@@ -380,16 +358,16 @@ const Goals: React.FC<{ userId?: Id<"users">; }> = ({ userId }) => {
                   </div>
                 </div>
 
-                {/* Attributed websites as tags or prompt */}
-                {attributedWebsites.length > 0 ? (
+                {/* Attributed site visits as tags or prompt */}
+                {attributedSiteVisits.length > 0 ? (
                   <div className="flex flex-wrap gap-2 mt-2">
-                    {attributedWebsites.map(site => (
+                    {attributedSiteVisits.map(site => (
                       <Tag
-                        key={site.id}
-                        label={site.name}
+                        key={site._id}
+                        label={site.hostname}
                         asButton
                         onClick={() => {
-                          const el = document.getElementById(`website-${site.id}`);
+                          const el = document.getElementById(`website-${site._id}`);
                           if (el) {
                             el.scrollIntoView({ behavior: 'smooth', block: 'center' });
                             el.classList.add('ring-4', 'ring-pixel-accent');
