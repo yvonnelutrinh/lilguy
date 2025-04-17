@@ -193,7 +193,7 @@ const ProductivityMetrics: React.FC<ProductivityMetricsProps> = ({ className, us
                             <ClockIcon />
                             <div className="text-pixel-sm">TODAY</div>
                         </div>
-                        <div className="pixel-window-controls">
+                        <div className="pixel-window-controls pixel-window-controls-metrics">
                             <div className="pixel-window-button"></div>
                             <div className="pixel-window-button"></div>
                             <div className="pixel-window-button"></div>
@@ -222,7 +222,7 @@ const ProductivityMetrics: React.FC<ProductivityMetricsProps> = ({ className, us
                             <ChartIcon />
                             <div className="text-pixel-sm">WEEKLY AVERAGE</div>
                         </div>
-                        <div className="pixel-window-controls">
+                        <div className="pixel-window-controls pixel-window-controls-metrics">
                             <div className="pixel-window-button"></div>
                             <div className="pixel-window-button"></div>
                             <div className="pixel-window-button"></div>
@@ -251,7 +251,7 @@ const ProductivityMetrics: React.FC<ProductivityMetricsProps> = ({ className, us
                             <TrophyIcon />
                             <div className="text-pixel-sm">STREAK</div>
                         </div>
-                        <div className="pixel-window-controls">
+                        <div className="pixel-window-controls pixel-window-controls-metrics">
                             <div className="pixel-window-button"></div>
                             <div className="pixel-window-button"></div>
                             <div className="pixel-window-button"></div>

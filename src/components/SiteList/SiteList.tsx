@@ -376,14 +376,14 @@ const SiteList: React.FC<SiteListProps> = ({ userId }) => {
             placeholder="Enter website URL (e.g., example.com)"
             value={newWebsite}
             onChange={(e) => setNewWebsite(e.target.value)}
-            className="w-full"
+            className="w-full site-input"
           />
         </div>
         <Select
           value={category}
           onValueChange={(value) => setCategory(value as 'productive' | 'unproductive' | 'neutral')}
         >
-          <SelectTrigger className="w-[180px] bg-white">
+          <SelectTrigger className="w-[180px] bg-white site-category-select">
             <SelectValue placeholder="Category" />
           </SelectTrigger>
           <SelectContent className="bg-white">
@@ -507,7 +507,7 @@ const SiteList: React.FC<SiteListProps> = ({ userId }) => {
                       value as 'productive' | 'unproductive' | 'neutral'
                     )}
                   >
-                    <SelectTrigger className="w-[140px] h-8 text-xs bg-white">
+                    <SelectTrigger className="w-[140px] h-8 text-xs bg-white site-category-select">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="bg-white">

@@ -97,6 +97,25 @@
   background-color: white;
 }
 
+/* --- Productivity Metrics: Hide pixel window buttons on tablet only --- */
+@media (min-width: 600px) and (max-width: 1024px) {
+  .pixel-window-controls-metrics {
+    display: none !important;
+  }
+}
+
+@media (max-width: 599px), (min-width: 1025px) {
+  .pixel-window-controls-metrics {
+    display: flex;
+  }
+  .pixel-window-controls-metrics .pixel-window-button {
+    pointer-events: auto;
+    opacity: 1;
+    filter: none;
+    cursor: pointer;
+  }
+}
+
 /* Pixel Buttons */
 .pixel-button {
   display: inline-flex;
@@ -369,4 +388,46 @@
 
 .segment.filled {
   background-color: var(--progress-fill-good);
+}
+
+/* SiteList Responsive Customizations */
+
+/* Make website input wider and dropdown narrower on tablets */
+@media (min-width: 600px) and (max-width: 1024px) {
+  .site-input {
+    min-width: 260px;
+    max-width: 400px;
+    width: 100%;
+  }
+  .site-goal-select,
+  .site-category-select {
+    min-width: 110px;
+    max-width: 140px;
+    width: 100%;
+  }
+}
+
+/* On mobile, keep input and dropdowns full width */
+@media (max-width: 599px) {
+  .site-input,
+  .site-goal-select,
+  .site-category-select {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
+}
+
+/* On desktop, default to normal sizing */
+@media (min-width: 1025px) {
+  .site-input {
+    min-width: 340px;
+    max-width: 480px;
+    width: 100%;
+  }
+  .site-goal-select,
+  .site-category-select {
+    min-width: 120px;
+    max-width: 180px;
+  }
 }
