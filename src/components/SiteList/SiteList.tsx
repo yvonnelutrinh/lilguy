@@ -338,11 +338,19 @@ const SiteList: React.FC = ({ userId }: SiteListProps) => {
     return websites.filter(site => site.classification === filter);
   }, [websites, filter]);
 
-  const formatTime = (minutes: number) => {
-    const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    return `${hours}h ${mins}m`;
-  };
+
+  function formatTime(seconds: number) {
+    const totalMinutes = Math.ceil(seconds / 60);
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+
+    const parts = [];
+    // doesnt't show hours/minutes if 0
+    if (hours > 0) parts.push(`${hours}h`);
+    if (minutes > 0 || hours === 0) parts.push(`${minutes}m`);
+
+    return parts.join(" ");
+  }
 
 
   return (
