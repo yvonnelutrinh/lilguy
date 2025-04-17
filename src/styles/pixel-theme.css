@@ -748,3 +748,85 @@ div[class*="w-full border-2 border-black bg-white shadow"] > div {
     flex: 0 1 auto !important;
   }
 }
+
+/* Sign-in page styles */
+.cl-rootBox {
+  width: 100%;
+  font-family: 'Press Start 2P', system-ui, sans-serif;
+}
+
+.cl-card {
+  border: 2px solid #222 !important;
+  border-radius: 0 !important;
+  box-shadow: 4px 4px 0px 0px rgba(0,0,0,1) !important;
+  background-color: white !important;
+}
+
+.cl-headerTitle {
+  font-family: 'Press Start 2P', system-ui, sans-serif !important;
+  font-size: 1rem !important;
+}
+
+.cl-headerSubtitle {
+  font-family: system-ui, sans-serif !important;
+}
+
+.cl-button {
+  border-radius: 0 !important;
+  border: 2px solid #222 !important;
+  box-shadow: 2px 2px 0px 0px rgba(0,0,0,1) !important;
+  font-family: 'Press Start 2P', system-ui, sans-serif !important;
+  font-size: 0.75rem !important;
+  padding: 0.75rem 1rem !important;
+  transition: all 0.1s ease-in-out !important;
+}
+
+.cl-button:hover {
+  transform: translate(-1px, -1px) !important;
+  box-shadow: 3px 3px 0px 0px rgba(0,0,0,1) !important;
+}
+
+.cl-button:active {
+  transform: translate(1px, 1px) !important;
+  box-shadow: 1px 1px 0px 0px rgba(0,0,0,1) !important;
+}
+
+.cl-socialButtonsIconButton {
+  border-radius: 0 !important;
+  border: 2px solid #222 !important;
+  box-shadow: 2px 2px 0px 0px rgba(0,0,0,1) !important;
+}
+
+.cl-socialButtonsIconButton:hover {
+  transform: translate(-1px, -1px) !important;
+  box-shadow: 3px 3px 0px 0px rgba(0,0,0,1) !important;
+}
+
+.cl-socialButtonsIconButton:active {
+  transform: translate(1px, 1px) !important;
+  box-shadow: 1px 1px 0px 0px rgba(0,0,0,1) !important;
+}
+
+.cl-formFieldInput {
+  border-radius: 0 !important;
+  border: 2px solid #222 !important;
+  box-shadow: 2px 2px 0px 0px rgba(0,0,0,1) !important;
+  font-family: system-ui, sans-serif !important;
+}
+
+.cl-formFieldInput:focus {
+  border-color: var(--pixel-blue) !important;
+  box-shadow: 2px 2px 0px 0px rgba(0,0,0,1) !important;
+}
+
+/* Responsive adjustments for sign-in page */
+@media (max-width: 640px) {
+  .cl-card {
+    padding: 1rem !important;
+  }
+  
+  .cl-button {
+    font-size: 0.65rem !important;
+    padding: 0.5rem 0.75rem !important;
+  }
+}
