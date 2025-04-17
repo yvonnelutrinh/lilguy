@@ -20,6 +20,15 @@ export default defineSchema({
     sessions: v.number(),
     classification: v.string(),
     updatedAt: v.number(),
+    goalId: v.optional(v.string()),
+  }).index("by_user", ["userId"]),
+
+  sitevisit: defineTable({
+    userId: v.string(),
+    hostname: v.string(),
+    classification: v.string(),
+    duration: v.number(),
+    timeStamp: v.number()
   }).index("by_user", ["userId"]),
 
   goals: defineTable({
@@ -32,12 +41,14 @@ export default defineSchema({
   lilguys: defineTable({
     userId: v.string(),
     name: v.string(),
-    health: v.boolean(),
+    health: v.number(),
     progress: v.number(),
+    lastAnimation: v.string(),
   }).index("by_user", ["userId"]),
 
   messages: defineTable({
     userId: v.string(),
+    content: v.string(),
     type: v.string(),
     read: v.boolean(),
     source: v.string(),

@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import { query, mutation } from "./_generated/server";
 import { ConvexError } from "convex/values";
+import { api } from "./_generated/api";
 
 export const getSiteVisits = query({
   args: { userId: v.string()},
@@ -73,8 +74,16 @@ export const updateClassification = mutation({
     if (!sitevisit) {
       throw new ConvexError("Site visit not found");
     }
-
+    
+    // Update the classification in sitevisits table
     await ctx.db.patch(args.sitevisitId, {
+      classification: args.classification,
+    });
+
+    // Also update all associated sitevisits in the sitevisit table
+    await ctx.scheduler.runAfter(0, api.sitevisit.updateClassificationForAllSiteVisits, {
+      userId: sitevisit.userId,
+      hostname: sitevisit.hostname,
       classification: args.classification,
     });
 
@@ -95,5 +104,42 @@ export const removeSiteVisit = mutation({
 
     await ctx.db.delete(args.sitevisitId);
     return true;
+  },
+});
+
+export const updateGoalId = mutation({
+  args: {
+    sitevisitId: v.id("sitevisits"),
+    goalId: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const sitevisit = await ctx.db.get(args.sitevisitId);
+    
+    if (!sitevisit) {
+      throw new ConvexError("Site visit not found");
+    }
+
+    await ctx.db.patch(args.sitevisitId, {
+      goalId: args.goalId,
+      updatedAt: Date.now(),
+    });
+
+    return true;
+  },
+});
+
+export const getSiteVisit = query({
+  args: { 
+    userId: v.string(),
+    hostname: v.string()
+  },
+  handler: async (ctx, args) => {
+    const sitevisit = await ctx.db
+      .query("sitevisits")
+      .withIndex("by_user", (q) => q.eq("userId", args.userId))
+      .filter((q) => q.eq(q.field("hostname"), args.hostname))
+      .first();
+
+    return sitevisit;
   },
 });

@@ -31,7 +31,8 @@ interface Sitevisit {
   totalDuration: number;
   userId: string;
   visits: number;
-  goalId?: number;
+  goalId?: string;
+  updatedAt?: number;
 }
 // placeholder sites for simulation
 const initialWebsites: Sitevisit[] = [
@@ -44,6 +45,8 @@ const initialWebsites: Sitevisit[] = [
     userId: "clerk:user_2vhLHFwbblBU9J4M5qWkEKQKcFK", //fake user id
     visits: 1,
     _creationTime: 1744592598694.1118,
+    goalId: undefined,
+    updatedAt: 1744592598694.1118,
   },
   {
     _id: "j97d6vkyrtb7rrv5pspp9cy8tx7e0hkh" as Id<"sitevisits">,
@@ -54,6 +57,8 @@ const initialWebsites: Sitevisit[] = [
     userId: "clerk:user_2vhLHFwbblBU9J4M5qWkEKQKcFK", //fake use
     visits: 1,
     _creationTime: 1744592598694.1118,
+    goalId: undefined,
+    updatedAt: 1744592598694.1118,
   },
   {
     _id: "j97d6vkyrtb7rrv5pspp9cy8tx7e0hki" as Id<"sitevisits">,
@@ -64,6 +69,8 @@ const initialWebsites: Sitevisit[] = [
     userId: "clerk:user_2vhLHFwbblBU9J4M5qWkEKQKcFK", //fake use
     visits: 1,
     _creationTime: 1744592598694.1118,
+    goalId: undefined,
+    updatedAt: 1744592598694.1118,
   },
   {
     _id: "j97d6vkyrtb7rrv5pspp9cy8tx7e0hkj" as Id<"sitevisits">,
@@ -74,6 +81,8 @@ const initialWebsites: Sitevisit[] = [
     userId: "clerk:user_2vhLHFwbblBU9J4M5qWkEKQKcFK", //fake use
     visits: 1,
     _creationTime: 1744592598694.1118,
+    goalId: undefined,
+    updatedAt: 1744592598694.1118,
   },
 ];
 
@@ -82,7 +91,7 @@ interface Website {
   name: string;
   category: 'productive' | 'unproductive' | 'neutral';
   timeSpent: number;
-  goalId?: number;
+  goalId?: string;
 }
 
 // placeholder sites for simulation (not for initial load)
@@ -120,11 +129,11 @@ export const unproductiveWebsites: Website[] = [
 export type { Website };
 
 interface SiteListProps {
-  userId: Id<"users"> | undefined;
+  userId?: Id<"users">;
 }
 
 
-const SiteList: React.FC = ({ userId }: SiteListProps) => {
+const SiteList: React.FC<SiteListProps> = ({ userId }) => {
   const [websites, setWebsites] = useState<Sitevisit[]>(initialWebsites);
   const [newWebsite, setNewWebsite] = useState('');
   const [category, setCategory] = useState<'productive' | 'unproductive' | 'neutral'>('neutral');
@@ -137,6 +146,7 @@ const SiteList: React.FC = ({ userId }: SiteListProps) => {
   const addSitevisit = useMutation(api.sitevisits.addSiteVisit);
   const removeSiteVisit = useMutation(api.sitevisits.removeSiteVisit);
   const getSiteVisits = useQuery(api.sitevisits.getSiteVisits, userId ? { userId: userId } : "skip");
+  const updateGoalId = useMutation(api.sitevisits.updateGoalId);
 
 
   useEffect(() => {
@@ -149,6 +159,7 @@ const SiteList: React.FC = ({ userId }: SiteListProps) => {
   const [goals, setGoals] = useState<{ id: number; title: string }[]>(() => {
     if (typeof window !== 'undefined') {
       try {
+        //TODO: get goals from convex backend
         const raw = localStorage.getItem('goals');
         if (raw) {
           return JSON.parse(raw).map((g: any) => ({ id: g.id, title: g.title }));
@@ -162,6 +173,7 @@ const SiteList: React.FC = ({ userId }: SiteListProps) => {
   function getGoalsFromStorage(): { id: number; title: string }[] {
     if (typeof window !== 'undefined') {
       try {
+        //TODO: get goals from convex backend
         const raw = localStorage.getItem('goals');
         if (raw) {
           return JSON.parse(raw).map((g: any) => ({ id: g.id, title: g.title }));
@@ -183,16 +195,16 @@ const SiteList: React.FC = ({ userId }: SiteListProps) => {
   }, []);
 
   // Attribution handler
-  const handleGoalAttribution = (websiteId: Id<"sitevisits">, goalId: Id<"goals"> | null) => {
-    // TODO sync GOAL in backend
-    // 
-    // setWebsites(ws => {
-    //   const updated = ws.map(site =>
-    //     site.id === websiteId ? { ...site, goalId: goalId ?? undefined } : site
-    //   );
-    //   localStorage.setItem('websites', JSON.stringify(updated));
-    //   return updated;
-    // });
+  const handleGoalAttribution = async (websiteId: Id<"sitevisits">, goalId: string | null) => {
+    try {
+      await updateGoalId({
+        sitevisitId: websiteId,
+        goalId: goalId || undefined
+      });
+      // The websites state will be updated automatically when getSiteVisits refetches
+    } catch (err) {
+      console.error('Error updating goal attribution:', err);
+    }
   };
 
   // --- Ensure all modifications to websites are persisted ---
@@ -336,11 +348,19 @@ const SiteList: React.FC = ({ userId }: SiteListProps) => {
     return websites.filter(site => site.classification === filter);
   }, [websites, filter]);
 
-  const formatTime = (minutes: number) => {
-    const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    return `${hours}h ${mins}m`;
-  };
+
+  function formatTime(seconds: number) {
+    const totalMinutes = Math.ceil(seconds / 60);
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+
+    const parts = [];
+    // doesnt't show hours/minutes if 0
+    if (hours > 0) parts.push(`${hours}h`);
+    if (minutes > 0 || hours === 0) parts.push(`${minutes}m`);
+
+    return parts.join(" ");
+  }
 
 
   return (
@@ -463,7 +483,7 @@ const SiteList: React.FC = ({ userId }: SiteListProps) => {
                       <span className="text-xs font-bold mr-1">Goal:</span>
                       <Select
                         value={website.goalId ? String(website.goalId) : undefined}
-                        onValueChange={value => handleGoalAttribution(website._id, value === 'none' ? null : Number(value))}
+                        onValueChange={value => handleGoalAttribution(website._id, value === 'none' ? null : String(value))}
                         disabled={goals.length === 0}
                       >
                         <SelectTrigger className="w-[140px] h-8 text-xs bg-white site-goal-select">
