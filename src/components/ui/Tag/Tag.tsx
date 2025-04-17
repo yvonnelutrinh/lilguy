@@ -1,5 +1,5 @@
 import React from 'react';
-import EditIcon from './EditIcon';
+import { Pencil } from "lucide-react";
 
 interface TagProps {
   label: string;
@@ -34,7 +34,7 @@ const Tag: React.FC<TagProps> = ({ label, onClick, icon, className = '', asButto
             if (onEditClick) onEditClick();
           }}
         >
-          <EditIcon className="w-3 h-3" />
+          <Pencil className="w-3 h-3" />
         </span>
       )}
     </TagEl>

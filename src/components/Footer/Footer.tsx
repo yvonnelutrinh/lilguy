@@ -6,16 +6,6 @@ interface FooterProps {
   className?: string;
 }
 
-// Fisher-Yates shuffle
-function shuffleArray<T>(array: T[]): T[] {
-  const arr = [...array];
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  return arr;
-}
-
 const contributorsList = [
   { name: 'Ademide Akinsefunmi', url: 'https://github.com/AAdemide' },
   { name: 'Filip Fabiszak', url: 'https://github.com/filipfabiszak' },
@@ -30,12 +20,16 @@ const Footer: React.FC<FooterProps> = ({ className = '' }) => {
   const footerRef = useRef<HTMLDivElement>(null);
   const fadeTimeout = useRef<NodeJS.Timeout | null>(null);
 
-  // Shuffle contributors every time the footer becomes visible
   useEffect(() => {
-    if (visible) {
-      setShuffledContributors(shuffleArray(contributorsList));
-    }
-  }, [visible]);
+    setShuffledContributors(() => {
+      const arr = [...contributorsList];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    });
+  }, []); // Only shuffle once on mount
 
   // Show when user scrolls to bottom
   useEffect(() => {
@@ -81,7 +75,7 @@ const Footer: React.FC<FooterProps> = ({ className = '' }) => {
 
   // Show on hover and cancel fade
   const handleMouseEnter = () => {
-    setVisible(true);
+    setVisible(true); // Always show on hover, regardless of scroll position
     setFade(false);
     if (fadeTimeout.current) clearTimeout(fadeTimeout.current);
     // Restart fade timer when hovered again after fade
@@ -104,6 +98,25 @@ const Footer: React.FC<FooterProps> = ({ className = '' }) => {
       }, 5000);
     }
   };
+
+  // Ensure mouseenter always brings it back, even if already faded
+  useEffect(() => {
+    const node = footerRef.current;
+    if (!node) return;
+    const handleAreaMouseMove = (e: MouseEvent) => {
+      // Only if faded
+      if (fade) {
+        setVisible(true);
+        setFade(false);
+        if (fadeTimeout.current) clearTimeout(fadeTimeout.current);
+        fadeTimeout.current = setTimeout(() => {
+          setFade(true);
+        }, 5000);
+      }
+    };
+    node.addEventListener('mousemove', handleAreaMouseMove);
+    return () => node.removeEventListener('mousemove', handleAreaMouseMove);
+  }, [fade]);
 
   return (
     <div

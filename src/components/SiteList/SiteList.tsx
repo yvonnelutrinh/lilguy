@@ -4,23 +4,14 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { SimpleContainer, SimpleItem } from '@/components/UI/SimpleContainer/SimpleContainer';
 import { useHealth } from "@/context/HealthContext";
 import { useMutation, useQuery } from "convex/react";
-import { Trash } from "lucide-react";
+import { Plus, Pencil, Trash2 } from "lucide-react";
 import React, { useEffect, useMemo, useState } from 'react';
 import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
 import { Button } from "../ui/Button/Button";
 
 // PlusIcon component from Goals.tsx
-const PlusIcon = () => (
-  <div className="w-5 h-5 flex items-center justify-center">
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="pixelated">
-      <rect x="8" y="5" width="4" height="2" fill="currentColor" />
-      <rect x="8" y="13" width="4" height="2" fill="currentColor" />
-      <rect x="5" y="8" width="2" height="4" fill="currentColor" />
-      <rect x="13" y="8" width="2" height="4" fill="currentColor" />
-    </svg>
-  </div>
-);
+const PlusIcon = (props: any) => <Plus color="currentColor" {...props} />;
 
 interface Sitevisit {
   _id: Id<"sitevisits">;
@@ -449,8 +440,7 @@ const SiteList: React.FC<SiteListProps> = ({ userId }) => {
             aria-label="Add website"
             className="pixel-button"
           >
-            <PlusIcon />
-            <span className="ml-1 text-pixel-sm">ADD</span>
+            <Plus color="currentColor" />
           </Button>
         </div>
       </div>
@@ -576,7 +566,7 @@ const SiteList: React.FC<SiteListProps> = ({ userId }) => {
                     className="h-8 w-8 pixel-button pixel-button-danger"
                     onClick={() => handleRemoveWebsite(website._id)}
                   >
-                    <Trash className="h-4 w-4" />
+                    <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>
               </div>

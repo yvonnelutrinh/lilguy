@@ -12,7 +12,7 @@ const notifications = [
 
 // Pixel art icon components
 const BellIcon = () => (
-  <div className="w-6 h-6 relative flex items-center justify-center p-1">
+  <div className="w-8 h-8 relative flex items-center justify-center p-1">
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="pixelated">
       <rect x="7" y="2" width="6" height="2" fill="currentColor" />
       <rect x="5" y="4" width="2" height="2" fill="currentColor" />
@@ -67,7 +67,7 @@ const Header: React.FC = () => {
                         <Button
                             variant="ghost"
                             size="icon"
-                            className="relative pixel-button pixel-button-secondary p-1"
+                            className="relative pixel-button pixel-button-secondary p-1 flex items-center justify-center h-8 w-8"
                         >
                             <BellIcon />
                             {notifications.some(n => !n.isRead) && (
