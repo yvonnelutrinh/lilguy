@@ -34,7 +34,6 @@ export type LilGuyStage = "normal" | "egg" | "angel" | "devil" | "hatchling";
 
 interface LilGuyProps {
   userId?: Id<"users">;
-  showControls?: boolean;
   showHealthBar?: boolean;
   size?: "normal" | "widget";
   className?: string;
@@ -80,7 +79,6 @@ function getAnimationStates(stage: LilGuyStage) {
 
 function LilGuyCanvas({
   userId,
-  showControls = false,
   showHealthBar = false,
   size = "normal",
   className = "",
@@ -222,48 +220,6 @@ function LilGuyCanvas({
     }
   });
 
-  // --- Listen for health and color changes via custom/localStorage events ---
-  // useEffect(() => {
-  //   function handleCustomStorageChange(e: any) {
-  //     const { key, value } = e.detail || {};
-  //     if (key === "lilGuyColor") {
-  //       setLilGuyColor(value as LilGuyColor);
-  //     } else if (key === "lilGuyStage") {
-  //       setLilGuyStage(value as LilGuyStage);
-  //     } else if (key === "lilGuyName") {
-  //       setLilGuyName(value);
-  //     }
-  //   }
-
-  //   function handleStorageChange(e: StorageEvent) {
-  //     if (e.key === "lilGuyColor") {
-  //       setLilGuyColor((e.newValue || "green") as LilGuyColor);
-  //     } else if (e.key === "lilGuyStage") {
-  //       setLilGuyStage((e.newValue || "normal") as LilGuyStage);
-  //     } else if (e.key === "lilGuyName") {
-  //       setLilGuyName(e.newValue || "LilGuy");
-  //     }
-  //   }
-
-  //   window.addEventListener("localStorageChanged", handleCustomStorageChange as any);
-  //   window.addEventListener("storage", handleStorageChange);
-  //   return () => {
-  //     window.removeEventListener("localStorageChanged", handleCustomStorageChange as any);
-  //     window.removeEventListener("storage", handleStorageChange);
-  //   };
-  // }, []);
-
-  // useEffect(() => {
-  //   setLocalStorageItem('lilGuyColor', lilGuyColor);
-  // }, [lilGuyColor]);
-  // useEffect(() => {
-  //   setLocalStorageItem('lilGuyStage', lilGuyStage);
-  // }, [lilGuyStage]);
-
-  // useEffect(() => {
-  //   if (controlledStage) setLilGuyStage(controlledStage);
-  // }, [controlledStage]);
-
   useEffect(() => {
     if (controlledAnimation) setAnimation(controlledAnimation);
   }, [controlledAnimation]);
@@ -299,11 +255,6 @@ function LilGuyCanvas({
           )}
         </div>
       </div>
-      {showControls && size === "normal" && (
-        <div className="w-full">
-          <LilGuyInteractor />
-        </div>
-      )}
     </div>
   );
 }
@@ -413,7 +364,7 @@ const getInitialLilGuyState = () => {
 };
 
 // --- Main LilGuy Component ---
-function LilGuy({ showControls = true, size = "normal", className = "", initialAnimation = "idle", userId }: LilGuyProps) {
+function LilGuy({ size = "normal", className = "", initialAnimation = "idle", userId }: LilGuyProps) {
   const lilguy = useQuery(api.lilguys.get, userId ? { userId } : "skip");
 
   // Convex mutations
@@ -623,7 +574,7 @@ function LilGuy({ showControls = true, size = "normal", className = "", initialA
   }, [lilGuyStage, evolution, userId]);
 
   // --- Hide Controls in Egg State ---
-  const controlsVisible = showControls && lilGuyStage !== 'egg';
+  const controlsVisible = lilGuyStage !== 'egg';
 
   // Always show health bar in the canvas
   if (!lilGuyColor) {
@@ -638,7 +589,7 @@ function LilGuy({ showControls = true, size = "normal", className = "", initialA
     <div>
       <LilGuyCanvas
         userId={userId}
-        {...{ showControls: false, showHealthBar: true, size, className, initialAnimation }}
+        {...{ showHealthBar: true, size, className, initialAnimation }}
         stage={hatching ? "egg" : lilGuyStage}
         animation={hatching ? "hatch" : animation}
         color={lilGuyColor}
@@ -685,19 +636,6 @@ function LilGuy({ showControls = true, size = "normal", className = "", initialA
           </button>
         </div>
       )}
-    </div>
-  );
-}
-
-
-// LilGuy for web app
-function LilGuyWebApp() {
-  return (
-    <div className="rounded">
-      <LilGuy
-        showControls
-        showHealthBar
-      />
     </div>
   );
 }
