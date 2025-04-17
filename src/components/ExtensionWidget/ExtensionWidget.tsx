@@ -1,23 +1,23 @@
-import { Button } from '@/components/ui/Button/Button';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { classNameMerge } from '@/lib/utils';
-import { Bell, Clock, X, Settings } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { HealthBar } from '../HealthBar/HealthBar';
 import { WidgetLilGuy } from '../LilGuy/LilGuy';
-import PixelWindow from '../UI/PixelWindow';
+import PixelWindow from '../ui/PixelWindow';
 
 // Icons with pixel art style
 const SettingsIcon = () => (
   <div className="w-4 h-4 flex items-center justify-center">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" className="pixelated">
-      <rect x="7" y="2" width="2" height="2" fill="currentColor" />
-      <rect x="7" y="12" width="2" height="2" fill="currentColor" />
-      <rect x="2" y="7" width="2" height="2" fill="currentColor" />
-      <rect x="12" y="7" width="2" height="2" fill="currentColor" />
-      <rect x="5" y="5" width="2" height="2" fill="currentColor" />
-      <rect x="9" y="9" width="2" height="2" fill="currentColor" />
-      <rect x="5" y="9" width="2" height="2" fill="currentColor" />
-      <rect x="9" y="5" width="2" height="2" fill="currentColor" />
+      <rect x="7" y="2" width="2" height="2" fill="black" />
+      <rect x="7" y="12" width="2" height="2" fill="black" />
+      <rect x="2" y="7" width="2" height="2" fill="black" />
+      <rect x="12" y="7" width="2" height="2" fill="black" />
+      <rect x="5" y="5" width="2" height="2" fill="black" />
+      <rect x="9" y="9" width="2" height="2" fill="black" />
+      <rect x="5" y="9" width="2" height="2" fill="black" />
+      <rect x="9" y="5" width="2" height="2" fill="black" />
     </svg>
   </div>
 );
@@ -106,7 +106,7 @@ const ExtensionWidget: React.FC<WidgetProps> = ({ onClose, onExpand, activeTab }
     if (!isLocalhost) return;
 
     // Track seconds spent on site in localStorage
-    let timer: NodeJS.Timeout;
+    
     let seconds = parseInt(localStorage.getItem('productive_seconds') || '0', 10);
     setLocalhostSeconds(seconds);
 
@@ -123,13 +123,13 @@ const ExtensionWidget: React.FC<WidgetProps> = ({ onClose, onExpand, activeTab }
       console.log('[WebsiteTracker] +1 health for 30s on localhost. New health:', newHealth);
     }
 
-    timer = setInterval(() => {
+    const timer=setInterval(() => {
       seconds += 1;
       saveSeconds(seconds);
       if (seconds % 30 === 0) { // 30 seconds for demo
         incrementHealth();
       }
-    }, 1000);
+    }, 1000)
 
     return () => clearInterval(timer);
   }, []);
@@ -229,7 +229,7 @@ const ExtensionWidget: React.FC<WidgetProps> = ({ onClose, onExpand, activeTab }
 
   return (
     <PixelWindow
-      title={`${name} - LVL 2`}
+      title={`${name}`}
       className="w-72"
       showControls={true}
       onClose={onClose}
@@ -245,7 +245,7 @@ const ExtensionWidget: React.FC<WidgetProps> = ({ onClose, onExpand, activeTab }
           </button>
         </div>
         <button
-          className="pixel-button contrast pixel-button-sm px-1 py-1 bg-pixel-teal"
+          className="pixel-button pink pixel-button-sm px-1 py-1 border-2 border-black"
           onClick={onExpand}
         >
           <SettingsIcon />
@@ -256,7 +256,7 @@ const ExtensionWidget: React.FC<WidgetProps> = ({ onClose, onExpand, activeTab }
       <div className="bg-white p-3 flex items-center gap-3 border-b border-dashed border-gray-300">
         <div
           className={classNameMerge(
-            "w-12 h-12 flex items-center justify-center rounded-lg pixelated border-2 border-black",
+            "w-12 h-12 flex items-center justify-center rounded-lg pixelated border-black",
             mood === "happy"
               ? "bg-pixel-primary animate-bounce-slight"
               : mood === "sad"
@@ -324,6 +324,7 @@ const ExtensionWidget: React.FC<WidgetProps> = ({ onClose, onExpand, activeTab }
         </div>
 
         {/* Reminder */}
+        
         <div className="bg-pixel-primary bg-opacity-10 p-2 border-2 border-black flex items-center gap-2">
           <BellIcon />
           <div className="flex-1">
@@ -331,19 +332,20 @@ const ExtensionWidget: React.FC<WidgetProps> = ({ onClose, onExpand, activeTab }
             <div className="text-xs font-medium">In 25 minutes</div>
           </div>
         </div>
-      </div>
+       
 
-      {/* Website Tracker UI */}
-      <div className="bg-white p-3 border-t border-dashed border-gray-300">
-        <div className="text-xs font-bold mb-2">Website Tracker</div>
-        <div className="flex flex-col gap-2">
-          {websiteTrackers.map((site) => (
-            <div key={site.url} className={`flex items-center gap-2 text-xs ${site.type === 'productive' ? 'text-green-700' : site.type === 'unproductive' ? 'text-red-700' : 'text-gray-700'}`}>
-              <span className="font-mono w-24 truncate">{site.url}</span>
-              <span className="flex-1">{site.label}</span>
-              <span>{Math.floor(site.seconds / 60)}:{(site.seconds % 60).toString().padStart(2, '0')}</span>
-            </div>
-          ))}
+        {/* Website Tracker ui */}
+        <div className="bg-white p-3 border-t border-dashed border-gray-300">
+          <div className="text-xs font-bold mb-2">Website Tracker</div>
+          <div className="flex flex-col gap-2">
+            {websiteTrackers.map((site) => (
+              <div key={site.url} className={`flex items-center gap-2 text-xs ${site.type === 'productive' ? 'text-green-700' : site.type === 'unproductive' ? 'text-red-700' : 'text-gray-700'}`}>
+                <span className="font-mono w-24 truncate">{site.url}</span>
+                <span className="flex-1">{site.label}</span>
+                <span>{Math.floor(site.seconds / 60)}:{(site.seconds % 60).toString().padStart(2, '0')}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </PixelWindow>

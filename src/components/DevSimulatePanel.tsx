@@ -1,3 +1,6 @@
+"use client";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 import React, { useRef } from "react";
 import simulationData from "../data/simulationData.json";
 import { useProductivityData } from "../context/ProductivityDataContext";
@@ -98,14 +101,14 @@ const DevSimulatePanel: React.FC = () => {
         setData(JSON.parse(stored));
       }
     }
-    if (lilGuyBackupRef.current) {
-      Object.entries(lilGuyBackupRef.current).forEach(([k, v]) => {
-        if (v !== null) localStorage.setItem(k, v);
-        else localStorage.removeItem(k);
-      });
-      window.dispatchEvent(new Event('storage'));
-      lilGuyBackupRef.current = null;
-    }
+    // if (lilGuyBackupRef.current) {
+    //   Object.entries(lilGuyBackupRef.current).forEach(([k, v]) => {
+    //     if (v !== null) localStorage.setItem(k, v);
+    //     else localStorage.removeItem(k);
+    //   });
+    //   window.dispatchEvent(new Event('storage'));
+    //   lilGuyBackupRef.current = null;
+    // }
   };
 
   if (process.env.NODE_ENV !== "development") return null;

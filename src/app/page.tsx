@@ -7,21 +7,20 @@ import type { LilGuyColor } from "@/components/LilGuy/LilGuy";
 import { LilGuy } from "@/components/LilGuy/LilGuy";
 import ProductivityMetrics from "@/components/ProductivityMetrics/ProductivityMetrics";
 import SiteList from "@/components/SiteList/SiteList";
-import TestWindow from "@/components/TestWindow/TestWindow";
 import PixelWindow from "@/components/ui/PixelWindow";
+import Footer from "@/components/Footer/Footer"; // Correct import path for Footer
 import { HealthProvider } from "@/context/HealthContext";
 import { useUser } from "@clerk/nextjs";
 import { useConvexAuth, useMutation, useQuery } from "convex/react";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { api } from "../../convex/_generated/api";
 
-export const generateLocalTokenIdentifier = () => {
+const generateLocalTokenIdentifier = () => {
   if (typeof window === 'undefined') return 'local:unknown';
   const userAgent = window.navigator.userAgent;
-  // const acceptLanguage = window.navigator.language; // different for front/backend
+
   const identifierParts = [
     userAgent,
-    // acceptLanguage,
   ].filter(Boolean);
   return `local:${identifierParts.join('-')}`;
 };
@@ -82,21 +81,6 @@ export default function Home() {
     }
   }, [isLoaded, user, convexUser, createUser, localIdentifier]);
 
-  const updateCustomColor = useMutation(api.users.updateCustomColor);
-  const handleColorChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const newColor = e.target.value;
-    setCharacterColor(newColor as LilGuyColor);
-
-    if (user) {
-      updateCustomColor({
-        tokenIdentifier: `clerk:${user.id}`,
-        customColor: newColor,
-      }).catch(err => console.error("Error updating color:", err));
-    } else {
-      // Save color preference to localStorage when no user is logged in
-      localStorage.setItem('customColor', newColor);
-    }
-  }, [user, updateCustomColor]);
 
   if (isLoading) {
     return (
@@ -108,106 +92,109 @@ export default function Home() {
 
   return (
     <>
-      {!isAuthenticated ? (
-        // TODO remove this ugly poo
-        <div className="text-center py-16 bg-gray-50 rounded-lg">
-          <h2 className="text-2xl font-bold mb-4">Welcome to Lilguy</h2>
-          <p className="mb-6 text-gray-600 max-w-lg mx-auto">
-            Track your habits, and grow your thoughts! Sign in to get started.
-          </p>
-        </div>
-      ) : (<><h2 className="text-xl font-semibold mb-4" style={{ color: characterColor }}>
-        Welcome, {user?.fullName || user?.firstName || convexUser?.name || "User"}
-      </h2>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Customize Your Color
-        </label>
-        <input
-          type="color"
-          value={characterColor}
-          onChange={handleColorChange}
-          className="p-1 border rounded h-10 w-20 cursor-pointer"
-        /></>
-      )}
+      {isAuthenticated ? (
+        <>
+          <h2 className="text-xl font-semibold mb-4" style={{ color: characterColor }}>
+            Welcome, {user?.fullName || user?.firstName || convexUser?.name || "User"}
+          </h2>
+          {/*
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Customize Your Color
+          </label>
+          <input
+            type="color"
+            value={characterColor}
+            onChange={handleColorChange}
+            className="p-1 border rounded h-10 w-20 cursor-pointer"
+          />
+          */}
+          <div className="text-center py-8">
+            <p className="text-lg text-pixel-green font-bold">
+              Stay productive and help LilGuy reach their next evolution!
+            </p>
+          </div>
+        </>
+      ) : null}
       <HealthProvider>
         <div className="min-h-screen flex flex-col bg-pixel-pattern">
-          <Header />
+          <Header userId={convexUser?._id} />
           <main className="flex-1 container max-w-[100%] px-4 py-6">
-            <div className="flex flex-col md:flex-row gap-6">
-
+            <div className="flex flex-col lg:flex-row gap-6">
               {/* Left sidebar with LilGuy */}
-              <div className="md:w-[40%] lg:sticky top-6 h-[min-content]">
+              <div className="lg:w-[40%] lg:sticky top-6 h-[min-content]">
                 <PixelWindow
                   title="LILGUY"
                   className="mb-4"
                 >
-                  <LilGuy />
+                  <LilGuy userId={convexUser?._id} />
                 </PixelWindow>
 
                 {/* LilGuy States Toggling - TEMP FOR TESTING ONLY */}
-                <PixelWindow
+                {/* <PixelWindow
                   title="TEMP WINDOW"
                   className="mb-4"
                   contentClassName="p-2"
                 >
-                  <TestWindow />
+                  <TestWindow userId={convexUser?._id} />
                 </PixelWindow>
               </div>
 
               {/* Dashboard content */}
-              <div className="flex-1">
-                <PixelWindow
-                  title="DASHBOARD"
-                  className="mb-4"
-                  contentClassName="p-0"
-                >
-                  <div className="pixel-tabs-list">
-                    <button
-                      data-tab="dashboard"
-                      className={`pixel-tab ${activeTab === 'dashboard' ? 'active' : ''}`}
-                      data-state={activeTab === 'dashboard' ? 'active' : ''}
-                      onClick={() => setActiveTab('dashboard')}
-                    >
-                      Dashboard
-                    </button>
-                    <button
-                      data-tab="websites"
-                      className={`pixel-tab ${activeTab === 'websites' ? 'active' : ''}`}
-                      data-state={activeTab === 'websites' ? 'active' : ''}
-                      onClick={() => setActiveTab('websites')}
-                    >
-                      Websites
-                    </button>
-                    <button
-                      className={`pixel-tab ${activeTab === 'goals' ? 'active' : ''}`}
-                      data-state={activeTab === 'goals' ? 'active' : ''}
-                      onClick={() => setActiveTab('goals')}
-                    >
-                      Goals
-                    </button>
-                    <button
-                      className={`pixel-tab ${activeTab === 'widget' ? 'active' : ''}`}
-                      data-state={activeTab === 'widget' ? 'active' : ''}
-                      onClick={() => setActiveTab('widget')}
-                    >
-                      Widget
-                    </button>
-                  </div>
+                <div className="flex-1">
+                  <PixelWindow
+                    title="DASHBOARD"
+                    className="mb-4"
+                    contentClassName="p-0"
+                  >
+                    <div className="pixel-tabs-list">
+                      <button
+                        data-tab="dashboard"
+                        className={`pixel-tab ${activeTab === 'dashboard' ? 'active' : ''}`}
+                        data-state={activeTab === 'dashboard' ? 'active' : ''}
+                        onClick={() => setActiveTab('dashboard')}
+                      >
+                        Dashboard
+                      </button>
+                      <button
+                        data-tab="websites"
+                        className={`pixel-tab ${activeTab === 'websites' ? 'active' : ''}`}
+                        data-state={activeTab === 'websites' ? 'active' : ''}
+                        onClick={() => setActiveTab('websites')}
+                      >
+                        Websites
+                      </button>
+                      <button
+                        className={`pixel-tab ${activeTab === 'goals' ? 'active' : ''}`}
+                        data-state={activeTab === 'goals' ? 'active' : ''}
+                        onClick={() => setActiveTab('goals')}
+                      >
+                        Goals
+                      </button>
+                      <button
+                        className={`pixel-tab ${activeTab === 'widget' ? 'active' : ''}`}
+                        data-state={activeTab === 'widget' ? 'active' : ''}
+                        onClick={() => setActiveTab('widget')}
+                      >
+                        Widget
+                      </button>
+                    </div>
 
-                  <div className="p-4">
-                    {activeTab === 'dashboard' && <ProductivityMetrics userId={convexUser?._id} />}
-                    {activeTab === 'websites' && <SiteList userId={convexUser?._id} />}
-                    {activeTab === 'goals' && <Goals />}
-                    {activeTab === 'widget' && (
-                      <div className="flex justify-center py-6">
-                        <ExtensionWidget activeTab={activeTab} />
-                      </div>
-                    )}
-                  </div>
-                </PixelWindow>
+                    <div className="p-4">
+                      {activeTab === 'dashboard' && <ProductivityMetrics userId={convexUser?._id} />}
+                      {activeTab === 'websites' && <SiteList userId={convexUser?._id} />}
+                      {activeTab === 'goals' && <Goals userId={convexUser?._id} />}
+                      {activeTab === 'widget' && (
+                        <div className="widget-container" style={{ maxWidth: "300px", width: "100%", margin: "0 auto" }}>
+                          <ExtensionWidget activeTab={activeTab} />
+                        </div>
+                      )}
+                    </div>
+                  </PixelWindow>
+                </div>
               </div>
             </div>
           </main>
+          <Footer />
         </div>
       </HealthProvider>
     </>

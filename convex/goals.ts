@@ -27,6 +27,7 @@ export const createGoal = mutation({
       title: args.title,
       completed: args.completed || false,
       progress: args.progress || 0,
+      updatedAt: Date.now(),
     });
 
     return goalId;

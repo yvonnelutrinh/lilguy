@@ -27,8 +27,9 @@ export async function middleware(request: NextRequest) {
 
   // Get identifiable information from request headers
   const userAgent = request.headers.get('user-agent') || '';
-  const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || ''; // cant get IP
+  const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || ''; // cant get IP  
   // const acceptLanguage = request.headers.get('accept-language') || ''; // different for front/backend
+
   
   // Create a unique identifier using header information
   const identifierParts = [
@@ -57,7 +58,7 @@ export async function middleware(request: NextRequest) {
       const newUserId = await convex.mutation(api.users.createUser, {
         name: "Anonymous User",
         email: "",
-        customColor: "#3B82F6",
+        customColor: "black",
         tokenIdentifier: localIdentifier,
         localIdentifier: localIdentifier,
         lastSeenIp: ip,

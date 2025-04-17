@@ -14,12 +14,10 @@ export const getUser = query({
     }
 
     if (args.localIdentifier) {
-      // note: if someone logs out, we still wanna track but under a different user
       const user = await ctx.db
         .query("users")
         .filter((q) => q.eq(q.field("localIdentifier"), args.localIdentifier!))
-        .order("desc")
-        .first();
+        .unique();
       
       return user;
     }
@@ -104,12 +102,10 @@ export const updateUser = mutation({
     }
     
     if (!user && args.localIdentifier) {
-      // note: if someone logs out, we still wanna track but under a different user
       user = await ctx.db
         .query("users")
         .filter((q) => q.eq(q.field("localIdentifier"), args.localIdentifier!))
-        .order("desc")
-        .first();
+        .unique();
     }
 
     if (!user) {

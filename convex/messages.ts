@@ -1,84 +1,195 @@
 import { v } from "convex/values";
-import { query, mutation } from "./_generated/server";
-import { ConvexError } from "convex/values";
+import { mutation, query } from "./_generated/server";
+import { Doc, Id } from "./_generated/dataModel";
 
-export const getMessages = query({
-    args: { userId: v.string(), read: v.optional(v.boolean()) },
-    handler: async (ctx, args) => {
-        const messages = await ctx.db
-            .query("messages")
-            .withIndex("by_user", (q) => q.eq("userId", args.userId))
-            .collect();
-
-        // filters only the messages that are read or unread
-        if (args.read !== undefined) {
-            return messages.filter((message) => message.read === args.read);
-        }
-
-        return messages;
-    },
+// Query to get all messages for a specific user
+export const getMessagesByUser = query({
+  args: { userId: v.string() },
+  handler: async (ctx, args) => {
+    const messages = await ctx.db
+      .query("messages")
+      .withIndex("by_user", (q) => q.eq("userId", args.userId))
+      .order("desc")
+      .collect();
+    
+    return messages;
+  },
 });
 
+// Query to get unread messages for a specific user
+export const getUnreadMessagesByUser = query({
+  args: { userId: v.string() },
+  handler: async (ctx, args) => {
+    const messages = await ctx.db
+      .query("messages")
+      .withIndex("by_user", (q) => q.eq("userId", args.userId))
+      .filter((q) => q.eq(q.field("read"), false))
+      .order("desc")
+      .collect();
+
+    return messages;
+  },
+});
+
+export const getLastUnreadMessageByUser = query({
+  args: { userId: v.string() },
+  handler: async (ctx, args) => {
+    const messages = await ctx.db
+      .query("messages")
+      .withIndex("by_user", (q) => q.eq("userId", args.userId))
+      .filter((q) => q.eq(q.field("read"), false))
+      .order("desc")
+      .take(1);
+
+    return messages[0];
+  },
+});
+
+// Query to get messages by type for a specific user
+export const getMessagesByType = query({
+  args: { userId: v.string(), type: v.string() },
+  handler: async (ctx, args) => {
+    const messages = await ctx.db
+      .query("messages")
+      .withIndex("by_user", (q) => q.eq("userId", args.userId))
+      .filter((q) => q.eq(q.field("type"), args.type))
+      .order("desc")
+      .collect();
+    
+    return messages;
+  },
+});
+
+// Query to get messages within a time range for a specific user
+export const getMessagesByTimeRange = query({
+  args: { 
+    userId: v.string(), 
+    startTime: v.number(), 
+    endTime: v.number() 
+  },
+  handler: async (ctx, args) => {
+    const messages = await ctx.db
+      .query("messages")
+      .withIndex("by_user", (q) => q.eq("userId", args.userId))
+      .filter((q) => 
+        q.and(
+          q.gte(q.field("timestamp"), args.startTime),
+          q.lte(q.field("timestamp"), args.endTime)
+        )
+      )
+      .order("desc")
+      .collect();
+    
+    return messages;
+  },
+});
+
+// Mutation to create a new message
 export const createMessage = mutation({
-    args: {
-        userId: v.string(),
-        type: v.string(),
-        source: v.string(),
-        health: v.optional(v.number()),
-        intensity: v.optional(v.number()),
-        timestamp: v.optional(v.number()),
-    },
-    handler: async (ctx, args) => {
-        const messageId = await ctx.db.insert("messages", {
-            userId: args.userId,
-            type: args.type,
-            source: args.source,
-            health: args.health || 100,
-            intensity: args.intensity || 1,
-            read: false,
-            timestamp: args.timestamp || Date.now(),
-        });
-
-        return messageId;
-    },
+  args: {
+    userId: v.string(),
+    body: v.string(),
+    type: v.string(),
+    source: v.string(),
+    durationSeconds: v.number(),
+  },
+  handler: async (ctx, args) => {
+    const messageId = await ctx.db.insert("messages", {
+      userId: args.userId,
+      body: args.body,
+      type: args.type,
+      read: false,
+      source: args.source,
+      durationSeconds: args.durationSeconds,
+      timestamp: Date.now(),
+    });
+    
+    return messageId;
+  },
 });
 
-export const readMessage = mutation({
-    args: {
-        messageId: v.id("messages"),
-        read: v.boolean(),
-    },
-    handler: async (ctx, args) => {
-        // just change if its read or not
-        const message = await ctx.db.get(args.messageId);
-
-        if (!message) {
-            throw new ConvexError("Message not found");
-        }
-
-        const updates: any = {};
-
-        if (args.read !== undefined) updates.read = args.read;
-
-        await ctx.db.patch(args.messageId, updates);
-
-        return true;
-    },
+// Mutation to mark a message as read
+export const markMessageAsRead = mutation({
+  args: { messageId: v.id("messages") },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.messageId, {
+      read: true,
+    });
+  },
 });
 
+// Mutation to mark all messages as read for a user
+export const markAllMessagesAsRead = mutation({
+  args: { userId: v.string() },
+  handler: async (ctx, args) => {
+    const messages = await ctx.db
+      .query("messages")
+      .withIndex("by_user", (q) => q.eq("userId", args.userId))
+      .filter((q) => q.eq(q.field("read"), false))
+      .collect();
+    
+    for (const message of messages) {
+      await ctx.db.patch(message._id, {
+        read: true,
+      });
+    }
+  },
+});
+
+// Query to get message statistics for a user
+export const getMessageStats = query({
+  args: { userId: v.string() },
+  handler: async (ctx, args) => {
+    const messages = await ctx.db
+      .query("messages")
+      .withIndex("by_user", (q) => q.eq("userId", args.userId))
+      .collect();
+    
+    const totalMessages = messages.length;
+    const unreadMessages = messages.filter(m => !m.read).length;
+    
+    // Group messages by type
+    const messagesByType: Record<string, number> = {};
+    messages.forEach(message => {
+      if (!messagesByType[message.type]) {
+        messagesByType[message.type] = 0;
+      }
+      messagesByType[message.type]++;
+    });
+    
+    // Calculate total health change
+    const totaldurationSeconds = messages.reduce((sum, message) => sum + message.durationSeconds, 0);
+    
+    return {
+      totalMessages,
+      unreadMessages,
+      messagesByType,
+      totaldurationSeconds,
+    };
+  },
+});
+
+// 
+// Mutation to delete a message
 export const deleteMessage = mutation({
-    args: {
-        messageId: v.id("messages"),
-    },
-    handler: async (ctx, args) => {
-        const message = await ctx.db.get(args.messageId);
+  args: { messageId: v.id("messages") },
+  handler: async (ctx, args) => {
+    await ctx.db.delete(args.messageId);
+  },
+});
 
-        if (!message) {
-            throw new ConvexError("Message not found");
-        }
+// Mutation to delete all messages for a user
+export const deleteAllMessagesForUser = mutation({
+  args: { userId: v.string() },
+  handler: async (ctx, args) => {
+    const messages = await ctx.db
+      .query("messages")
+      .withIndex("by_user", (q) => q.eq("userId", args.userId))
+      .collect();
+    
+    for (const message of messages) {
+      await ctx.db.delete(message._id);
+    }
+  },
+});
 
-        await ctx.db.delete(args.messageId);
-
-        return true;
-    },
-}); 

@@ -1,12 +1,20 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Button } from "@/components/UI/Button/Button";
-import { Input } from "@/components/UI/Input/Input";
-import { Slider } from "@/components/UI/Slider/Slider";
+import { Input } from "@/components/ui/Input/Input";
+import { SimpleContainer, SimpleItem } from '@/components/ui/SimpleContainer/SimpleContainer';
+import { Slider } from "@/components/ui/Slider/Slider";
+import Tag from '@/components/ui/Tag';
 import { useEmitEmotion } from '@/lib/emotionContext';
-import { SimpleContainer, SimpleItem } from '@/components/UI/SimpleContainer/SimpleContainer';
 import { triggerFirstGoalSequence } from '@/lib/lilguyActions';
-import type { Website } from '@/components/SiteList/SiteList';
-import Tag from '@/components/UI/Tag';
+import { useMutation, useQuery } from 'convex/react';
+import { Check, Pencil, Plus, Save, Trash2 } from "lucide-react";
+import React, { useEffect, useRef, useState } from 'react';
+import { api } from '../../../convex/_generated/api';
+import { Id } from '../../../convex/_generated/dataModel';
+import { Button } from "../ui/Button/Button";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
+const PlusIcon = (props: any) => <Plus color="currentColor" {...props} />;
+
 
 // Helper function to safely access localStorage
 const getLocalStorageItem = (key: string, defaultValue: any) => {
@@ -46,80 +54,18 @@ export interface Goal {
   title: string;
   completed: boolean;
   progress: number;
+  convexId?: Id<"goals">; // Optional Convex ID for server-side persistence
 }
 
-// Pixel art icon components
-const CheckIcon = () => (
-  <div className="w-5 h-5 flex items-center justify-center">
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="pixelated">
-      <rect x="4" y="4" width="12" height="12" fill="white" stroke="currentColor" strokeWidth="2"/>
-      <rect x="6" y="8" width="2" height="2" fill="currentColor" />
-      <rect x="8" y="10" width="2" height="2" fill="currentColor" />
-      <rect x="10" y="8" width="2" height="2" fill="currentColor" />
-      <rect x="12" y="6" width="2" height="2" fill="currentColor" />
-    </svg>
-  </div>
-);
-
-const EmptyCheckIcon = () => (
-  <div className="w-5 h-5 flex items-center justify-center">
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="pixelated">
-      <rect x="4" y="4" width="12" height="12" fill="white" stroke="currentColor" strokeWidth="2"/>
-    </svg>
-  </div>
-);
-
-const EditIcon = () => (
-  <div className="w-5 h-5 flex items-center justify-center">
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="pixelated">
-      <rect x="4" y="4" width="12" height="12" fill="currentColor" />
-      <rect x="6" y="6" width="8" height="8" fill="white" />
-      <rect x="8" y="8" width="2" height="2" fill="currentColor" />
-      <rect x="10" y="6" width="2" height="2" fill="currentColor" />
-      <rect x="12" y="8" width="2" height="2" fill="currentColor" />
-      <rect x="10" y="10" width="2" height="2" fill="currentColor" />
-      <rect x="8" y="12" width="2" height="2" fill="currentColor" />
-      <rect x="6" y="10" width="2" height="2" fill="currentColor" />
-    </svg>
-  </div>
-);
-
-const TrashIcon = () => (
-  <div className="w-5 h-5 flex items-center justify-center">
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="pixelated">
-      <rect x="6" y="4" width="8" height="2" fill="currentColor" />
-      <rect x="4" y="6" width="2" height="10" fill="currentColor" />
-      <rect x="6" y="14" width="8" height="2" fill="currentColor" />
-      <rect x="14" y="6" width="2" height="10" fill="currentColor" />
-      <rect x="6" y="8" width="2" height="2" fill="currentColor" />
-      <rect x="10" y="8" width="2" height="2" fill="currentColor" />
-    </svg>
-  </div>
-);
-
-const PlusIcon = () => (
-  <div className="w-5 h-5 flex items-center justify-center">
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="pixelated">
-      <rect x="8" y="5" width="4" height="2" fill="currentColor" />
-      <rect x="8" y="13" width="4" height="2" fill="currentColor" />
-      <rect x="5" y="8" width="2" height="4" fill="currentColor" />
-      <rect x="13" y="8" width="2" height="4" fill="currentColor" />
-    </svg>
-  </div>
-);
-
-const SaveIcon = () => (
-  <div className="w-5 h-5 flex items-center justify-center">
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="pixelated">
-      <rect x="4" y="4" width="12" height="12" fill="currentColor" />
-      <rect x="6" y="6" width="8" height="8" fill="white" />
-      <rect x="8" y="8" width="4" height="4" fill="currentColor" />
-    </svg>
-  </div>
-);
-
-const Goals: React.FC= () => {
+const Goals: React.FC<{ userId?: Id<"users">; }> = ({ userId }) => {
   const emitEmotion = useEmitEmotion();
+  const createGoal = useMutation(api.goals.createGoal);
+  const updateGoal = useMutation(api.goals.updateGoal);
+  const deleteGoal = useMutation(api.goals.deleteGoal);
+  // Fetch goals from Convex
+  const convexGoals = useQuery(api.goals.getGoals, userId ? { userId: userId } : "skip");
+  // Fetch site visits from Convex
+  const siteVisits = useQuery(api.sitevisits.getSiteVisits, userId ? { userId: userId } : "skip");
 
   // Helper: Emit emotion and update health
   const emitEmotionWithHealth = (type: string, intensity: number, source: string, delta: number) => {
@@ -130,37 +76,29 @@ const Goals: React.FC= () => {
     emitEmotion(type as any, intensity, source, newHealth);
   };
 
+  // Use Convex goals if available, otherwise fallback to localStorage
   const [goals, setGoals] = useState<Goal[]>(() => {
     const savedGoals = getLocalStorageItem("goals", initialGoals);
     return savedGoals;
   });
+  // Sync ui state with Convex goals
+  useEffect(() => {
+    if (convexGoals && Array.isArray(convexGoals)) {
+      setGoals(
+        convexGoals.map((g, idx) => ({
+          id: idx + 1, // or use a hash of convexId if you want stable ids
+          title: g.title,
+          completed: g.completed,
+          progress: g.progress,
+          convexId: g._id,
+        }))
+      );
+    }
+  }, [convexGoals]);
+
   const [newGoalTitle, setNewGoalTitle] = useState("");
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editTitle, setEditTitle] = useState("");
-  const [websites, setWebsites] = useState<Website[]>([]);
-
-  // Sync websites from localStorage
-  useEffect(() => {
-    const syncWebsites = () => {
-      const stored = localStorage.getItem('websites');
-      if (stored) {
-        try {
-          setWebsites(JSON.parse(stored));
-        } catch {
-          setWebsites([]);
-        }
-      } else {
-        setWebsites([]);
-      }
-    };
-    syncWebsites();
-    window.addEventListener('storage', syncWebsites);
-    window.addEventListener('localStorageChanged', syncWebsites);
-    return () => {
-      window.removeEventListener('storage', syncWebsites);
-      window.removeEventListener('localStorageChanged', syncWebsites);
-    };
-  }, []);
 
   const updateLocalStorage = (updatedGoals: Goal[]) => {
     setLocalStorageItem("goals", updatedGoals);
@@ -168,42 +106,68 @@ const Goals: React.FC= () => {
 
   const lastProgressRef = useRef<{ [id: number]: number }>({});
 
-  const handleAddGoal = () => {
+  const handleAddGoal = async () => {
     if (newGoalTitle.trim() === "") return;
 
-    const newGoal: Goal = {
-      id: Math.max(0, ...goals.map((g) => g.id)) + 1,
-      title: newGoalTitle.trim(),
-      completed: false,
-      progress: 0,
-    };
-
-    const updatedGoals = [...goals, newGoal];
-    setGoals(updatedGoals);
-    updateLocalStorage(updatedGoals);
-    setNewGoalTitle("");
-    // Emit a happy emotion and increase health when adding a new goal
-    emitEmotionWithHealth("happy", 50, "newGoal", 5);
-    // If this is the first goal, trigger the full first-goal sequence
-    if (goals.length === 0) {
-      triggerFirstGoalSequence({
-        emitEmotion,
-        setAndSyncMessage: (msg: string) => {
-          setLocalStorageItem('lilGuyMessage', msg);
-          window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'lilGuyMessage', value: msg } }));
-        }
+    try {
+      const goalId = await createGoal({
+        userId: userId || "",
+        title: newGoalTitle.trim(),
+        completed: false,
+        progress: 0,
       });
+
+      const newGoal: Goal = {
+        id: Math.max(0, ...goals.map((g) => g.id)) + 1,
+        title: newGoalTitle.trim(),
+        completed: false,
+        progress: 0,
+        convexId: goalId,
+      };
+
+      const updatedGoals = [...goals, newGoal];
+      setGoals(updatedGoals);
+
+      updateLocalStorage(updatedGoals);
+      setNewGoalTitle("");
+      // Emit a happy emotion and increase health when adding a new goal
+      emitEmotionWithHealth("happy", 50, "newGoal", 5);
+      // If this is the first goal, trigger the full first-goal sequence
+      if (goals.length === 0) {
+        triggerFirstGoalSequence({
+          emitEmotion,
+          setAndSyncMessage: (msg: string) => {
+            setLocalStorageItem('lilGuyMessage', msg);
+            window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'lilGuyMessage', value: msg } }));
+          }
+        });
+      }
+    } catch (error) {
+      console.error("Failed to create goal:", error);
+      // Optionally emit a sad emotion if the goal creation fails
+      emitEmotionWithHealth("sad", 30, "goalCreationFailed", -5);
     }
   };
 
-  const handleRemoveGoal = (id: number) => {
-    const updatedGoals = goals.filter((goal) => goal.id !== id);
-    setGoals(updatedGoals);
-    updateLocalStorage(updatedGoals);
-    // Emit a sad emotion and decrease health when removing a goal
-    emitEmotionWithHealth("sad", 30, "removeGoal", -10);
+  const handleRemoveGoal = async (id: number) => {
+    try {
+      const goal = goals.find(g => g.id === id);
+      if (goal?.convexId) {
+        await deleteGoal({ goalId: goal.convexId });
+      }
+      const updatedGoals = goals.filter((goal) => goal.id !== id);
+      setGoals(updatedGoals);
+      updateLocalStorage(updatedGoals);
+      // Emit a sad emotion and decrease health when removing a goal
+      emitEmotionWithHealth("sad", 30, "removeGoal", -10);
+    } catch (error) {
+      console.error("Failed to delete goal:", error);
+      // Optionally emit a sad emotion if the goal deletion fails
+      emitEmotionWithHealth("sad", 50, "goalDeletionFailed", -15);
+    }
   };
 
+  const createMessage = useMutation(api.messages.createMessage)
   const handleToggleComplete = (id: number) => {
     const updatedGoals = goals.map((goal) =>
       goal.id === id ? { ...goal, completed: !goal.completed } : goal
@@ -213,11 +177,23 @@ const Goals: React.FC= () => {
     // Emit appropriate emotion and health change based on completion state
     if (toggledGoal?.completed) {
       emitEmotionWithHealth("happy", 80, "completeGoal", 10);
+      createMessage({
+        userId: userId || "",
+        body: `LilGuy loves productivity! You completed ${toggledGoal?.title}`,
+        type: "goal-complete",
+        source: "manual-goal-completion",
+        durationSeconds: 0,
+      })
     } else {
       emitEmotionWithHealth("sad", 30, "uncompleteGoal", -5);
     }
     setGoals(updatedGoals);
     updateLocalStorage(updatedGoals);
+    // Call updateGoal mutation if convexId exists
+    const goal = goals.find(g => g.id === id);
+    if (goal?.convexId) {
+      updateGoal({ goalId: goal.convexId, completed: !goal.completed });
+    }
   };
 
   const handleProgressChange = (id: number, progress: number) => {
@@ -242,6 +218,11 @@ const Goals: React.FC= () => {
     }
     // Save latest progress
     lastProgressRef.current[id] = progress;
+    // Call updateGoal mutation if convexId exists
+    const goal = goals.find(g => g.id === id);
+    if (goal?.convexId) {
+      updateGoal({ goalId: goal.convexId, progress });
+    }
   };
 
   const startEditing = (goal: Goal) => {
@@ -257,13 +238,25 @@ const Goals: React.FC= () => {
     );
     setGoals(updatedGoals);
     updateLocalStorage(updatedGoals);
+    // Call updateGoal mutation if convexId exists
+    const goal = goals.find(g => g.id === editingId);
+    if (goal?.convexId) {
+      updateGoal({ goalId: goal.convexId, title: editTitle.trim() });
+    }
+
     setEditingId(null);
     setEditTitle("");
   };
 
+  const handleGoalInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleAddGoal();
+    }
+  };
+
   return (
-    <SimpleContainer 
-      title="Productivity Goals" 
+    <SimpleContainer
+      title="Productivity Goals"
       description="Set productivity goals and track your progress"
       instructionText="Drag the slider to update progress, or click the buttons"
       renderInstructionAfterInput={true}
@@ -275,11 +268,17 @@ const Goals: React.FC= () => {
             value={newGoalTitle}
             onChange={(e) => setNewGoalTitle(e.target.value)}
             className="w-full"
+            onKeyDown={handleGoalInputKeyDown}
           />
         </div>
-        <Button onClick={handleAddGoal} className="pixel-button">
-          <PlusIcon />
-          <span className="ml-1 text-pixel-sm">ADD</span>
+        <Button
+          onClick={handleAddGoal}
+          variant="add"
+          size="icon"
+          color="bg-[var(--pixel-green)] hover:bg-[var(--pixel-green-light)] text-black border-2 border-black shadow-pixel"
+          className="pixel-button flex-shrink-0"
+        >
+          <Plus className="w-5 h-5" />
         </Button>
       </div>
 
@@ -290,10 +289,11 @@ const Goals: React.FC= () => {
           </div>
         ) : (
           goals.map((goal) => {
-            // Find all productive websites attributed to this goal
-            const attributedWebsites = websites.filter(
-              (w) => w.goalId === goal.id && w.category === 'productive'
-            );
+            // Find all productive site visits attributed to this goal
+            const attributedSiteVisits = siteVisits?.filter(
+              (site) => site.goalId === goal.convexId && site.classification === 'productive'
+            ) || [];
+            
             return (
               <SimpleItem
                 key={goal.id}
@@ -306,9 +306,13 @@ const Goals: React.FC= () => {
                       className="flex-shrink-0"
                     >
                       {goal.completed ? (
-                        <CheckIcon />
+                        <Check />
                       ) : (
-                        <EmptyCheckIcon />
+                        <div className="w-5 h-5 flex items-center justify-center">
+                          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="pixelated">
+                            <rect x="4" y="4" width="12" height="12" fill="white" stroke="currentColor" strokeWidth="2"/>
+                          </svg>
+                        </div>
                       )}
                     </button>
 
@@ -320,9 +324,8 @@ const Goals: React.FC= () => {
                       />
                     ) : (
                       <span
-                        className={`text-sm ${
-                          goal.completed ? "line-through text-gray-500" : ""
-                        }`}
+                        className={`text-sm ${goal.completed ? "line-through text-gray-500" : ""
+                          }`}
                       >
                         {goal.title}
                       </span>
@@ -336,7 +339,7 @@ const Goals: React.FC= () => {
                         size="sm"
                         className="pixel-button pixel-button-success flex-shrink-0 whitespace-nowrap"
                       >
-                        <SaveIcon />
+                        <Save />
                       </Button>
                     ) : (
                       <Button
@@ -344,7 +347,7 @@ const Goals: React.FC= () => {
                         size="sm"
                         className="pixel-button pixel-button-secondary flex-shrink-0 whitespace-nowrap"
                       >
-                        <EditIcon />
+                        <Pencil />
                       </Button>
                     )}
                     <Button
@@ -352,21 +355,21 @@ const Goals: React.FC= () => {
                       size="sm"
                       className="pixel-button pixel-button-danger flex-shrink-0 whitespace-nowrap"
                     >
-                      <TrashIcon />
+                      <Trash2 />
                     </Button>
                   </div>
                 </div>
 
-                {/* Attributed websites as tags or prompt */}
-                {attributedWebsites.length > 0 ? (
+                {/* Attributed site visits as tags or prompt */}
+                {attributedSiteVisits.length > 0 ? (
                   <div className="flex flex-wrap gap-2 mt-2">
-                    {attributedWebsites.map(site => (
+                    {attributedSiteVisits.map(site => (
                       <Tag
-                        key={site.id}
-                        label={site.name}
+                        key={site._id}
+                        label={site.hostname}
                         asButton
                         onClick={() => {
-                          const el = document.getElementById(`website-${site.id}`);
+                          const el = document.getElementById(`website-${site._id}`);
                           if (el) {
                             el.scrollIntoView({ behavior: 'smooth', block: 'center' });
                             el.classList.add('ring-4', 'ring-pixel-accent');
@@ -382,14 +385,14 @@ const Goals: React.FC= () => {
                   <div className="mt-2 text-xs text-pixel-warning bg-yellow-50 border border-yellow-200 rounded px-2 py-1 flex items-center gap-2 justify-between">
                     <span>No websites attributed yet. <b>Add productive websites and assign them to this goal!</b></span>
                     <button
-                      className="pixel-button text-xs px-2 py-1 bg-pixel-accent border-black border-2 ml-2"
+                      className="pixel-button pink text-xs px-2 py-1 bg-pixel-accent border-black border-2 ml-2"
                       onClick={() => {
                         const webTabBtn = document.querySelector('[data-tab="websites"]') as HTMLElement;
                         if (webTabBtn) webTabBtn.click();
                       }}
                       type="button"
                     >
-                      Go to Site List
+                      View Sites
                     </button>
                   </div>
                 )}
@@ -403,10 +406,10 @@ const Goals: React.FC= () => {
                       className="h-full"
                       style={{
                         width: `${goal.progress}%`,
-                        backgroundColor: 
-                          goal.progress > 75 ? 'var(--pixel-green)' : 
-                          goal.progress > 25 ? 'var(--pixel-blue)' : 
-                          'var(--pixel-pink)'
+                        backgroundColor:
+                          goal.progress > 75 ? 'var(--pixel-green)' :
+                            goal.progress > 25 ? 'var(--pixel-blue)' :
+                              'var(--pixel-pink)'
                       }}
                     />
                   </div>

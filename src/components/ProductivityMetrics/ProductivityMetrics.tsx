@@ -1,18 +1,20 @@
+import { useQuery } from "convex/react";
 import React, { useEffect, useState } from 'react';
 import {
-    LineChart,
-    Line,
-    XAxis,
-    YAxis,
     CartesianGrid,
-    Tooltip,
     ResponsiveContainer as GraphContainer,
-    Legend
+    Legend,
+    Line,
+    LineChart,
+    Tooltip,
+    XAxis,
+    YAxis
 } from 'recharts';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/Card/Card";
-import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 
 // Helper function to safely set localStorage item
 const setLocalStorageItem = (key: string, value: any) => {
@@ -129,8 +131,6 @@ const ProductivityMetrics: React.FC<ProductivityMetricsProps> = ({ className, us
     
     // Transform the data from Convex to match the format expected by the component
     const transformedWeekData = React.useMemo(() => {
-
-        console.log('>>>>',weeklyData)
         if (!weeklyData) {
             return getWeekDataFromStorage(); // Fallback to local storage if no data
         }
@@ -193,7 +193,7 @@ const ProductivityMetrics: React.FC<ProductivityMetricsProps> = ({ className, us
                             <ClockIcon />
                             <div className="text-pixel-sm">TODAY</div>
                         </div>
-                        <div className="pixel-window-controls">
+                        <div className="pixel-window-controls pixel-window-controls-metrics">
                             <div className="pixel-window-button"></div>
                             <div className="pixel-window-button"></div>
                             <div className="pixel-window-button"></div>
@@ -222,7 +222,7 @@ const ProductivityMetrics: React.FC<ProductivityMetricsProps> = ({ className, us
                             <ChartIcon />
                             <div className="text-pixel-sm">WEEKLY AVERAGE</div>
                         </div>
-                        <div className="pixel-window-controls">
+                        <div className="pixel-window-controls pixel-window-controls-metrics">
                             <div className="pixel-window-button"></div>
                             <div className="pixel-window-button"></div>
                             <div className="pixel-window-button"></div>
@@ -251,7 +251,7 @@ const ProductivityMetrics: React.FC<ProductivityMetricsProps> = ({ className, us
                             <TrophyIcon />
                             <div className="text-pixel-sm">STREAK</div>
                         </div>
-                        <div className="pixel-window-controls">
+                        <div className="pixel-window-controls pixel-window-controls-metrics">
                             <div className="pixel-window-button"></div>
                             <div className="pixel-window-button"></div>
                             <div className="pixel-window-button"></div>

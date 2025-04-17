@@ -1,12 +1,18 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
 import type { LilGuyColor, LilGuyStage } from "@/components/LilGuy/LilGuy";
 import { useEmitEmotion } from "@/lib/emotionContext";
-import { SimpleContainer } from "../UI/SimpleContainer/SimpleContainer";
 import { triggerFirstGoalSequence } from '@/lib/lilguyActions';
-import { normalWebsites, productiveWebsites, unproductiveWebsites } from '../SiteList/SiteList';
+import { ConvexHttpClient } from "convex/browser";
+import { useEffect, useState } from "react";
+import { api } from "../../../convex/_generated/api";
+import { normalWebsites } from '../SiteList/SiteList';
+import { SimpleContainer } from "../ui/SimpleContainer/SimpleContainer";
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
+const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 // --- Test Section Components ---
 function TestSimulationControls({ handleSimulateNormal, simulateUnproductive, simulateProductive, handleLilGuyReset }: any) {
   return (
@@ -14,10 +20,10 @@ function TestSimulationControls({ handleSimulateNormal, simulateUnproductive, si
       <button className="pixel-button blue" onClick={handleSimulateNormal}>
         Simulate Normal State
       </button>
-      <button className="pixel-button green" onClick={simulateUnproductive}>
+      <button className="pixel-button pink" onClick={simulateUnproductive}>
         Simulate Unproductive
       </button>
-      <button className="pixel-button pink" onClick={simulateProductive}>
+      <button className="pixel-button green" onClick={simulateProductive}>
         Simulate Productive
       </button>
       <button className="pixel-button contrast border-black border-2 px-3 py-1 text-xs" onClick={handleLilGuyReset}>
@@ -211,7 +217,7 @@ function TestEvolutionStage({ currentStage, changeStage }: any) {
   );
 }
 
-export default function TestWindow() {
+export default function TestWindow({ userId }: { userId: string | undefined }) {
   const emitEmotion = useEmitEmotion();
   const [currentColor, setCurrentColor] = useState<LilGuyColor>("green");
   const [currentStage, setCurrentStage] = useState<LilGuyStage>("normal");
@@ -302,24 +308,42 @@ export default function TestWindow() {
 
   // --- Simulate Unproductive ---
   const simulateUnproductive = () => {
-    setLocalStorageItem("lilGuyProductivity", 20);
-    setLocalStorageItem("lilGuyTrackedHours", 4);
-    setLocalStorageItem("lilGuyStage", "devil");
-    emitEmotion("angry", 100, "button");
-    setAndSyncMessage("Uh oh! Productivity is low. Devil form!");
-    window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'lilGuyStage', value: 'devil' } }));
-    localStorage.setItem('websites', JSON.stringify(unproductiveWebsites));
+    convex.mutation(api.messages.createMessage, {
+      userId: userId || "",
+      body: `LilGuy loves productivity! You visited nextjs.org for 99 seconds`,
+      type: "sitevisit",
+      source: "nextjs.org",
+      durationSeconds: 99,
+    })
+
+    // TODO remove?
+    // setLocalStorageItem("lilGuyProductivity", 20);
+    // setLocalStorageItem("lilGuyTrackedHours", 4);
+    // setLocalStorageItem("lilGuyStage", "devil");
+    // emitEmotion("angry", 100, "button");
+    // setAndSyncMessage("Uh oh! Productivity is low. Devil form!");
+    // window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'lilGuyStage', value: 'devil' } }));
+    // localStorage.setItem('websites', JSON.stringify(unproductiveWebsites));
   };
 
   // --- Simulate Productive ---
   const simulateProductive = () => {
-    setLocalStorageItem("lilGuyProductivity", 90);
-    setLocalStorageItem("lilGuyTrackedHours", 4);
-    setLocalStorageItem("lilGuyStage", "angel");
-    emitEmotion("happy", 100, "button");
-    setAndSyncMessage("Amazing! Productivity is high. Angel form!");
-    window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'lilGuyStage', value: 'angel' } }));
-    localStorage.setItem('websites', JSON.stringify(productiveWebsites));
+    convex.mutation(api.messages.createMessage, {
+      userId: userId || "",
+      body: `LilGuy hates slackers! You visited fb.com for 66 seconds`,
+      type: "sitevisit",
+      source: "fb.com",
+      durationSeconds: 66,
+    })
+
+    // TODO remove?
+    // setLocalStorageItem("lilGuyProductivity", 90);
+    // setLocalStorageItem("lilGuyTrackedHours", 4);
+    // setLocalStorageItem("lilGuyStage", "angel");
+    // emitEmotion("happy", 100, "button");
+    // setAndSyncMessage("Amazing! Productivity is high. Angel form!");
+    // window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'lilGuyStage', value: 'angel' } }));
+    // localStorage.setItem('websites', JSON.stringify(productiveWebsites));
   };
 
   // --- Simulate Normal State with Sample Goals and Websites ---
