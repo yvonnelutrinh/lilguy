@@ -124,6 +124,11 @@ const SaveIcon = () => (
 
 const Goals: React.FC<{ userId?: Id<"users">; }> = ({ userId }) => {
   const emitEmotion = useEmitEmotion();
+  const createGoal = useMutation(api.goals.createGoal);
+  const updateGoal = useMutation(api.goals.updateGoal);
+  const deleteGoal = useMutation(api.goals.deleteGoal);
+  // Fetch goals from Convex
+  const convexGoals = useQuery(api.goals.getGoals, userId ? { userId: userId } : "skip");
 
   // Helper: Emit emotion and update health
   const emitEmotionWithHealth = (type: string, intensity: number, source: string, delta: number) => {
@@ -134,10 +139,26 @@ const Goals: React.FC<{ userId?: Id<"users">; }> = ({ userId }) => {
     emitEmotion(type as any, intensity, source, newHealth);
   };
 
+  // Use Convex goals if available, otherwise fallback to localStorage
   const [goals, setGoals] = useState<Goal[]>(() => {
     const savedGoals = getLocalStorageItem("goals", initialGoals);
     return savedGoals;
   });
+  // Sync UI state with Convex goals
+  useEffect(() => {
+    if (convexGoals && Array.isArray(convexGoals)) {
+      setGoals(
+        convexGoals.map((g, idx) => ({
+          id: idx + 1, // or use a hash of convexId if you want stable ids
+          title: g.title,
+          completed: g.completed,
+          progress: g.progress,
+          convexId: g._id,
+        }))
+      );
+    }
+  }, [convexGoals]);
+
   const [newGoalTitle, setNewGoalTitle] = useState("");
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editTitle, setEditTitle] = useState("");
@@ -171,8 +192,6 @@ const Goals: React.FC<{ userId?: Id<"users">; }> = ({ userId }) => {
   };
 
   const lastProgressRef = useRef<{ [id: number]: number }>({});
-
-  const createGoal = useMutation(api.goals.createGoal);
 
   const handleAddGoal = async () => {
     if (newGoalTitle.trim() === "") return;
@@ -217,12 +236,22 @@ const Goals: React.FC<{ userId?: Id<"users">; }> = ({ userId }) => {
     }
   };
 
-  const handleRemoveGoal = (id: number) => {
-    const updatedGoals = goals.filter((goal) => goal.id !== id);
-    setGoals(updatedGoals);
-    updateLocalStorage(updatedGoals);
-    // Emit a sad emotion and decrease health when removing a goal
-    emitEmotionWithHealth("sad", 30, "removeGoal", -10);
+  const handleRemoveGoal = async (id: number) => {
+    try {
+      const goal = goals.find(g => g.id === id);
+      if (goal?.convexId) {
+        await deleteGoal({ goalId: goal.convexId });
+      }
+      const updatedGoals = goals.filter((goal) => goal.id !== id);
+      setGoals(updatedGoals);
+      updateLocalStorage(updatedGoals);
+      // Emit a sad emotion and decrease health when removing a goal
+      emitEmotionWithHealth("sad", 30, "removeGoal", -10);
+    } catch (error) {
+      console.error("Failed to delete goal:", error);
+      // Optionally emit a sad emotion if the goal deletion fails
+      emitEmotionWithHealth("sad", 50, "goalDeletionFailed", -15);
+    }
   };
 
   const handleToggleComplete = (id: number) => {
@@ -239,6 +268,11 @@ const Goals: React.FC<{ userId?: Id<"users">; }> = ({ userId }) => {
     }
     setGoals(updatedGoals);
     updateLocalStorage(updatedGoals);
+    // Call updateGoal mutation if convexId exists
+    const goal = goals.find(g => g.id === id);
+    if (goal?.convexId) {
+      updateGoal({ goalId: goal.convexId, completed: !goal.completed });
+    }
   };
 
   const handleProgressChange = (id: number, progress: number) => {
@@ -263,6 +297,11 @@ const Goals: React.FC<{ userId?: Id<"users">; }> = ({ userId }) => {
     }
     // Save latest progress
     lastProgressRef.current[id] = progress;
+    // Call updateGoal mutation if convexId exists
+    const goal = goals.find(g => g.id === id);
+    if (goal?.convexId) {
+      updateGoal({ goalId: goal.convexId, progress });
+    }
   };
 
   const startEditing = (goal: Goal) => {
@@ -278,6 +317,12 @@ const Goals: React.FC<{ userId?: Id<"users">; }> = ({ userId }) => {
     );
     setGoals(updatedGoals);
     updateLocalStorage(updatedGoals);
+    // Call updateGoal mutation if convexId exists
+    const goal = goals.find(g => g.id === editingId);
+    if (goal?.convexId) {
+      updateGoal({ goalId: goal.convexId, title: editTitle.trim() });
+    }
+    
     setEditingId(null);
     setEditTitle("");
   };
