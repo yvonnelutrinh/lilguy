@@ -37,8 +37,6 @@ export async function middleware(request: NextRequest) {
     // acceptLanguage,
   ].filter(Boolean);
 
-  console.log(identifierParts)
-
   const localIdentifier = `local:${identifierParts.join('-')}`;
   
   try {
