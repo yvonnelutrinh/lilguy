@@ -3,7 +3,8 @@ import { DropdownMenu } from "radix-ui";
 import React from 'react';
 import SignInButton from '../SignInButton/SignInButton';
 import { Button } from '../ui/Button/Button';
-
+ 
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
 const notifications = [
     { id: 1, message: "You've been productive for 2 hours today!", isRead: false },

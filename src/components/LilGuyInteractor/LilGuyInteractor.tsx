@@ -4,6 +4,8 @@ import { useEmitEmotion } from "@/lib/emotionContext";
 import React, { useEffect, useRef, useState } from "react";
 import type { LilGuyColor } from "@/components/LilGuy/LilGuy";
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // define types for lilguy states
 type LilGuyStage = 'egg' | 'normal' | 'angel' | 'devil';
 

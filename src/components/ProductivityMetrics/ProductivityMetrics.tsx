@@ -13,6 +13,9 @@ import {
 import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
+
 // Helper function to safely set localStorage item
 const setLocalStorageItem = (key: string, value: any) => {
   if (typeof window !== 'undefined') {

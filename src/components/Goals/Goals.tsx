@@ -10,6 +10,8 @@ import { Check, Pencil, Plus, Save, Trash2 } from "lucide-react";
 import React, { useEffect, useRef, useState } from 'react';
 import { api } from '../../../convex/_generated/api';
 import { Id } from '../../../convex/_generated/dataModel';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
 const PlusIcon = (props: any) => <Plus color="currentColor" {...props} />;
 

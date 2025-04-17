@@ -5,7 +5,8 @@ import './Footer.css';
 interface FooterProps {
   className?: string;
 }
-
+ 
+/* eslint-disable @typescript-eslint/no-unused-vars */
 const contributorsList = [
   { name: 'Ademide Akinsefunmi', url: 'https://github.com/AAdemide' },
   { name: 'Filip Fabiszak', url: 'https://github.com/filipfabiszak' },

@@ -15,7 +15,7 @@ import { useConvexAuth, useMutation, useQuery } from "convex/react";
 import { useEffect, useState } from "react";
 import { api } from "../../convex/_generated/api";
 
-export const generateLocalTokenIdentifier = () => {
+const generateLocalTokenIdentifier = () => {
   if (typeof window === 'undefined') return 'local:unknown';
   const userAgent = window.navigator.userAgent;
 

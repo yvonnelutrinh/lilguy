@@ -1,14 +1,17 @@
 import { Input } from "@/components/UI/Input/Input";
 import { Label } from "@/components/UI/Label/Label";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/UI/Select/Select";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/UI/Select/Select";
 import { SimpleContainer, SimpleItem } from '@/components/UI/SimpleContainer/SimpleContainer';
 import { useHealth } from "@/context/HealthContext";
 import { useMutation, useQuery } from "convex/react";
-import { Plus, Pencil, Trash2 } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import React, { useEffect, useMemo, useState } from 'react';
 import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
 import { Button } from "../ui/Button/Button";
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
 // PlusIcon component from Goals.tsx
 const PlusIcon = (props: any) => <Plus color="currentColor" {...props} />;

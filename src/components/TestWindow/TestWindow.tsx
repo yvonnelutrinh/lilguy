@@ -1,16 +1,16 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
 import type { LilGuyColor, LilGuyStage } from "@/components/LilGuy/LilGuy";
 import { useEmitEmotion } from "@/lib/emotionContext";
-import { SimpleContainer } from "../UI/SimpleContainer/SimpleContainer";
 import { triggerFirstGoalSequence } from '@/lib/lilguyActions';
-import { normalWebsites, productiveWebsites, unproductiveWebsites } from '../SiteList/SiteList';
 import { ConvexHttpClient } from "convex/browser";
+import { useEffect, useState } from "react";
 import { api } from "../../../convex/_generated/api";
-import { useUser } from "@clerk/nextjs";
-import { generateLocalTokenIdentifier } from "@/app/page";
-import { useQuery } from "convex/react";
+import { normalWebsites } from '../SiteList/SiteList';
+import { SimpleContainer } from "../UI/SimpleContainer/SimpleContainer";
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 // --- Test Section Components ---
@@ -457,16 +457,6 @@ export default function TestWindow({ userId }: { userId: string | undefined }) {
       window.removeEventListener('localStorageChanged', handleStorage);
     };
   }, []);
-
-  // const { user, isLoaded } = useUser();
-
-  // const localIdentifier = generateLocalTokenIdentifier();
-  // const convexUser = useQuery(
-  //   api.users.getUser,
-  //   user?.id
-  //     ? { tokenIdentifier: `clerk:${user?.id}` }
-  //     : { localIdentifier: localIdentifier }
-  // );
 
   return (
     <SimpleContainer title="Testing Customization">

@@ -10,6 +10,8 @@ import { HealthBar } from "../HealthBar/HealthBar";
 import PixelWindow from '../ui/PixelWindow';
 import { Pencil } from "lucide-react";
 import { Button } from "../ui/Button/Button";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
 // helper function to safely access localStorage
 const getLocalStorageItem = (key: string, defaultValue: any) => {
@@ -561,7 +563,7 @@ function LilGuy({ size = "normal", className = "", initialAnimation = "idle", us
         }, 1200);
       }
     }
-  }, [lilGuyStage, evolution, userId]);
+  }, [lilGuyStage, evolution, userId, updateLilguyAnimation, setHealth, updateLilguyStage]);
 
   // --- Hide Controls in Egg State ---
   const controlsVisible = lilGuyStage !== 'egg';

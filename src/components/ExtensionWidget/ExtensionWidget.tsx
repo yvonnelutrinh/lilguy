@@ -1,10 +1,10 @@
-import { Button } from '@/components/ui/Button/Button';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { classNameMerge } from '@/lib/utils';
-import { Bell, Clock, X, Settings } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { HealthBar } from '../HealthBar/HealthBar';
 import { WidgetLilGuy } from '../LilGuy/LilGuy';
-import PixelWindow from '../UI/PixelWindow';
+import PixelWindow from '../ui/PixelWindow';
 
 // Icons with pixel art style
 const SettingsIcon = () => (
@@ -106,7 +106,7 @@ const ExtensionWidget: React.FC<WidgetProps> = ({ onClose, onExpand, activeTab }
     if (!isLocalhost) return;
 
     // Track seconds spent on site in localStorage
-    let timer: NodeJS.Timeout;
+    
     let seconds = parseInt(localStorage.getItem('productive_seconds') || '0', 10);
     setLocalhostSeconds(seconds);
 
@@ -123,13 +123,13 @@ const ExtensionWidget: React.FC<WidgetProps> = ({ onClose, onExpand, activeTab }
       console.log('[WebsiteTracker] +1 health for 30s on localhost. New health:', newHealth);
     }
 
-    timer = setInterval(() => {
+    const timer=setInterval(() => {
       seconds += 1;
       saveSeconds(seconds);
       if (seconds % 30 === 0) { // 30 seconds for demo
         incrementHealth();
       }
-    }, 1000);
+    }, 1000)
 
     return () => clearInterval(timer);
   }, []);
