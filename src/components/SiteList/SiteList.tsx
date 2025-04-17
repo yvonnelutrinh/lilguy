@@ -4,23 +4,14 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { SimpleContainer, SimpleItem } from '@/components/UI/SimpleContainer/SimpleContainer';
 import { useHealth } from "@/context/HealthContext";
 import { useMutation, useQuery } from "convex/react";
-import { Trash } from "lucide-react";
+import { Plus, Pencil, Trash2 } from "lucide-react";
 import React, { useEffect, useMemo, useState } from 'react';
 import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
 import { Button } from "../ui/Button/Button";
 
 // PlusIcon component from Goals.tsx
-const PlusIcon = () => (
-  <div className="w-5 h-5 flex items-center justify-center">
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="pixelated">
-      <rect x="8" y="5" width="4" height="2" fill="currentColor" />
-      <rect x="8" y="13" width="4" height="2" fill="currentColor" />
-      <rect x="5" y="8" width="2" height="4" fill="currentColor" />
-      <rect x="13" y="8" width="2" height="4" fill="currentColor" />
-    </svg>
-  </div>
-);
+const PlusIcon = (props: any) => <Plus color="currentColor" {...props} />;
 
 interface Sitevisit {
   _id: Id<"sitevisits">;
@@ -139,15 +130,20 @@ const SiteList: React.FC<SiteListProps> = ({ userId }) => {
   const [category, setCategory] = useState<'productive' | 'unproductive' | 'neutral'>('neutral');
   const [filter, setFilter] = useState<'all' | 'productive' | 'unproductive' | 'neutral'>('all');
   const [localhostSeconds, setLocalhostSeconds] = useState(() => parseInt(localStorage.getItem('localhost_seconds') || '0', 10));
+  const [inputError, setInputError] = useState<string | null>(null);
+  const inputRef = React.useRef<HTMLInputElement>(null);
+  const selectRef = React.useRef<HTMLButtonElement>(null);
+  const addBtnRef = React.useRef<HTMLButtonElement>(null);
   const { health, setHealth } = useHealth();
 
+  // Regex for simple domain validation: must contain a dot and at least 2 chars after it
+  const websiteRegex = /^.+\.[a-zA-Z]{2,}$/;
 
   const updateClassification = useMutation(api.sitevisits.updateClassification);
   const addSitevisit = useMutation(api.sitevisits.addSiteVisit);
   const removeSiteVisit = useMutation(api.sitevisits.removeSiteVisit);
   const getSiteVisits = useQuery(api.sitevisits.getSiteVisits, userId ? { userId: userId } : "skip");
   const updateGoalId = useMutation(api.sitevisits.updateGoalId);
-
 
   useEffect(() => {
     if (getSiteVisits !== undefined) {
@@ -217,9 +213,13 @@ const SiteList: React.FC<SiteListProps> = ({ userId }) => {
   // Patch: When adding or removing websites, persist to localStorage
   const handleAddWebsite = async () => {
     if (newWebsite.trim() === '') return;
+    if (!websiteRegex.test(newWebsite.trim())) {
+      setInputError('Please enter a valid website (e.g., example.com)');
+      return;
+    }
+    setInputError(null);
     const websiteExists = websites.some(site => site.hostname === newWebsite.trim());
     if (websiteExists) return;
-
 
     try {
       await addSitevisit({
@@ -231,7 +231,6 @@ const SiteList: React.FC<SiteListProps> = ({ userId }) => {
     } catch (err) {
       console.error("Error adding website:", err);
     }
-
     setNewWebsite('');
   };
 
@@ -270,7 +269,6 @@ const SiteList: React.FC<SiteListProps> = ({ userId }) => {
   //     return filtered;
   //   });
   // }, []); // Only run on mount
-
 
   // Sync websites state with localStorage 'websites' key
   useEffect(() => {
@@ -348,6 +346,35 @@ const SiteList: React.FC<SiteListProps> = ({ userId }) => {
     return websites.filter(site => site.classification === filter);
   }, [websites, filter]);
 
+  // Keyboard functionality for input
+  const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleAddWebsite();
+      addBtnRef.current?.focus(); // Move focus to Add button after submit
+    } else if (e.key === 'Tab') {
+      if (!e.shiftKey) {
+        setTimeout(() => {
+          selectRef.current?.focus();
+        }, 0);
+      }
+    }
+  };
+
+  const handleSelectKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
+    if (e.key === 'Tab' && !e.shiftKey) {
+      setTimeout(() => {
+        addBtnRef.current?.focus();
+      }, 0);
+    }
+  };
+
+  // Focus Add button when dropdown is closed via selection
+  const handleSelectValueChange = (value: string) => {
+    setCategory(value as 'productive' | 'unproductive' | 'neutral');
+    setTimeout(() => {
+      addBtnRef.current?.focus();
+    }, 0);
+  };
 
   function formatTime(seconds: number) {
     const totalMinutes = Math.ceil(seconds / 60);
@@ -362,7 +389,6 @@ const SiteList: React.FC<SiteListProps> = ({ userId }) => {
     return parts.join(" ");
   }
 
-
   return (
     <SimpleContainer
       title="Website Tracker"
@@ -370,35 +396,53 @@ const SiteList: React.FC<SiteListProps> = ({ userId }) => {
       instructionText="Click on a category to change it or remove a website"
       renderInstructionAfterInput={true}
     >
-      <div className="flex gap-2 mb-3">
-        <div className="flex-1">
+      <div className="flex flex-col md:flex-row gap-2 mb-3">
+        <div className="w-full">
           <Input
+            ref={inputRef}
             placeholder="Enter website URL (e.g., example.com)"
             value={newWebsite}
-            onChange={(e) => setNewWebsite(e.target.value)}
-            className="w-full"
+            onChange={(e) => { setNewWebsite(e.target.value); setInputError(null); }}
+            onKeyDown={handleInputKeyDown}
+            className="w-full site-input"
+            aria-label="Website URL"
           />
+          {inputError && (
+            <div className="text-red-600 text-xs mt-1 px-1">{inputError}</div>
+          )}
         </div>
-        <Select
-          value={category}
-          onValueChange={(value) => setCategory(value as 'productive' | 'unproductive' | 'neutral')}
-        >
-          <SelectTrigger className="w-[180px] bg-white">
-            <SelectValue placeholder="Category" />
-          </SelectTrigger>
-          <SelectContent className="bg-white">
-            <SelectGroup>
-              <SelectLabel>Category</SelectLabel>
-              <SelectItem value="productive">Productive</SelectItem>
-              <SelectItem value="unproductive">Unproductive</SelectItem>
-              <SelectItem value="neutral">Neutral</SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-        <Button onClick={handleAddWebsite} className="pixel-button">
-          <PlusIcon />
-          <span className="ml-1 text-pixel-sm">ADD</span>
-        </Button>
+        <div className="flex gap-2 mt-2 md:mt-0">
+          <Select
+            value={category}
+            onValueChange={handleSelectValueChange}
+          >
+            <SelectTrigger
+              ref={selectRef}
+              tabIndex={0}
+              onKeyDown={handleSelectKeyDown}
+              aria-label="Website category"
+              className="site-category-select"
+            >
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem value="neutral">Neutral</SelectItem>
+                <SelectItem value="productive">Productive</SelectItem>
+                <SelectItem value="unproductive">Unproductive</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          <Button
+            ref={addBtnRef}
+            onClick={handleAddWebsite}
+            tabIndex={0}
+            aria-label="Add website"
+            className="pixel-button"
+          >
+            <Plus color="currentColor" />
+          </Button>
+        </div>
       </div>
 
       <div className="mb-4">
@@ -471,7 +515,7 @@ const SiteList: React.FC<SiteListProps> = ({ userId }) => {
                     'rgba(245, 158, 11, 0.1)'
               }
             >
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <div className="flex-1">
                   <div className="font-medium">{website.hostname}</div>
                   <div className="text-xs text-muted-foreground">
@@ -499,7 +543,7 @@ const SiteList: React.FC<SiteListProps> = ({ userId }) => {
                     </div>
                   )}
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2 mt-2 sm:mt-0">
                   <Select
                     value={website.classification}
                     onValueChange={(value) => handleCategoryChange(
@@ -507,7 +551,7 @@ const SiteList: React.FC<SiteListProps> = ({ userId }) => {
                       value as 'productive' | 'unproductive' | 'neutral'
                     )}
                   >
-                    <SelectTrigger className="w-[140px] h-8 text-xs bg-white">
+                    <SelectTrigger className="w-[140px] h-8 text-xs bg-white site-category-select">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="bg-white">
@@ -522,7 +566,7 @@ const SiteList: React.FC<SiteListProps> = ({ userId }) => {
                     className="h-8 w-8 pixel-button pixel-button-danger"
                     onClick={() => handleRemoveWebsite(website._id)}
                   >
-                    <Trash className="h-4 w-4" />
+                    <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>
               </div>
