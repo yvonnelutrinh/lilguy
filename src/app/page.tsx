@@ -149,7 +149,7 @@ export default function Home() {
                   className="mb-4"
                   contentClassName="p-2"
                 >
-                  <TestWindow />
+                  <TestWindow userId={convexUser?._id} />
                 </PixelWindow>
               </div>
 

@@ -2,14 +2,12 @@
 import { useHealth } from "@/context/HealthContext";
 import { useListenToEmotions } from "@/lib/emotionContext";
 import { EmotionEvent } from "@/lib/emotionEventBus";
-import { useEffect, useRef, useState } from "react";
-import { HealthBar } from "../HealthBar/HealthBar";
-import LilGuyInteractor from "../LilGuyInteractor/LilGuyInteractor";
-import PixelWindow from '../ui/PixelWindow';
-import { Id } from "../../../convex/_generated/dataModel";
 import { useMutation, useQuery } from "convex/react";
+import { useEffect, useRef, useState } from "react";
 import { api } from "../../../convex/_generated/api";
-import { useConvexAuth } from "convex/react";
+import { Id } from "../../../convex/_generated/dataModel";
+import { HealthBar } from "../HealthBar/HealthBar";
+import PixelWindow from '../ui/PixelWindow';
 
 // helper function to safely access localStorage
 const getLocalStorageItem = (key: string, defaultValue: any) => {
@@ -83,9 +81,7 @@ function LilGuyCanvas({
   size = "normal",
   className = "",
   initialAnimation = "idle",
-  stage: controlledStage,
   animation: controlledAnimation,
-  color,
 }: LilGuyProps & { stage?: LilGuyStage; animation?: LilGuyAnimation; color?: LilGuyColor }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const animRef = useRef<number | null>(null);
@@ -93,7 +89,6 @@ function LilGuyCanvas({
 
   // Fetch LilGuy data from Convex if userId is provided
   const lilguy = useQuery(api.lilguys.get, userId ? { userId } : "skip");
-
 
   // State from Convex or fallback to localStorage
   const [lilGuyColor, setLilGuyColor] = useState<LilGuyColor | null>(() =>
@@ -112,6 +107,8 @@ function LilGuyCanvas({
       setLilGuyColor(lilguy.color as LilGuyColor);
       setLilGuyStage(lilguy.stage as LilGuyStage);
       setLilGuyName(lilguy.name);
+      setAnimation(lilguy.lastAnimation as LilGuyAnimation);
+      setHealth(lilguy.health);
     }
   }, [lilguy]);
 
@@ -369,7 +366,7 @@ function LilGuy({ size = "normal", className = "", initialAnimation = "idle", us
 
   // Convex mutations
   const updateLilguy = useMutation(api.lilguys.update);
-  const updateLilguyHealth = useMutation(api.lilguys.updateHealth);
+
   const updateLilguyStage = useMutation(api.lilguys.updateStage);
   const updateLilguyAnimation = useMutation(api.lilguys.updateAnimation);
   const createLilguy = useMutation(api.lilguys.create);
@@ -436,6 +433,8 @@ function LilGuy({ size = "normal", className = "", initialAnimation = "idle", us
     };
   }, []);
 
+  
+
 
 
 
@@ -470,6 +469,8 @@ function LilGuy({ size = "normal", className = "", initialAnimation = "idle", us
       onEnd();
     }, durationMs);
   }
+
+  
 
   // --- Effect: No Goals Egg State ---
   useEffect(() => {

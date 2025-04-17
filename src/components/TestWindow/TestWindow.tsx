@@ -6,7 +6,13 @@ import { useEmitEmotion } from "@/lib/emotionContext";
 import { SimpleContainer } from "../UI/SimpleContainer/SimpleContainer";
 import { triggerFirstGoalSequence } from '@/lib/lilguyActions';
 import { normalWebsites, productiveWebsites, unproductiveWebsites } from '../SiteList/SiteList';
+import { ConvexHttpClient } from "convex/browser";
+import { api } from "../../../convex/_generated/api";
+import { useUser } from "@clerk/nextjs";
+import { generateLocalTokenIdentifier } from "@/app/page";
+import { useQuery } from "convex/react";
 
+const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 // --- Test Section Components ---
 function TestSimulationControls({ handleSimulateNormal, simulateUnproductive, simulateProductive, handleLilGuyReset }: any) {
   return (
@@ -211,7 +217,7 @@ function TestEvolutionStage({ currentStage, changeStage }: any) {
   );
 }
 
-export default function TestWindow() {
+export default function TestWindow({ userId }: { userId: string | undefined }) {
   const emitEmotion = useEmitEmotion();
   const [currentColor, setCurrentColor] = useState<LilGuyColor>("green");
   const [currentStage, setCurrentStage] = useState<LilGuyStage>("normal");
@@ -302,6 +308,15 @@ export default function TestWindow() {
 
   // --- Simulate Unproductive ---
   const simulateUnproductive = () => {
+    convex.mutation(api.messages.createMessage, {
+      userId: userId || "",
+      body: `LilGuy loves productivity! You visited nextjs.org for 99 seconds`,
+      type: "sitevisit",
+      source: "nextjs.org/",
+      durationSeconds: 99,
+    })
+
+    // TODO remove?
     setLocalStorageItem("lilGuyProductivity", 20);
     setLocalStorageItem("lilGuyTrackedHours", 4);
     setLocalStorageItem("lilGuyStage", "devil");
@@ -313,6 +328,15 @@ export default function TestWindow() {
 
   // --- Simulate Productive ---
   const simulateProductive = () => {
+    convex.mutation(api.messages.createMessage, {
+      userId: userId || "",
+      body: `LilGuy hates slackers! You visited fb.com for 66 seconds`,
+      type: "sitevisit",
+      source: "fb.com",
+      durationSeconds: 66,
+    })
+
+    // TODO remove?
     setLocalStorageItem("lilGuyProductivity", 90);
     setLocalStorageItem("lilGuyTrackedHours", 4);
     setLocalStorageItem("lilGuyStage", "angel");
@@ -433,6 +457,16 @@ export default function TestWindow() {
       window.removeEventListener('localStorageChanged', handleStorage);
     };
   }, []);
+
+  // const { user, isLoaded } = useUser();
+
+  // const localIdentifier = generateLocalTokenIdentifier();
+  // const convexUser = useQuery(
+  //   api.users.getUser,
+  //   user?.id
+  //     ? { tokenIdentifier: `clerk:${user?.id}` }
+  //     : { localIdentifier: localIdentifier }
+  // );
 
   return (
     <SimpleContainer title="Testing Customization">
