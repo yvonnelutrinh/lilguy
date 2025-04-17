@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import './Footer.css';
 
@@ -6,22 +6,79 @@ interface FooterProps {
   className?: string;
 }
 
+// Fisher-Yates shuffle
+function shuffleArray<T>(array: T[]): T[] {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+const contributorsList = [
+  { name: 'Ademide Akinsefunmi', url: 'https://github.com/AAdemide' },
+  { name: 'Filip Fabiszak', url: 'https://github.com/filipfabiszak' },
+  { name: 'Lisa Olsen', url: 'https://github.com/lmolsen' },
+  { name: 'Yvonne Lu Trinh', url: 'https://github.com/yvonnelutrinh' }
+];
+
 const Footer: React.FC<FooterProps> = ({ className = '' }) => {
-  const contributors = [
-    { name: 'Ademide Akinsefunmi', url: 'https://github.com/AAdemide' },
-    { name: 'Filip Fabiszak', url: 'https://github.com/filipfabiszak' },
-    { name: 'Lisa Olsen', url: 'https://github.com/lmolsen' },
-    { name: 'Yvonne Lu Trinh', url: 'https://github.com/yvonnelutrinh' }
-  ];
+  const [visible, setVisible] = useState(false);
+  const [shuffledContributors, setShuffledContributors] = useState(contributorsList);
+  const footerRef = useRef<HTMLDivElement>(null);
+
+  // Shuffle contributors every time the footer becomes visible
+  useEffect(() => {
+    if (visible) {
+      setShuffledContributors(shuffleArray(contributorsList));
+    }
+  }, [visible]);
+
+  // Show when user scrolls to bottom
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!footerRef.current) return;
+      const scrollY = window.scrollY;
+      const windowHeight = window.innerHeight;
+      const docHeight = document.documentElement.scrollHeight;
+      // If user is at the bottom (within 10px)
+      if (windowHeight + scrollY >= docHeight - 10) {
+        setVisible(true);
+      } else {
+        setVisible(false);
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Show on hover
+  const handleMouseEnter = () => setVisible(true);
+  const handleMouseLeave = () => {
+    // Only hide if not at bottom
+    const scrollY = window.scrollY;
+    const windowHeight = window.innerHeight;
+    const docHeight = document.documentElement.scrollHeight;
+    if (!(windowHeight + scrollY >= docHeight - 10)) {
+      setVisible(false);
+    }
+  };
 
   return (
-    <div className={`pixel-footer ${className}`}>
+    <div
+      className={`pixel-footer ${className}`}
+      ref={footerRef}
+      style={{ opacity: visible ? 1 : 0, pointerEvents: visible ? 'auto' : 'none', transition: 'opacity 0.3s' }}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
       <div className="pixel-footer-content">
-        {contributors.map((contributor, index) => (
-          <Link 
-            key={index} 
-            href={contributor.url} 
-            target="_blank" 
+        {shuffledContributors.map((contributor, index) => (
+          <Link
+            key={index}
+            href={contributor.url}
+            target="_blank"
             rel="noopener noreferrer"
             className="pixel-footer-link"
           >
