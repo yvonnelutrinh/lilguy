@@ -39,6 +39,7 @@ async function getEmbedding(text: string | string[]) {
   if (data.error) {
     return console.error(data);
   }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return data.data.map((item: any) => item.embedding);
 }
 
