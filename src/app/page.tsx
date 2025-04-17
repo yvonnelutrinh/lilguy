@@ -108,27 +108,38 @@ export default function Home() {
 
   return (
     <>
-      {!isAuthenticated ? (
-        // TODO remove this ugly poo
-        <div className="text-center py-16 bg-gray-50 rounded-lg">
-          <h2 className="text-2xl font-bold mb-4">Welcome to Lilguy</h2>
-          <p className="mb-6 text-gray-600 max-w-lg mx-auto">
-            Track your habits, and grow your thoughts! Sign in to get started.
-          </p>
-        </div>
-      ) : (<><h2 className="text-xl font-semibold mb-4" style={{ color: characterColor }}>
-        Welcome, {user?.fullName || user?.firstName || convexUser?.name || "User"}
-      </h2>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Customize Your Color
-        </label>
-        <input
-          type="color"
-          value={characterColor}
-          onChange={handleColorChange}
-          className="p-1 border rounded h-10 w-20 cursor-pointer"
-        /></>
-      )}
+      {/*
+      // TODO remove this ugly poo
+      <div className="text-center py-16 bg-gray-50 rounded-lg">
+        <h2 className="text-2xl font-bold mb-4">Welcome to Lilguy</h2>
+        <p className="mb-6 text-gray-600 max-w-lg mx-auto">
+          Track your habits, and grow your thoughts! Sign in to get started.
+        </p>
+      </div>
+      */}
+      {isAuthenticated ? (
+        <>
+          <h2 className="text-xl font-semibold mb-4" style={{ color: characterColor }}>
+            Welcome, {user?.fullName || user?.firstName || convexUser?.name || "User"}
+          </h2>
+          {/*
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Customize Your Color
+          </label>
+          <input
+            type="color"
+            value={characterColor}
+            onChange={handleColorChange}
+            className="p-1 border rounded h-10 w-20 cursor-pointer"
+          />
+          */}
+          <div className="text-center py-8">
+            <p className="text-lg text-pixel-green font-bold">
+              Stay productive and help LilGuy reach their next evolution!
+            </p>
+          </div>
+        </>
+      ) : null}
       <HealthProvider>
         <div className="min-h-screen flex flex-col bg-pixel-pattern">
           <Header />
@@ -145,13 +156,13 @@ export default function Home() {
                 </PixelWindow>
 
                 {/* LilGuy States Toggling - TEMP FOR TESTING ONLY */}
-                <PixelWindow
+                {/* <PixelWindow
                   title="TEMP WINDOW"
                   className="mb-4"
                   contentClassName="p-2"
                 >
                   <TestWindow />
-                </PixelWindow>
+                </PixelWindow> */}
               </div>
 
               {/* Dashboard content */}
@@ -199,7 +210,7 @@ export default function Home() {
                     {activeTab === 'websites' && <SiteList userId={convexUser?._id} />}
                     {activeTab === 'goals' && <Goals />}
                     {activeTab === 'widget' && (
-                      <div className="flex justify-center py-6">
+                      <div className="flex justify-center">
                         <ExtensionWidget activeTab={activeTab} />
                       </div>
                     )}
