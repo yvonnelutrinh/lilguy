@@ -20,10 +20,10 @@ function TestSimulationControls({ handleSimulateNormal, simulateUnproductive, si
       <button className="pixel-button blue" onClick={handleSimulateNormal}>
         Simulate Normal State
       </button>
-      <button className="pixel-button green" onClick={simulateUnproductive}>
+      <button className="pixel-button pink" onClick={simulateUnproductive}>
         Simulate Unproductive
       </button>
-      <button className="pixel-button pink" onClick={simulateProductive}>
+      <button className="pixel-button green" onClick={simulateProductive}>
         Simulate Productive
       </button>
       <button className="pixel-button contrast border-black border-2 px-3 py-1 text-xs" onClick={handleLilGuyReset}>
@@ -312,7 +312,7 @@ export default function TestWindow({ userId }: { userId: string | undefined }) {
       userId: userId || "",
       body: `LilGuy loves productivity! You visited nextjs.org for 99 seconds`,
       type: "sitevisit",
-      source: "nextjs.org/",
+      source: "nextjs.org",
       durationSeconds: 99,
     })
 

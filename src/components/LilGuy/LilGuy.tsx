@@ -363,17 +363,18 @@ const getInitialLilGuyState = () => {
 // --- Main LilGuy Component ---
 function LilGuy({ size = "normal", className = "", initialAnimation = "idle", userId }: LilGuyProps) {
   const lilguy = useQuery(api.lilguys.get, userId ? { userId } : "skip");
-  
+
   // Convex mutations
   const updateLilguy = useMutation(api.lilguys.update);
   const updateLilguyStage = useMutation(api.lilguys.updateStage);
   const updateLilguyAnimation = useMutation(api.lilguys.updateAnimation);
   const createLilguy = useMutation(api.lilguys.create);
   const markMessageAsRead = useMutation(api.messages.markMessageAsRead);
-  
+
   // Query for unread messages
   const unreadMessages = useQuery(api.messages.getUnreadMessagesByUser, userId ? { userId } : "skip");
-  
+  const lastUnreadMessage = useQuery(api.messages.getLastUnreadMessageByUser, userId ? { userId } : "skip");
+
   // State from Convex or fallback to localStorage
   const [lilGuyStage, setLilGuyStage] = useState<LilGuyStage>(() =>
     lilguy?.stage || getLocalStorageItem('lilGuyStage', 'egg')
@@ -436,10 +437,25 @@ function LilGuy({ size = "normal", className = "", initialAnimation = "idle", us
     };
   }, []);
 
-  
+  // Check for new unread messages every second
+  useEffect(() => {
+    if (!userId) return;
+    const intervalId = setInterval(() => {
+      if (lastUnreadMessage) {
+        if (lastUnreadMessage.body.includes("LilGuy loves productivity!")) {
+          setAnimation('happy');
+        } else if (lastUnreadMessage.body.includes("LilGuy hates slackers!")) {
+            setAnimation('angry');
+        }
+        setLilGuyMessage(lastUnreadMessage.body);
 
+        // Mark the message as read after displaying it
+        markMessageAsRead({ messageId: lastUnreadMessage._id });
+      }
+    }, 1000);
 
-
+    return () => clearInterval(intervalId);
+  }, [userId, lastUnreadMessage, markMessageAsRead]);
 
   // Listen for lilGuyColor changes in localStorage (fallback)
   useEffect(() => {
@@ -473,7 +489,7 @@ function LilGuy({ size = "normal", className = "", initialAnimation = "idle", us
     }, durationMs);
   }
 
-  
+
 
   // --- Effect: No Goals Egg State ---
   useEffect(() => {
@@ -516,6 +532,7 @@ function LilGuy({ size = "normal", className = "", initialAnimation = "idle", us
         setHatching(false);
         setLilGuyStage('normal');
         setAnimation('idle');
+
         setLocalStorageItem('lilGuyStage', 'normal');
         setLocalStorageItem('lilGuyAnimation', 'idle');
 
@@ -542,6 +559,7 @@ function LilGuy({ size = "normal", className = "", initialAnimation = "idle", us
         playAnimationOnce(setAnimation, 'happy', () => {
           setLilGuyStage('angel');
           setAnimation('idle');
+
           setLocalStorageItem('lilGuyStage', 'angel');
           setLocalStorageItem('lilGuyAnimation', 'idle');
 
@@ -560,6 +578,7 @@ function LilGuy({ size = "normal", className = "", initialAnimation = "idle", us
         playAnimationOnce(setAnimation, 'angry', () => {
           setLilGuyStage('devil');
           setAnimation('idle');
+
           setLocalStorageItem('lilGuyStage', 'devil');
           setLocalStorageItem('lilGuyAnimation', 'idle');
 

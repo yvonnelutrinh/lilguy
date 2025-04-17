@@ -27,24 +27,47 @@ export async function POST(request: Request) {
     });
 
     if (existingSiteVisit) {
-      if (existingSiteVisit.classification === "productive") {
-        convex.mutation(api.messages.createMessage, {
-          userId,
-          body: `LilGuy loves productivity! You visited ${hostname} for ${duration} seconds`,
-          type: "sitevisit",
-          source: hostname,
-          durationSeconds: duration,
-        })
+      switch (existingSiteVisit.classification) {
+        case "productive":
+          if (existingSiteVisit.goalId) {
+            convex.mutation(api.messages.createMessage, {
+              userId,
+              body: `LilGuy loves productivity! You visited ${hostname} for ${duration} seconds`,
+              type: "sitevisit-goal",
+              source: hostname,
+              durationSeconds: duration,
+            })
+          } else {
+            convex.mutation(api.messages.createMessage, {
+              userId,
+              body: `LilGuy loves productivity! You visited ${hostname} for ${duration} seconds`,
+              type: "sitevisit",
+              source: hostname,
+              durationSeconds: duration,
+            })
+          }
+          break;
+        case "unproductive":
+          convex.mutation(api.messages.createMessage, {
+            userId,
+            body: `LilGuy hates slackers! You visited ${hostname} for ${duration} seconds`,
+            type: "sitevisit",
+            source: hostname,
+            durationSeconds: duration,
+          })
+          break;
+        default:
+          if (duration > 10) {
+            convex.mutation(api.messages.createMessage, {
+              userId,
+              body: `Interesting! You visited ${hostname} for ${duration} seconds`,
+              type: "sitevisit",
+              source: hostname,
+              durationSeconds: duration,
+            })
+          }
+          break;
       }
-      else {
-        convex.mutation(api.messages.createMessage, {
-          userId,
-          body: `LilGuy hates slackers! You visited ${hostname} for ${duration} seconds`,
-          type: "sitevisit",
-          source: hostname,
-          durationSeconds: duration,
-        })
-      };
       //  use the existing classification
       const sitevisitId = await convex.mutation(api.sitevisit.addSiteVisit, {
         userId,

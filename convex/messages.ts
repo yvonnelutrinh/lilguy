@@ -31,6 +31,20 @@ export const getUnreadMessagesByUser = query({
   },
 });
 
+export const getLastUnreadMessageByUser = query({
+  args: { userId: v.string() },
+  handler: async (ctx, args) => {
+    const messages = await ctx.db
+      .query("messages")
+      .withIndex("by_user", (q) => q.eq("userId", args.userId))
+      .filter((q) => q.eq(q.field("read"), false))
+      .order("desc")
+      .take(1);
+
+    return messages[0];
+  },
+});
+
 // Query to get messages by type for a specific user
 export const getMessagesByType = query({
   args: { userId: v.string(), type: v.string() },
