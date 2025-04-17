@@ -491,107 +491,6 @@
   }
 }
 
-/* Fix for mobile website items */
-@media (max-width: 640px) {
-  /* Ensure website items stack properly */
-  [id^="website-"] > div {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  
-  /* Make dropdowns and buttons take full width */
-  [id^="website-"] .site-category-select,
-  [id^="website-"] .site-goal-select {
-    width: 100%;
-    max-width: 100%;
-  }
-  
-  /* Add space between stacked elements */
-  [id^="website-"] > div > div:last-child {
-    margin-top: 0.5rem;
-    width: 100%;
-  }
-}
-
-/* Fix for tablet view (600px-1024px) */
-@media (min-width: 641px) and (max-width: 1024px) {
-  /* Prevent container from expanding beyond viewport */
-  div[class*="w-full border-2 border-black bg-white shadow"] {
-    max-width: calc(100vw - 2rem);
-    overflow-x: hidden;
-    box-sizing: border-box;
-  }
-  
-  /* Ensure website items don't cause overflow */
-  [id^="website-"] {
-    max-width: 100%;
-    overflow-x: hidden;
-  }
-  
-  /* Limit width of website items content */
-  [id^="website-"] > div {
-    flex-wrap: wrap;
-    max-width: 100%;
-  }
-  
-  /* Ensure dropdowns don't expand beyond container */
-  [id^="website-"] .site-category-select,
-  [id^="website-"] .site-goal-select {
-    max-width: 140px;
-    width: auto;
-  }
-  
-  /* Fix select content positioning */
-  [class*="SelectContent"] {
-    max-width: calc(100vw - 3rem);
-    width: auto;
-  }
-}
-
-/* Fix for all screen sizes to prevent overflow */
-[class*="SelectContent"] {
-  max-width: calc(100vw - 2rem);
-  width: auto !important;
-}
-
-/* Ensure website items never cause overflow */
-[id^="website-"] {
-  overflow-x: hidden;
-  max-width: 100%;
-}
-
-/* Fix pixel window width consistency across tabs */
-.pixel-window,
-div[class*="w-full border-2 border-black bg-white shadow"] {
-  width: 100%;
-  max-width: 800px;
-  margin-left: auto;
-  margin-right: auto;
-  box-sizing: border-box;
-}
-
-/* Ensure content inside the window stays within bounds */
-.pixel-window-content,
-div[class*="w-full border-2 border-black bg-white shadow"] > div {
-  width: 100%;
-  overflow-x: hidden;
-  box-sizing: border-box;
-}
-
-/* Ensure website items fit within container */
-[id^="website-"] {
-  width: 100%;
-  max-width: 100%;
-  overflow-x: hidden;
-  box-sizing: border-box;
-}
-
-/* Fix select content positioning */
-[class*="SelectContent"] {
-  max-width: min(300px, calc(100vw - 2rem));
-  width: auto !important;
-}
-
 /* Mobile-specific adjustments for dashboard components */
 @media (max-width: 640px) {
   /* Remove padding from the Goals container on mobile */
@@ -749,6 +648,136 @@ div[class*="w-full border-2 border-black bg-white shadow"] > div {
   }
 }
 
+/* Enhanced Sign-in page styles */
+/* Base container styles */
+.clerk-sign-in-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* Custom pixel classes for Clerk components */
+.pixel-card {
+  border: 2px solid #222 !important;
+  border-radius: 0 !important;
+  box-shadow: 4px 4px 0px 0px rgba(0,0,0,1) !important;
+  background-color: white !important;
+  padding: 1.5rem !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.pixel-header-title {
+  font-family: 'Press Start 2P', system-ui, sans-serif !important;
+  font-size: 1rem !important;
+  color: var(--pixel-blue) !important;
+  text-align: center !important;
+}
+
+.pixel-header-subtitle {
+  font-family: system-ui, sans-serif !important;
+  text-align: center !important;
+  margin-top: 0.5rem !important;
+}
+
+.pixel-social-button {
+  border-radius: 0 !important;
+  border: 2px solid #222 !important;
+  box-shadow: 2px 2px 0px 0px rgba(0,0,0,1) !important;
+  transition: all 0.1s ease-in-out !important;
+  margin-bottom: 0.75rem !important;
+}
+
+.pixel-social-button:hover {
+  transform: translate(-1px, -1px) !important;
+  box-shadow: 3px 3px 0px 0px rgba(0,0,0,1) !important;
+}
+
+.pixel-social-button:active {
+  transform: translate(1px, 1px) !important;
+  box-shadow: 1px 1px 0px 0px rgba(0,0,0,1) !important;
+}
+
+.pixel-input {
+  border-radius: 0 !important;
+  border: 2px solid #222 !important;
+  box-shadow: 2px 2px 0px 0px rgba(0,0,0,1) !important;
+  font-family: system-ui, sans-serif !important;
+  padding: 0.75rem !important;
+}
+
+.pixel-input:focus {
+  border-color: var(--pixel-blue) !important;
+  box-shadow: 2px 2px 0px 0px rgba(0,0,0,1) !important;
+  outline: none !important;
+}
+
+.pixel-button-primary {
+  border-radius: 0 !important;
+  border: 2px solid #222 !important;
+  box-shadow: 2px 2px 0px 0px rgba(0,0,0,1) !important;
+  font-family: 'Press Start 2P', system-ui, sans-serif !important;
+  font-size: 0.75rem !important;
+  padding: 0.75rem 1rem !important;
+  transition: all 0.1s ease-in-out !important;
+  background-color: var(--pixel-blue) !important;
+  color: white !important;
+  text-transform: uppercase !important;
+}
+
+.pixel-button-primary:hover {
+  transform: translate(-1px, -1px) !important;
+  box-shadow: 3px 3px 0px 0px rgba(0,0,0,1) !important;
+}
+
+.pixel-button-primary:active {
+  transform: translate(1px, 1px) !important;
+  box-shadow: 1px 1px 0px 0px rgba(0,0,0,1) !important;
+}
+
+.pixel-link {
+  color: var(--pixel-blue) !important;
+  font-family: system-ui, sans-serif !important;
+  text-decoration: underline !important;
+}
+
+.pixel-link:hover {
+  color: var(--pixel-green) !important;
+}
+
+/* Responsive adjustments for sign-in page */
+@media (max-width: 640px) {
+  .pixel-card {
+    padding: 1rem !important;
+  }
+  
+  .pixel-button-primary {
+    font-size: 0.65rem !important;
+    padding: 0.5rem 0.75rem !important;
+  }
+  
+  .pixel-header-title {
+    font-size: 0.85rem !important;
+  }
+  
+  /* Ensure the sign-in container is properly centered */
+  .clerk-sign-in-container {
+    padding: 0 !important;
+  }
+  
+  /* Fix any potential overflow issues */
+  div[class*="cl-rootBox"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+  }
+  
+  /* Ensure form fields don't overflow */
+  div[class*="cl-formFieldInput"] {
+    max-width: 100% !important;
+  }
+}
+
 /* Sign-in page styles */
 .cl-rootBox {
   width: 100%;
@@ -791,22 +820,6 @@ div[class*="w-full border-2 border-black bg-white shadow"] > div {
   box-shadow: 1px 1px 0px 0px rgba(0,0,0,1) !important;
 }
 
-.cl-socialButtonsIconButton {
-  border-radius: 0 !important;
-  border: 2px solid #222 !important;
-  box-shadow: 2px 2px 0px 0px rgba(0,0,0,1) !important;
-}
-
-.cl-socialButtonsIconButton:hover {
-  transform: translate(-1px, -1px) !important;
-  box-shadow: 3px 3px 0px 0px rgba(0,0,0,1) !important;
-}
-
-.cl-socialButtonsIconButton:active {
-  transform: translate(1px, 1px) !important;
-  box-shadow: 1px 1px 0px 0px rgba(0,0,0,1) !important;
-}
-
 .cl-formFieldInput {
   border-radius: 0 !important;
   border: 2px solid #222 !important;
@@ -829,4 +842,276 @@ div[class*="w-full border-2 border-black bg-white shadow"] > div {
     font-size: 0.65rem !important;
     padding: 0.5rem 0.75rem !important;
   }
+}
+
+/* Fix for sign-in window overflow on mobile */
+@media (max-width: 640px) {
+  /* Ensure the sign-in container fits within the pixel window */
+  .clerk-sign-in-container,
+  .clerk-sign-up-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+  }
+  
+  /* Remove padding from the Clerk card to prevent overflow */
+  .pixel-card {
+    padding: 0.5rem !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  
+  /* Ensure the root box doesn't overflow */
+  div[class*="cl-rootBox"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow-x: hidden !important;
+  }
+  
+  /* Fix form field width */
+  div[class*="cl-formFieldInput"],
+  input[class*="cl-formFieldInput"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    font-size: 14px !important;
+  }
+  
+  /* Adjust social buttons to fit */
+  div[class*="cl-socialButtonsBlockButton"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 8px !important;
+  }
+  
+  /* Ensure the pixel window content doesn't overflow */
+  div[class*="p-0 flex flex-col items-center"] {
+    padding: 0 !important;
+    width: 100% !important;
+    overflow-x: hidden !important;
+  }
+  
+  /* Fix any form layout issues */
+  div[class*="cl-card"] form {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  
+  /* Fix button width */
+  .pixel-button-primary {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  
+  /* Fix input fields */
+  .cl-formFieldInput__input {
+    width: 100% !important;
+    max-width: 100% !important;
+    font-size: 14px !important;
+  }
+  
+  /* Reduce padding in the card content */
+  div[class*="cl-card"] {
+    padding: 0.5rem !important;
+  }
+  
+  /* Fix divider width */
+  div[class*="cl-dividerText"],
+  div[class*="cl-dividerLine"] {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  
+  /* Ensure form fields don't overflow */
+  div[class*="cl-formField"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+  }
+  
+  /* Fix footer width */
+  div[class*="cl-footer"] {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  
+  /* Adjust font sizes for mobile */
+  .cl-headerTitle,
+  .cl-headerSubtitle {
+    font-size: 14px !important;
+  }
+  
+  /* Fix all clerk elements to ensure they fit */
+  div[class*="cl-"] {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+}
+
+/* Apply pixel fonts to Clerk components */
+.cl-formButtonPrimary,
+.cl-footerActionLink,
+.cl-socialButtonsBlockButtonText {
+  font-family: 'Press Start 2P', system-ui, sans-serif !important;
+  font-size: 0.75rem !important;
+  letter-spacing: 0.5px !important;
+}
+
+.cl-formFieldLabel,
+.cl-footerText {
+  font-family: 'VT323', monospace !important;
+  font-size: 1rem !important;
+}
+
+.cl-socialButtonsBlockButton {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 2px solid black !important;
+  background-color: white !important;
+  box-shadow: 4px 4px 0px 0px rgba(0,0,0,1) !important;
+  transition: all 0.2s ease !important;
+  padding: 0.5rem 1rem !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.cl-socialButtonsBlockButton:hover {
+  transform: translate(2px, 2px) !important;
+  box-shadow: 2px 2px 0px 0px rgba(0,0,0,1) !important;
+}
+
+.cl-formButtonPrimary {
+  background-color: var(--pixel-green) !important;
+  border: 2px solid black !important;
+  box-shadow: 4px 4px 0px 0px rgba(0,0,0,1) !important;
+  transition: all 0.2s ease !important;
+  text-transform: uppercase !important;
+}
+
+.cl-formButtonPrimary:hover {
+  transform: translate(2px, 2px) !important;
+  box-shadow: 2px 2px 0px 0px rgba(0,0,0,1) !important;
+}
+
+.cl-formFieldInput {
+  border: 2px solid black !important;
+  background-color: white !important;
+  padding: 0.5rem !important;
+  font-family: 'VT323', monospace !important;
+  font-size: 1.1rem !important;
+}
+
+.cl-footerActionLink {
+  color: var(--pixel-blue) !important;
+  text-decoration: none !important;
+}
+
+.cl-footerActionLink:hover {
+  text-decoration: underline !important;
+}
+
+/* Responsive adjustments for custom text */
+@media (max-width: 640px) {
+  .cl-formButtonPrimary,
+  .cl-footerActionLink,
+  .cl-socialButtonsBlockButtonText {
+    font-size: 0.65rem !important;
+  }
+}
+
+/* Additional spacing adjustments for Clerk components */
+.cl-card {
+  gap: 0.75rem !important;
+}
+
+.cl-socialButtonsBlock {
+  gap: 0.5rem !important;
+}
+
+.cl-socialButtonsBlockButton {
+  margin-bottom: 0.5rem !important;
+  height: 2.5rem !important;
+}
+
+.cl-dividerText {
+  margin: 0.5rem 0 !important;
+}
+
+.cl-formButtonPrimary {
+  height: 2.5rem !important;
+  margin-top: 0.5rem !important;
+}
+
+.cl-formField {
+  margin-bottom: 0.5rem !important;
+}
+
+.cl-formFieldLabel {
+  margin-bottom: 0.25rem !important;
+  font-size: 0.9rem !important;
+}
+
+.cl-formFieldInput__input {
+  height: 2.5rem !important;
+}
+
+.cl-footer {
+  margin-top: 0.5rem !important;
+  padding-top: 0.5rem !important;
+}
+
+/* Mobile-specific adjustments */
+@media (max-width: 640px) {
+  .cl-card {
+    gap: 0.5rem !important;
+  }
+  
+  .cl-socialButtonsBlockButton {
+    height: 2.25rem !important;
+  }
+  
+  .cl-formButtonPrimary {
+    height: 2.25rem !important;
+  }
+  
+  .cl-formFieldInput__input {
+    height: 2.25rem !important;
+  }
+}
+
+/* Fix for pixel window width consistency across tabs */
+.pixel-window,
+div[class*="w-full border-2 border-black bg-white shadow"] {
+  width: 100%;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+}
+
+/* Ensure content inside the window stays within bounds */
+.pixel-window-content,
+div[class*="w-full border-2 border-black bg-white shadow"] > div {
+  width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+/* Ensure website items fit within container */
+[id^="website-"] {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+/* Fix select content positioning */
+[class*="SelectContent"] {
+  max-width: min(300px, calc(100vw - 2rem));
+  width: auto !important;
 }
