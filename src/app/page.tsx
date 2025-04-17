@@ -19,7 +19,6 @@ export const generateLocalTokenIdentifier = () => {
   if (typeof window === 'undefined') return 'local:unknown';
   const userAgent = window.navigator.userAgent;
 
-  console.log(window.navigator);
   const identifierParts = [
     userAgent,
   ].filter(Boolean);
@@ -141,7 +140,7 @@ export default function Home() {
                   title="LILGUY"
                   className="mb-4"
                 >
-                  <LilGuy />
+                  <LilGuy userId={convexUser?._id} />
                 </PixelWindow>
 
                 {/* LilGuy States Toggling - TEMP FOR TESTING ONLY */}

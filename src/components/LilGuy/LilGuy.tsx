@@ -6,6 +6,10 @@ import { useEffect, useRef, useState } from "react";
 import { HealthBar } from "../HealthBar/HealthBar";
 import LilGuyInteractor from "../LilGuyInteractor/LilGuyInteractor";
 import PixelWindow from '../ui/PixelWindow';
+import { Id } from "../../../convex/_generated/dataModel";
+import { useMutation, useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
+import { useConvexAuth } from "convex/react";
 
 // helper function to safely access localStorage
 const getLocalStorageItem = (key: string, defaultValue: any) => {
@@ -19,7 +23,7 @@ const getLocalStorageItem = (key: string, defaultValue: any) => {
 // helper function to safely set localStorage item
 const setLocalStorageItem = (key: string, value: any) => {
   if (typeof window !==
-   'undefined') {
+    'undefined') {
     localStorage.setItem(key, typeof value === 'object' || typeof value === 'number' ? JSON.stringify(value) : value);
   }
 };
@@ -29,6 +33,7 @@ export type LilGuyAnimation = "idle" | "walk" | "happy" | "angry" | "sad" | "sho
 export type LilGuyStage = "normal" | "egg" | "angel" | "devil" | "hatchling";
 
 interface LilGuyProps {
+  userId?: Id<"users">;
   showControls?: boolean;
   showHealthBar?: boolean;
   size?: "normal" | "widget";
@@ -74,12 +79,12 @@ function getAnimationStates(stage: LilGuyStage) {
 }
 
 function LilGuyCanvas({
+  userId,
   showControls = false,
   showHealthBar = false,
   size = "normal",
   className = "",
   initialAnimation = "idle",
-  health: controlledHealth,
   stage: controlledStage,
   animation: controlledAnimation,
   color,
@@ -87,68 +92,33 @@ function LilGuyCanvas({
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const animRef = useRef<number | null>(null);
   const [animation, setAnimation] = useState<LilGuyAnimation>(controlledAnimation || initialAnimation);
-  const [lilGuyColor, setLilGuyColor] = useState<LilGuyColor | null>(() => getLocalStorageItem('lilGuyColor', null));
-  const [lilGuyStage, setLilGuyStage] = useState<LilGuyStage>(() => getLocalStorageItem('lilGuyStage', 'normal'));
-  const [message, setMessage] = useState<string>("");
-  const [lilGuyName, setLilGuyName] = useState<string>("");
+
+  // Fetch LilGuy data from Convex if userId is provided
+  const lilguy = useQuery(api.lilguys.get, userId ? { userId } : "skip");
+
+
+  // State from Convex or fallback to localStorage
+  const [lilGuyColor, setLilGuyColor] = useState<LilGuyColor | null>(() =>
+    lilguy?.color || getLocalStorageItem('lilGuyColor', null)
+  );
+  const [lilGuyStage, setLilGuyStage] = useState<LilGuyStage>(() =>
+    lilguy?.stage || getLocalStorageItem('lilGuyStage', 'normal')
+  );
+  const [lilGuyName, setLilGuyName] = useState<string>(() =>
+    lilguy?.name || getLocalStorageItem("lilGuyName", "LilGuy")
+  );
+
+  // Update local state when Convex data changes
   useEffect(() => {
-    const storedName = getLocalStorageItem("lilGuyName", "LilGuy");
-    setLilGuyName(storedName);
-  }, []);
+    if (lilguy) {
+      setLilGuyColor(lilguy.color as LilGuyColor);
+      setLilGuyStage(lilguy.stage as LilGuyStage);
+      setLilGuyName(lilguy.name);
+    }
+  }, [lilguy]);
+
+
   const { health, setHealth } = useHealth();
-
-  // Listen for color changes from localStorage
-  useEffect(() => {
-    const onStorageChange = (e: StorageEvent | CustomEvent) => {
-      let key, value;
-      if (e instanceof CustomEvent) {
-        key = e.detail.key;
-        value = e.detail.value;
-      } else {
-        key = e.key;
-        value = e.newValue;
-      }
-      if (key === 'lilGuyColor' && value) {
-        setLilGuyColor(value);
-      }
-    };
-    window.addEventListener('storage', onStorageChange);
-    window.addEventListener('localStorageChanged', onStorageChange as EventListener);
-    return () => {
-      window.removeEventListener('storage', onStorageChange);
-      window.removeEventListener('localStorageChanged', onStorageChange as EventListener);
-    };
-  }, []);
-
-  // --- Listen for name changes in localStorage ---
-  useEffect(() => {
-    const handleStorage = () => {
-      const storedName = getLocalStorageItem("lilGuyName", "LilGuy");
-      setLilGuyName(storedName);
-    };
-    window.addEventListener('storage', handleStorage);
-    window.addEventListener('localStorageChanged', handleStorage);
-    return () => {
-      window.removeEventListener('storage', handleStorage);
-      window.removeEventListener('localStorageChanged', handleStorage);
-    };
-  }, []);
-
-  // --- Listen for message changes in localStorage ---
-  useEffect(() => {
-    const handleStorage = () => {
-      const storedMessage = getLocalStorageItem("lilGuyMessage", "");
-      setMessage(storedMessage);
-    };
-    window.addEventListener('storage', handleStorage);
-    window.addEventListener('localStorageChanged', handleStorage);
-    // Initialize message from localStorage on mount
-    handleStorage();
-    return () => {
-      window.removeEventListener('storage', handleStorage);
-      window.removeEventListener('localStorageChanged', handleStorage);
-    };
-  }, []);
 
   // --- Sprite image ref ---
   const spriteImageRef = useRef<HTMLImageElement | null>(null);
@@ -156,22 +126,22 @@ function LilGuyCanvas({
 
   // --- Sprite loading effect: runs when stage or color changes ---
   useEffect(() => {
-    if (lilGuyColor){
-    const spriteSheetPath = getSpriteSheetForStageAndColor(lilGuyStage, lilGuyColor);
-    if (spriteSheetPath === lastSpriteSheetRef.current && spriteImageRef.current) {
-      return;
+    if (lilGuyColor) {
+      const spriteSheetPath = getSpriteSheetForStageAndColor(lilGuyStage, lilGuyColor);
+      if (spriteSheetPath === lastSpriteSheetRef.current && spriteImageRef.current) {
+        return;
+      }
+      lastSpriteSheetRef.current = spriteSheetPath;
+      const img = new window.Image();
+      img.src = spriteSheetPath;
+      img.onload = () => {
+        spriteImageRef.current = img;
+      };
+      img.onerror = () => {
+        spriteImageRef.current = null;
+        console.error("Error loading sprite sheet asset:", spriteSheetPath);
+      };
     }
-    lastSpriteSheetRef.current = spriteSheetPath;
-    const img = new window.Image();
-    img.src = spriteSheetPath;
-    img.onload = () => {
-      spriteImageRef.current = img;
-    };
-    img.onerror = () => {
-      spriteImageRef.current = null;
-      console.error("Error loading sprite sheet asset:", spriteSheetPath);
-    };
-  }
   }, [lilGuyStage, lilGuyColor]);
 
   // --- Animation loop: draws the correct frame from the sprite sheet ---
@@ -244,58 +214,56 @@ function LilGuyCanvas({
     };
   }, [animation, size, lilGuyStage]);
 
-  // Listen for emotion updates and update health bar if needed
+  // Listen for emotion updates and update health bar if needed // TODO: remove this?
   useListenToEmotions((emotionEvent: EmotionEvent) => {
-    setAnimation(emotionEvent.type);
+    // setAnimation(emotionEvent.type);
     if (emotionEvent.health !== undefined) {
       setHealth(emotionEvent.health);
     }
   });
 
   // --- Listen for health and color changes via custom/localStorage events ---
-  useEffect(() => {
-    function handleCustomStorageChange(e: any) {
-      const { key, value } = e.detail || {};
-      if (key === "lilGuyColor") {
-        setLilGuyColor(value as LilGuyColor);
-      } else if (key === "lilGuyStage") {
-        setLilGuyStage(value as LilGuyStage);
-      } else if (key === "lilGuyName") {
-        setLilGuyName(value);
-      }
-    }
+  // useEffect(() => {
+  //   function handleCustomStorageChange(e: any) {
+  //     const { key, value } = e.detail || {};
+  //     if (key === "lilGuyColor") {
+  //       setLilGuyColor(value as LilGuyColor);
+  //     } else if (key === "lilGuyStage") {
+  //       setLilGuyStage(value as LilGuyStage);
+  //     } else if (key === "lilGuyName") {
+  //       setLilGuyName(value);
+  //     }
+  //   }
 
-    function handleStorageChange(e: StorageEvent) {
-      if (e.key === "lilGuyColor") {
-        setLilGuyColor((e.newValue || "green") as LilGuyColor);
-      } else if (e.key === "lilGuyStage") {
-        setLilGuyStage((e.newValue || "normal") as LilGuyStage);
-      } else if (e.key === "lilGuyName") {
-        setLilGuyName(e.newValue || "LilGuy");
-      }
-    }
+  //   function handleStorageChange(e: StorageEvent) {
+  //     if (e.key === "lilGuyColor") {
+  //       setLilGuyColor((e.newValue || "green") as LilGuyColor);
+  //     } else if (e.key === "lilGuyStage") {
+  //       setLilGuyStage((e.newValue || "normal") as LilGuyStage);
+  //     } else if (e.key === "lilGuyName") {
+  //       setLilGuyName(e.newValue || "LilGuy");
+  //     }
+  //   }
 
-    window.addEventListener("localStorageChanged", handleCustomStorageChange as any);
-    window.addEventListener("storage", handleStorageChange);
-    return () => {
-      window.removeEventListener("localStorageChanged", handleCustomStorageChange as any);
-      window.removeEventListener("storage", handleStorageChange);
-    };
-  }, []);
+  //   window.addEventListener("localStorageChanged", handleCustomStorageChange as any);
+  //   window.addEventListener("storage", handleStorageChange);
+  //   return () => {
+  //     window.removeEventListener("localStorageChanged", handleCustomStorageChange as any);
+  //     window.removeEventListener("storage", handleStorageChange);
+  //   };
+  // }, []);
 
-  useEffect(() => {
-    setLocalStorageItem('lilGuyColor', lilGuyColor);
-  }, [lilGuyColor]);
-  useEffect(() => {
-    setLocalStorageItem('lilGuyStage', lilGuyStage);
-  }, [lilGuyStage]);
+  // useEffect(() => {
+  //   setLocalStorageItem('lilGuyColor', lilGuyColor);
+  // }, [lilGuyColor]);
+  // useEffect(() => {
+  //   setLocalStorageItem('lilGuyStage', lilGuyStage);
+  // }, [lilGuyStage]);
 
-  useEffect(() => {
-    if (controlledHealth !== undefined) setHealth(controlledHealth);
-  }, [controlledHealth]);
-  useEffect(() => {
-    if (controlledStage) setLilGuyStage(controlledStage);
-  }, [controlledStage]);
+  // useEffect(() => {
+  //   if (controlledStage) setLilGuyStage(controlledStage);
+  // }, [controlledStage]);
+
   useEffect(() => {
     if (controlledAnimation) setAnimation(controlledAnimation);
   }, [controlledAnimation]);
@@ -317,7 +285,7 @@ function LilGuyCanvas({
         {/* Show name above the canvas */}
         {size === "normal" && (
           <div className="w-full bg-pixel-primary text-black px-4 py-2 border-t-2 border-l-2 border-r-2 border-black text-center font-bold shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-            <CharacterNameEditor name={lilGuyName} setName={setLilGuyName} />
+            <CharacterNameEditor name={lilGuyName} setName={setLilGuyName} userId={userId} />
           </div>
         )}
 
@@ -341,9 +309,10 @@ function LilGuyCanvas({
 }
 
 // --- Character Name Editor for LilGuy ---
-function CharacterNameEditor({ name, setName }: { name: string, setName: (name: string) => void }) {
+function CharacterNameEditor({ userId, name, setName }: { userId?: Id<"users">, name: string, setName: (name: string) => void }) {
   const [showInput, setShowInput] = useState(false);
   const [newName, setNewName] = useState(name);
+  const updateLilguy = useMutation(api.lilguys.update);
 
   useEffect(() => {
     setNewName(name);
@@ -353,6 +322,16 @@ function CharacterNameEditor({ name, setName }: { name: string, setName: (name: 
     if (newName.trim()) {
       setName(newName);
       setLocalStorageItem("lilGuyName", newName);
+
+      // Update name in Convex if userId is available
+      if (userId) {
+        try {
+          updateLilguy({ userId, name: newName });
+        } catch (error) {
+          console.error("Failed to update LilGuy name in Convex:", error);
+        }
+      }
+
       setShowInput(false);
     }
   };
@@ -434,17 +413,61 @@ const getInitialLilGuyState = () => {
 };
 
 // --- Main LilGuy Component ---
-function LilGuy({ showControls = true, size = "normal", className = "", initialAnimation = "idle", health: controlledHealth }: LilGuyProps) {
-  const [lilGuyStage, setLilGuyStage] = useState<LilGuyStage>(() => getLocalStorageItem('lilGuyStage', 'egg'));
-  const [lilGuyColor, setLilGuyColor] = useState<LilGuyColor | null>(() => getLocalStorageItem('lilGuyColor', null));
+function LilGuy({ showControls = true, size = "normal", className = "", initialAnimation = "idle", userId }: LilGuyProps) {
+  const lilguy = useQuery(api.lilguys.get, userId ? { userId } : "skip");
+
+  // Convex mutations
+  const updateLilguy = useMutation(api.lilguys.update);
+  const updateLilguyHealth = useMutation(api.lilguys.updateHealth);
+  const updateLilguyStage = useMutation(api.lilguys.updateStage);
+  const updateLilguyAnimation = useMutation(api.lilguys.updateAnimation);
+  const createLilguy = useMutation(api.lilguys.create);
+
+  // State from Convex or fallback to localStorage
+  const [lilGuyStage, setLilGuyStage] = useState<LilGuyStage>(() =>
+    lilguy?.stage || getLocalStorageItem('lilGuyStage', 'egg')
+  );
+  const [lilGuyColor, setLilGuyColor] = useState<LilGuyColor | null>(() =>
+    lilguy?.color || getLocalStorageItem('lilGuyColor', null)
+  );
   const [animation, setAnimation] = useState<LilGuyAnimation>(initialAnimation);
   const [firstGoalSet, setFirstGoalSet] = useState(() => getLocalStorageItem('lilGuyFirstGoalSet', false) === 'true');
   const [hatching, setHatching] = useState(false);
   const [evolution, setEvolution] = useState<'angel' | 'devil' | null>(null);
-  const [lilGuyName, setLilGuyName] = useState<string>("");
+  const [lilGuyName, setLilGuyName] = useState<string>(() =>
+    lilguy?.name || getLocalStorageItem("lilGuyName", "LilGuy")
+  );
   const [lilGuyMessage, setLilGuyMessage] = useState<string>("");
 
-  // Listen for lilGuyMessage changes in localStorage
+  // Create a new LilGuy in Convex if one doesn't exist
+  useEffect(() => {
+    if (userId && !lilguy) {
+      const color = getRandomColor();
+      const name = "LilGuy";
+
+      try {
+        createLilguy({
+          userId,
+          color,
+          name,
+        });
+        console.log("[LilGuy] Created new LilGuy in Convex");
+      } catch (error) {
+        console.error("Failed to create LilGuy in Convex:", error);
+      }
+    }
+  }, [userId, lilguy, createLilguy]);
+
+  // Update local state when Convex data changes
+  useEffect(() => {
+    if (lilguy) {
+      setLilGuyColor(lilguy.color as LilGuyColor);
+      setLilGuyStage(lilguy.stage as LilGuyStage);
+      setLilGuyName(lilguy.name);
+    }
+  }, [lilguy]);
+
+  // Listen for lilGuyMessage changes in localStorage (fallback)
   useEffect(() => {
     const syncMessage = () => {
       const msg = typeof window !== 'undefined' ? localStorage.getItem('lilGuyMessage') || '' : '';
@@ -462,26 +485,10 @@ function LilGuy({ showControls = true, size = "normal", className = "", initialA
     };
   }, []);
 
-  useEffect(() => {
-    const storedName = getLocalStorageItem("lilGuyName", "LilGuy");
-    setLilGuyName(storedName);
-  }, []);
 
-  // --- Listen for name changes in localStorage ---
-  useEffect(() => {
-    const handleStorage = () => {
-      const storedName = getLocalStorageItem("lilGuyName", "LilGuy");
-      setLilGuyName(storedName);
-    };
-    window.addEventListener('storage', handleStorage);
-    window.addEventListener('localStorageChanged', handleStorage);
-    return () => {
-      window.removeEventListener('storage', handleStorage);
-      window.removeEventListener('localStorageChanged', handleStorage);
-    };
-  }, []);
 
-  // Listen for lilGuyColor changes in localStorage
+
+  // Listen for lilGuyColor changes in localStorage (fallback)
   useEffect(() => {
     const handleColorChange = (e: any) => {
       if (e.detail && e.detail.key === 'lilGuyColor') {
@@ -494,14 +501,16 @@ function LilGuy({ showControls = true, size = "normal", className = "", initialA
     };
   }, []);
 
-  // On mount, initialize state
+  // On mount, initialize state // TODO: remove this?
   useEffect(() => {
-    const { color, stage, firstGoalSet, productivity, hoursTracked } = getInitialLilGuyState();
-    setLilGuyColor(color);
-    setLilGuyStage(stage);
-    setFirstGoalSet(firstGoalSet);
-    console.log("[LilGuy] useEffect - initial state", { color, stage, firstGoalSet, productivity, hoursTracked });
-  }, []);
+    if (!lilguy) {
+      const { color, stage, firstGoalSet, productivity, hoursTracked } = getInitialLilGuyState();
+      setLilGuyColor(color);
+      setLilGuyStage(stage);
+      setFirstGoalSet(firstGoalSet);
+      console.log("[LilGuy] useEffect - initial state", { color, stage, firstGoalSet, productivity, hoursTracked });
+    }
+  }, [lilguy]);
 
   // Helper: Play animation once then callback
   function playAnimationOnce(setAnimation: any, animation: string, onEnd: () => void, durationMs: number) {
@@ -516,18 +525,36 @@ function LilGuy({ showControls = true, size = "normal", className = "", initialA
     if (!firstGoalSet) {
       setLilGuyStage('egg');
       setAnimation('shake');
+
+      // Update stage in Convex if userId is available // TODO: remove this?
+      if (userId) {
+        try {
+          updateLilguyStage({ userId, stage: 'egg' });
+        } catch (error) {
+          console.error("Failed to update LilGuy stage in Convex:", error);
+        }
+      }
     }
-  }, [firstGoalSet]);
+  }, [firstGoalSet, userId]);
 
   // --- Effect: First Goal Set (Hatch Sequence) ---
   useEffect(() => {
     if (firstGoalSet && lilGuyStage === 'egg' && !hatching) {
       // Assign random color if not set
-      let color = getLocalStorageItem('lilGuyColor', null);
+      let color = lilguy?.color || getLocalStorageItem('lilGuyColor', null); // TODO: remove this?
       if (!color) {
         color = getRandomColor();
         setLocalStorageItem('lilGuyColor', color);
         setLilGuyColor(color);
+
+        // Update color in Convex if userId is available
+        if (userId) {
+          try {
+            updateLilguy({ userId, color });
+          } catch (error) {
+            console.error("Failed to update LilGuy color in Convex:", error);
+          }
+        }
       }
       setHatching(true);
       playAnimationOnce(setAnimation, 'hatch', () => {
@@ -536,9 +563,19 @@ function LilGuy({ showControls = true, size = "normal", className = "", initialA
         setAnimation('idle');
         setLocalStorageItem('lilGuyStage', 'normal');
         setLocalStorageItem('lilGuyAnimation', 'idle');
+
+        // Update stage and animation in Convex if userId is available
+        if (userId) {
+          try {
+            updateLilguyStage({ userId, stage: 'normal' });
+            updateLilguyAnimation({ userId, animation: 'idle' });
+          } catch (error) {
+            console.error("Failed to update LilGuy stage/animation in Convex:", error);
+          }
+        }
       }, 2000); // 2s hatch
     }
-  }, [firstGoalSet, lilGuyStage, hatching]);
+  }, [firstGoalSet, lilGuyStage, hatching, userId, lilguy]);
 
   // --- Effect: Productivity Evolution ---
   useEffect(() => {
@@ -552,6 +589,16 @@ function LilGuy({ showControls = true, size = "normal", className = "", initialA
           setAnimation('idle');
           setLocalStorageItem('lilGuyStage', 'angel');
           setLocalStorageItem('lilGuyAnimation', 'idle');
+
+          // Update stage and animation in Convex if userId is available
+          if (userId) {
+            try {
+              updateLilguyStage({ userId, stage: 'angel' });
+              updateLilguyAnimation({ userId, animation: 'idle' });
+            } catch (error) {
+              console.error("Failed to update LilGuy stage/animation in Convex:", error);
+            }
+          }
         }, 1200);
       } else if (prod < 30 && hours >= 2 && evolution !== 'devil') {
         setEvolution('devil');
@@ -560,10 +607,20 @@ function LilGuy({ showControls = true, size = "normal", className = "", initialA
           setAnimation('idle');
           setLocalStorageItem('lilGuyStage', 'devil');
           setLocalStorageItem('lilGuyAnimation', 'idle');
+
+          // Update stage and animation in Convex if userId is available
+          if (userId) {
+            try {
+              updateLilguyStage({ userId, stage: 'devil' });
+              updateLilguyAnimation({ userId, animation: 'idle' });
+            } catch (error) {
+              console.error("Failed to update LilGuy stage/animation in Convex:", error);
+            }
+          }
         }, 1200);
       }
     }
-  }, [lilGuyStage, evolution]);
+  }, [lilGuyStage, evolution, userId]);
 
   // --- Hide Controls in Egg State ---
   const controlsVisible = showControls && lilGuyStage !== 'egg';
@@ -580,6 +637,7 @@ function LilGuy({ showControls = true, size = "normal", className = "", initialA
   return (
     <div>
       <LilGuyCanvas
+        userId={userId}
         {...{ showControls: false, showHealthBar: true, size, className, initialAnimation }}
         stage={hatching ? "egg" : lilGuyStage}
         animation={hatching ? "hatch" : animation}
