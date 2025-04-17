@@ -591,3 +591,127 @@ div[class*="w-full border-2 border-black bg-white shadow"] > div {
   max-width: min(300px, calc(100vw - 2rem));
   width: auto !important;
 }
+
+/* Mobile-specific adjustments for dashboard components */
+@media (max-width: 640px) {
+  /* Remove padding from the Goals container on mobile */
+  div[class*="p-4"] > div[class*="bg-blue-100"],
+  div[class*="p-4"] > div[class*="bg-green-100"],
+  div[class*="p-4"] > div[class*="bg-yellow-100"] {
+    margin: -1rem !important;
+    width: calc(100% + 2rem) !important;
+    border-radius: 0 !important;
+  }
+  
+  /* Remove padding from SimpleContainer content on mobile */
+  div[class*="w-full border-2 border-black bg-white shadow"] + div > div > div[class*="p-4"] > div[class*="flex gap-2 mb-6"] {
+    padding: 0.5rem !important;
+  }
+  
+  /* Remove padding from productivity graph container on mobile, but keep padding for the metrics boxes */
+  .recharts-responsive-container {
+    padding: 0 !important;
+  }
+  
+  /* Keep padding for the productivity metrics boxes */
+  .pixel-window-content {
+    padding: 1rem !important;
+  }
+  
+  /* Remove padding around dashboard tab content on mobile */
+  div[class*="w-full border-2 border-black bg-white shadow"] + div > div > div[class*="p-4"] {
+    padding: 0 !important;
+  }
+  
+  /* Ensure charts and graphs fit within mobile viewport */
+  .recharts-responsive-container {
+    width: 100% !important;
+    max-width: 100vw !important;
+    margin-left: -8px;
+  }
+  
+  /* Make the notification for no websites attributed flex on mobile */
+  div[class*="text-center py-4 text-pixel-warning bg-yellow-50"] {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+  }
+  
+  /* Add spacing between text and button */
+  div[class*="text-center py-4 text-pixel-warning bg-yellow-50"] button {
+    margin-top: 0.75rem !important;
+  }
+}
+
+/* Mobile-specific adjustments for goals and site list */
+@media (max-width: 640px) {
+  /* Make edit and delete buttons in goals share one line but appear below goal text */
+  div[class*="flex items-center justify-between gap-2 mb-2"] {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  /* Keep edit and delete buttons on the same line but move them below */
+  div[class*="flex-shrink-0 flex items-center gap-1"] {
+    width: 100%;
+    justify-content: flex-start;
+    margin-top: 0.5rem;
+  }
+  
+  /* Make site list filters wrap on mobile */
+  div[class*="flex gap-2 mt-1"] {
+    flex-wrap: wrap;
+  }
+  
+  /* Ensure filter buttons have proper spacing */
+  div[class*="flex gap-2 mt-1"] button {
+    margin-bottom: 0.5rem;
+  }
+  
+  /* Make "No websites attributed" message stack vertically on mobile */
+  div[class*="text-xs text-pixel-warning bg-yellow-50 border border-yellow-200 rounded"] {
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    gap: 0.75rem !important;
+  }
+  
+  /* Remove margin from button in the message */
+  div[class*="text-xs text-pixel-warning bg-yellow-50 border border-yellow-200 rounded"] button {
+    margin-left: 0 !important;
+  }
+}
+
+/* Fix for notifications popup overflow on mobile and tablet */
+@media (max-width: 1024px) {
+  /* Target the notifications dropdown content */
+  [class*="pixel-window w-80 z-50"] {
+    width: calc(100vw - 32px) !important;
+    max-width: 320px !important;
+    right: 0 !important;
+    left: auto !important;
+    position: fixed !important;
+  }
+  
+  /* Ensure dropdown content stays within viewport */
+  [data-radix-popper-content-wrapper] {
+    max-width: calc(100vw - 16px) !important;
+    transform: none !important;
+    right: 8px !important;
+    left: auto !important;
+  }
+  
+  /* Ensure the dropdown content is properly positioned */
+  div[class*="pixel-window-content"] {
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+}
+
+/* Additional fixes for very small screens */
+@media (max-width: 480px) {
+  [class*="pixel-window w-80 z-50"] {
+    max-width: calc(100vw - 32px) !important;
+  }
+}
