@@ -144,10 +144,10 @@ export default function Home() {
         <div className="min-h-screen flex flex-col bg-pixel-pattern">
           <Header />
           <main className="flex-1 container max-w-[100%] px-4 py-6">
-            <div className="flex flex-col md:flex-row gap-6">
+            <div className="flex flex-col lg:flex-row gap-6">
 
               {/* Left sidebar with LilGuy */}
-              <div className="md:w-[40%] lg:sticky top-6 h-[min-content]">
+              <div className="lg:w-[40%] lg:sticky top-6 h-[min-content]">
                 <PixelWindow
                   title="LILGUY"
                   className="mb-4"

@@ -452,3 +452,142 @@
   min-width: 0;
   max-width: 140px;
 }
+
+/* Ensure content never exceeds viewport width on mobile */
+@media (max-width: 640px) {
+  .site-input,
+  .site-category-select,
+  .site-goal-select {
+    max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  /* Prevent horizontal scrolling on container */
+  div[class*="w-full border-2 border-black bg-white shadow"] {
+    max-width: 100vw;
+    overflow-x: hidden;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  
+  /* Ensure items inside SimpleItem don't overflow */
+  div[class*="p-3 border-2 border-black"] {
+    padding: 0.75rem;
+    width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
+  }
+  
+  /* Fix select dropdowns */
+  [class*="SelectTrigger"] {
+    max-width: 100%;
+    width: auto !important;
+  }
+  
+  /* Ensure buttons don't cause overflow */
+  button {
+    white-space: nowrap;
+  }
+}
+
+/* Fix for mobile website items */
+@media (max-width: 640px) {
+  /* Ensure website items stack properly */
+  [id^="website-"] > div {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  /* Make dropdowns and buttons take full width */
+  [id^="website-"] .site-category-select,
+  [id^="website-"] .site-goal-select {
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  /* Add space between stacked elements */
+  [id^="website-"] > div > div:last-child {
+    margin-top: 0.5rem;
+    width: 100%;
+  }
+}
+
+/* Fix for tablet view (600px-1024px) */
+@media (min-width: 641px) and (max-width: 1024px) {
+  /* Prevent container from expanding beyond viewport */
+  div[class*="w-full border-2 border-black bg-white shadow"] {
+    max-width: calc(100vw - 2rem);
+    overflow-x: hidden;
+    box-sizing: border-box;
+  }
+  
+  /* Ensure website items don't cause overflow */
+  [id^="website-"] {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  
+  /* Limit width of website items content */
+  [id^="website-"] > div {
+    flex-wrap: wrap;
+    max-width: 100%;
+  }
+  
+  /* Ensure dropdowns don't expand beyond container */
+  [id^="website-"] .site-category-select,
+  [id^="website-"] .site-goal-select {
+    max-width: 140px;
+    width: auto;
+  }
+  
+  /* Fix select content positioning */
+  [class*="SelectContent"] {
+    max-width: calc(100vw - 3rem);
+    width: auto;
+  }
+}
+
+/* Fix for all screen sizes to prevent overflow */
+[class*="SelectContent"] {
+  max-width: calc(100vw - 2rem);
+  width: auto !important;
+}
+
+/* Ensure website items never cause overflow */
+[id^="website-"] {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+/* Fix pixel window width consistency across tabs */
+.pixel-window,
+div[class*="w-full border-2 border-black bg-white shadow"] {
+  width: 100%;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+}
+
+/* Ensure content inside the window stays within bounds */
+.pixel-window-content,
+div[class*="w-full border-2 border-black bg-white shadow"] > div {
+  width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+/* Ensure website items fit within container */
+[id^="website-"] {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+/* Fix select content positioning */
+[class*="SelectContent"] {
+  max-width: min(300px, calc(100vw - 2rem));
+  width: auto !important;
+}

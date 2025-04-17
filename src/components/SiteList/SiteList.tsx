@@ -405,8 +405,8 @@ const SiteList: React.FC<SiteListProps> = ({ userId }) => {
       instructionText="Click on a category to change it or remove a website"
       renderInstructionAfterInput={true}
     >
-      <div className="flex gap-2 mb-3">
-        <div className="flex-1">
+      <div className="flex flex-col md:flex-row gap-2 mb-3">
+        <div className="w-full">
           <Input
             ref={inputRef}
             placeholder="Enter website URL (e.g., example.com)"
@@ -420,36 +420,39 @@ const SiteList: React.FC<SiteListProps> = ({ userId }) => {
             <div className="text-red-600 text-xs mt-1 px-1">{inputError}</div>
           )}
         </div>
-        <Select
-          value={category}
-          onValueChange={handleSelectValueChange}
-        >
-          <SelectTrigger
-            ref={selectRef}
-            tabIndex={0}
-            onKeyDown={handleSelectKeyDown}
-            aria-label="Website category"
+        <div className="flex gap-2 mt-2 md:mt-0">
+          <Select
+            value={category}
+            onValueChange={handleSelectValueChange}
           >
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectItem value="neutral">Neutral</SelectItem>
-              <SelectItem value="productive">Productive</SelectItem>
-              <SelectItem value="unproductive">Unproductive</SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-        <Button
-          ref={addBtnRef}
-          onClick={handleAddWebsite}
-          tabIndex={0}
-          aria-label="Add website"
-          className="pixel-button"
-        >
-          <PlusIcon />
-          <span className="ml-1 text-pixel-sm">ADD</span>
-        </Button>
+            <SelectTrigger
+              ref={selectRef}
+              tabIndex={0}
+              onKeyDown={handleSelectKeyDown}
+              aria-label="Website category"
+              className="site-category-select"
+            >
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem value="neutral">Neutral</SelectItem>
+                <SelectItem value="productive">Productive</SelectItem>
+                <SelectItem value="unproductive">Unproductive</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          <Button
+            ref={addBtnRef}
+            onClick={handleAddWebsite}
+            tabIndex={0}
+            aria-label="Add website"
+            className="pixel-button"
+          >
+            <PlusIcon />
+            <span className="ml-1 text-pixel-sm">ADD</span>
+          </Button>
+        </div>
       </div>
 
       <div className="mb-4">
@@ -522,7 +525,7 @@ const SiteList: React.FC<SiteListProps> = ({ userId }) => {
                     'rgba(245, 158, 11, 0.1)'
               }
             >
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <div className="flex-1">
                   <div className="font-medium">{website.hostname}</div>
                   <div className="text-xs text-muted-foreground">
@@ -550,7 +553,7 @@ const SiteList: React.FC<SiteListProps> = ({ userId }) => {
                     </div>
                   )}
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2 mt-2 sm:mt-0">
                   <Select
                     value={website.classification}
                     onValueChange={(value) => handleCategoryChange(
