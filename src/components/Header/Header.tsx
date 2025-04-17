@@ -2,55 +2,64 @@ import React from 'react';
 import { DropdownMenu } from "radix-ui";
 import AuthButton from '../AuthButton/AuthButton';
 import { Button } from '../ui/Button/Button';
-
-
-const notifications = [
-    { id: 1, message: "You've been productive for 2 hours today!", isRead: false },
-    { id: 2, message: "Your LilGuy is hungry! Feed them to boost mood.", isRead: false },
-    { id: 3, message: "New trophy unlocked: Early Bird", isRead: true },
-];
+import { useQuery, useMutation } from 'convex/react';
+import { api } from '../../../convex/_generated/api';
+import { Id } from '../../../convex/_generated/dataModel';
 
 // Pixel art icon components
 const BellIcon = () => (
-  <div className="w-6 h-6 relative flex items-center justify-center p-1">
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="pixelated">
-      <rect x="7" y="2" width="6" height="2" fill="currentColor" />
-      <rect x="5" y="4" width="2" height="2" fill="currentColor" />
-      <rect x="13" y="4" width="2" height="2" fill="currentColor" />
-      <rect x="5" y="6" width="2" height="8" fill="currentColor" />
-      <rect x="13" y="6" width="2" height="8" fill="currentColor" />
-      <rect x="7" y="14" width="6" height="2" fill="currentColor" />
-      <rect x="3" y="12" width="2" height="2" fill="currentColor" />
-      <rect x="15" y="12" width="2" height="2" fill="currentColor" />
-      <rect x="7" y="16" width="2" height="2" fill="currentColor" />
-      <rect x="11" y="16" width="2" height="2" fill="currentColor" />
-      <rect x="9" y="18" width="2" height="2" fill="currentColor" />
-    </svg>
-  </div>
+    <div className="w-6 h-6 relative flex items-center justify-center p-1">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="pixelated">
+            <rect x="7" y="2" width="6" height="2" fill="currentColor" />
+            <rect x="5" y="4" width="2" height="2" fill="currentColor" />
+            <rect x="13" y="4" width="2" height="2" fill="currentColor" />
+            <rect x="5" y="6" width="2" height="8" fill="currentColor" />
+            <rect x="13" y="6" width="2" height="8" fill="currentColor" />
+            <rect x="7" y="14" width="6" height="2" fill="currentColor" />
+            <rect x="3" y="12" width="2" height="2" fill="currentColor" />
+            <rect x="15" y="12" width="2" height="2" fill="currentColor" />
+            <rect x="7" y="16" width="2" height="2" fill="currentColor" />
+            <rect x="11" y="16" width="2" height="2" fill="currentColor" />
+            <rect x="9" y="18" width="2" height="2" fill="currentColor" />
+        </svg>
+    </div>
 );
 
 const SettingsIcon = () => (
-  <div className="w-6 h-6 relative flex items-center justify-center p-1">
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="pixelated">
-      <rect x="8" y="2" width="4" height="2" fill="currentColor" />
-      <rect x="8" y="16" width="4" height="2" fill="currentColor" />
-      <rect x="16" y="8" width="2" height="4" fill="currentColor" />
-      <rect x="2" y="8" width="2" height="4" fill="currentColor" />
-      <rect x="5" y="3" width="2" height="2" fill="currentColor" />
-      <rect x="13" y="3" width="2" height="2" fill="currentColor" />
-      <rect x="13" y="15" width="2" height="2" fill="currentColor" />
-      <rect x="5" y="15" width="2" height="2" fill="currentColor" />
-      <rect x="6" y="6" width="8" height="8" fill="currentColor" />
-      <rect x="8" y="8" width="4" height="4" fill="white" />
-    </svg>
-  </div>
+    <div className="w-6 h-6 relative flex items-center justify-center p-1">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="pixelated">
+            <rect x="8" y="2" width="4" height="2" fill="currentColor" />
+            <rect x="8" y="16" width="4" height="2" fill="currentColor" />
+            <rect x="16" y="8" width="2" height="4" fill="currentColor" />
+            <rect x="2" y="8" width="2" height="4" fill="currentColor" />
+            <rect x="5" y="3" width="2" height="2" fill="currentColor" />
+            <rect x="13" y="3" width="2" height="2" fill="currentColor" />
+            <rect x="13" y="15" width="2" height="2" fill="currentColor" />
+            <rect x="5" y="15" width="2" height="2" fill="currentColor" />
+            <rect x="6" y="6" width="8" height="8" fill="currentColor" />
+            <rect x="8" y="8" width="4" height="4" fill="white" />
+        </svg>
+    </div>
 );
 
-const Header: React.FC = () => {
-    return (
+const Header: React.FC<{ userId: string | undefined }> = ({ userId }) => {
+    const unreadMessages = useQuery(api.messages.getUnreadMessagesByUser, userId ? { userId } : "skip");
+    const markAllMessagesAsRead = useMutation(api.messages.markAllMessagesAsRead);
+    const markMessageAsRead = useMutation(api.messages.markMessageAsRead);
 
+    const handleMarkAllAsRead = () => {
+        if (userId) {
+            markAllMessagesAsRead({ userId });
+        }
+    };
+
+    const handleMarkMessageAsRead = (messageId: Id<"messages">) => {
+        markMessageAsRead({ messageId });
+    };
+
+    return (
         <header className="bg-white border-b-2 border-black px-4 py-2 flex justify-between items-center">
-           
+
             <div className="flex items-center gap-2">
                 <div className="w-8 h-8 bg-white border-2 border-black flex items-center justify-center">
                     <div className="w-6 h-6 bg-pixel-green flex items-center justify-center">
@@ -73,7 +82,7 @@ const Header: React.FC = () => {
                             className="relative pixel-button pixel-button-secondary p-1"
                         >
                             <BellIcon />
-                            {notifications.some(n => !n.isRead) && (
+                            {unreadMessages && unreadMessages.length > 0 && (
                                 <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border border-black"></span>
                             )}
                         </Button>
@@ -88,29 +97,35 @@ const Header: React.FC = () => {
                             </div>
                         </div>
                         <div className="pixel-window-content">
-                            {notifications.length === 0 ? (
+                            {!unreadMessages || unreadMessages.length === 0 ? (
                                 <div className="py-2 px-4 text-sm text-pixel-sm text-center">
                                     No notifications
                                 </div>
                             ) : (
                                 <div className="space-y-2">
-                                    {notifications.map((notification) => (
+                                    {unreadMessages.map((message) => (
                                         <DropdownMenu.Item
-                                            key={notification.id}
+                                            key={message._id}
                                             className="cursor-pointer border border-black py-2 px-3"
+                                            onClick={() => handleMarkMessageAsRead(message._id)}
                                         >
                                             <div className="flex items-start gap-2">
                                                 <div
-                                                    className={`w-2 h-2 mt-1.5 border border-black flex-shrink-0 ${notification.isRead ? 'bg-transparent' : 'bg-red-500'}`}
+                                                    className={`w-2 h-2 mt-1.5 border border-black flex-shrink-0 ${message.read ? 'bg-transparent' : 'bg-red-500'}`}
                                                 />
-                                                <div className="text-pixel-sm">{notification.message}</div>
+                                                <div className="text-pixel-sm">{message.body}</div>
                                             </div>
                                         </DropdownMenu.Item>
                                     ))}
                                 </div>
                             )}
                             <div className="mt-3 flex justify-center">
-                                <button className="pixel-button text-pixel-sm">OK</button>
+                                <button 
+                                    className="pixel-button text-pixel-sm"
+                                    onClick={handleMarkAllAsRead}
+                                >
+                                    OK
+                                </button>
                             </div>
                         </div>
                     </DropdownMenu.Content>

@@ -317,13 +317,13 @@ export default function TestWindow({ userId }: { userId: string | undefined }) {
     })
 
     // TODO remove?
-    setLocalStorageItem("lilGuyProductivity", 20);
-    setLocalStorageItem("lilGuyTrackedHours", 4);
-    setLocalStorageItem("lilGuyStage", "devil");
-    emitEmotion("angry", 100, "button");
-    setAndSyncMessage("Uh oh! Productivity is low. Devil form!");
-    window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'lilGuyStage', value: 'devil' } }));
-    localStorage.setItem('websites', JSON.stringify(unproductiveWebsites));
+    // setLocalStorageItem("lilGuyProductivity", 20);
+    // setLocalStorageItem("lilGuyTrackedHours", 4);
+    // setLocalStorageItem("lilGuyStage", "devil");
+    // emitEmotion("angry", 100, "button");
+    // setAndSyncMessage("Uh oh! Productivity is low. Devil form!");
+    // window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'lilGuyStage', value: 'devil' } }));
+    // localStorage.setItem('websites', JSON.stringify(unproductiveWebsites));
   };
 
   // --- Simulate Productive ---
@@ -337,13 +337,13 @@ export default function TestWindow({ userId }: { userId: string | undefined }) {
     })
 
     // TODO remove?
-    setLocalStorageItem("lilGuyProductivity", 90);
-    setLocalStorageItem("lilGuyTrackedHours", 4);
-    setLocalStorageItem("lilGuyStage", "angel");
-    emitEmotion("happy", 100, "button");
-    setAndSyncMessage("Amazing! Productivity is high. Angel form!");
-    window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'lilGuyStage', value: 'angel' } }));
-    localStorage.setItem('websites', JSON.stringify(productiveWebsites));
+    // setLocalStorageItem("lilGuyProductivity", 90);
+    // setLocalStorageItem("lilGuyTrackedHours", 4);
+    // setLocalStorageItem("lilGuyStage", "angel");
+    // emitEmotion("happy", 100, "button");
+    // setAndSyncMessage("Amazing! Productivity is high. Angel form!");
+    // window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'lilGuyStage', value: 'angel' } }));
+    // localStorage.setItem('websites', JSON.stringify(productiveWebsites));
   };
 
   // --- Simulate Normal State with Sample Goals and Websites ---

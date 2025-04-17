@@ -26,7 +26,7 @@ export const getUnreadMessagesByUser = query({
       .filter((q) => q.eq(q.field("read"), false))
       .order("desc")
       .collect();
-    
+
     return messages;
   },
 });

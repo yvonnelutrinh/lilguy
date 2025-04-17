@@ -363,14 +363,17 @@ const getInitialLilGuyState = () => {
 // --- Main LilGuy Component ---
 function LilGuy({ size = "normal", className = "", initialAnimation = "idle", userId }: LilGuyProps) {
   const lilguy = useQuery(api.lilguys.get, userId ? { userId } : "skip");
-
+  
   // Convex mutations
   const updateLilguy = useMutation(api.lilguys.update);
-
   const updateLilguyStage = useMutation(api.lilguys.updateStage);
   const updateLilguyAnimation = useMutation(api.lilguys.updateAnimation);
   const createLilguy = useMutation(api.lilguys.create);
-
+  const markMessageAsRead = useMutation(api.messages.markMessageAsRead);
+  
+  // Query for unread messages
+  const unreadMessages = useQuery(api.messages.getUnreadMessagesByUser, userId ? { userId } : "skip");
+  
   // State from Convex or fallback to localStorage
   const [lilGuyStage, setLilGuyStage] = useState<LilGuyStage>(() =>
     lilguy?.stage || getLocalStorageItem('lilGuyStage', 'egg')

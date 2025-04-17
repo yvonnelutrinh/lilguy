@@ -130,7 +130,7 @@ export default function Home() {
       )}
       <HealthProvider>
         <div className="min-h-screen flex flex-col bg-pixel-pattern">
-          <Header />
+          <Header userId={convexUser?._id}/>
           <main className="flex-1 container max-w-[100%] px-4 py-6">
             <div className="flex flex-col md:flex-row gap-6">
 
