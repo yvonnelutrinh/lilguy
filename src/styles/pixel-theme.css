@@ -1316,6 +1316,57 @@ div[class*="cl-internal-b3fm6y"] {
   background-color: #4ADE80 !important;
 }
 
+/* Reduce spacing between form elements */
+.cl-card {
+  gap: 0.5rem !important;
+}
+
+.cl-formField {
+  margin-bottom: 0.25rem !important;
+}
+
+.cl-formButtonPrimary {
+  margin-top: 0.25rem !important;
+}
+
+.cl-socialButtonsBlock {
+  gap: 0.35rem !important;
+  margin-bottom: 0.35rem !important;
+}
+
+.cl-socialButtonsBlockButton {
+  margin-bottom: 0.35rem !important;
+}
+
+.cl-dividerText {
+  margin: 0.25rem 0 !important;
+}
+
+.cl-formFieldLabel {
+  margin-bottom: 0.15rem !important;
+  font-size: 0.85rem !important;
+}
+
+.cl-formFieldInput__input {
+  padding: 0.35rem 0.5rem !important;
+}
+
+.cl-formButtonPrimary {
+  padding: 0.5rem 1rem !important;
+  height: 2.25rem !important;
+}
+
+.cl-footer {
+  padding-top: 0.5rem !important;
+  margin-top: 0.5rem !important;
+}
+
+div[class*="cl-internal-b3fm6y"] {
+  margin-top: 0.5rem !important;
+  padding-top: 0.5rem !important;
+  gap: 0.25rem !important;
+}
+
 /* Fix for pixel window width consistency across tabs */
 .pixel-window,
 div[class*="w-full border-2 border-black bg-white shadow"] {

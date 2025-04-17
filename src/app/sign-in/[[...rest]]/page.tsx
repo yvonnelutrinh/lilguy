@@ -23,7 +23,7 @@ export default function Page() {
           <div className="text-center mb-3">
             <h2 className="text-lg font-pixel text-pixel-green mb-1">Welcome to LilGuy</h2>
             <p className="text-xs font-pixel-body text-gray-600">
-              Sign up to track your productivity and help your character grow.
+              Sign up to track your productivity and help your LilGuy grow.
             </p>
           </div>
           <div className="clerk-sign-in-container w-full flex justify-center">
