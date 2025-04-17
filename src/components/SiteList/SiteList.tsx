@@ -226,7 +226,7 @@ const SiteList: React.FC<SiteListProps> = ({ userId }) => {
 
     try {
       await addSitevisit({
-        userId,
+        userId:userId||"",
         hostname: newWebsite.trim(),
         classification: category
       });

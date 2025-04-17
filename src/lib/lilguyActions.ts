@@ -1,13 +1,13 @@
 // src/lib/lilguyActions.ts
 // Shared LilGuy action logic for first goal sequence and more
 
-import { getRandomColor } from "@/components/LilGuy/LilGuy";
+import { getRandomColor, LilGuyAnimation } from "@/components/LilGuy/LilGuy";
 
 export function triggerFirstGoalSequence({
   emitEmotion,
   setAndSyncMessage,
 }: {
-  emitEmotion: (animation: string, intensity: number, source?: string) => void,
+  emitEmotion: (type: LilGuyAnimation, intensity: number, source: string, health?: number) => void,
   setAndSyncMessage: (msg: string) => void,
 }) {
   if (typeof window === 'undefined') return;
