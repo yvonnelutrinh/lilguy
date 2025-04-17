@@ -120,7 +120,7 @@ export const unproductiveWebsites: Website[] = [
 export type { Website };
 
 interface SiteListProps {
-  userId: Id<"users"> | undefined;
+  userId?: Id<"users">;
 }
 
 

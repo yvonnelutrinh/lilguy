@@ -10,6 +10,9 @@ import {
     Legend
 } from 'recharts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/Card/Card";
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
+import { Id } from "../../../convex/_generated/dataModel";
 
 // Helper function to safely set localStorage item
 const setLocalStorageItem = (key: string, value: any) => {
@@ -61,6 +64,7 @@ const getWeekDataFromStorage = () => {
 
 interface ProductivityMetricsProps {
     className?: string;
+    userId?: Id<"users">;
 }
 
 // Pixel Icon components for metrics
@@ -115,16 +119,46 @@ const TrophyIcon = () => (
   </div>
 );
 
-const ProductivityMetrics: React.FC<ProductivityMetricsProps> = ({ className }) => {
-    // State for weekData
-    const [weekData, setWeekData] = useState(getWeekDataFromStorage());
+const ProductivityMetrics: React.FC<ProductivityMetricsProps> = ({ className, userId }) => {
+    
+    // use Convex query to get weekly productivity data
+    const weeklyData = useQuery(
+        api.sitevisit.getWeeklyProductivityData,
+        userId ? { userId } : "skip"
+    );
+    
+    // Transform the data from Convex to match the format expected by the component
+    const transformedWeekData = React.useMemo(() => {
+        if (!weeklyData) {
+            return getWeekDataFromStorage(); // Fallback to local storage if no data
+        }
+        
+        return weeklyData.map(day => {
+            const totalDuration = day.productiveDurationTotal + day.unproductiveDurationTotal;
+            const productivePercentage = totalDuration > 0 
+                ? Math.round((day.productiveDurationTotal / totalDuration) * 100) 
+                : 0;
+            const unproductivePercentage = totalDuration > 0 
+                ? Math.round((day.unproductiveDurationTotal / totalDuration) * 100) 
+                : 0;
+                
+            return {
+                day: day.day,
+                productive: productivePercentage,
+                unproductive: unproductivePercentage
+            };
+        });
+    }, [weeklyData]);
 
-    // Listen for localStorage changes (for reset/simulate)
+    // State for weekData
+    const [weekData, setWeekData] = useState(transformedWeekData);
+
+    // Update weekData when transformedWeekData changes
     useEffect(() => {
-      const handler = () => setWeekData(getWeekDataFromStorage());
-      window.addEventListener('localStorageChanged', handler);
-      return () => window.removeEventListener('localStorageChanged', handler);
-    }, []);
+        setWeekData(transformedWeekData);
+    }, [transformedWeekData]);
+
+
 
     // calculate today's productive time
     const todayIdx = new Date().getDay() === 0 ? 6 : new Date().getDay() - 1;

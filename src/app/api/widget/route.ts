@@ -15,8 +15,13 @@ export async function GET(request: Request) {
     }
 
     // Call the getSiteVisits query
-    //  AND GET USER QUERY
-    // AND ANYTHITHGINE ELSE WE WANT
+    // AND getUser QUERY
+    // AND anything else we want to make a widget
+
+    // widget will grab all inital data in one go (including current counts)
+
+    // BUT will also have to poll a seperatefor updates on current counts 
+
 
     return NextResponse.json({
       success: true,
