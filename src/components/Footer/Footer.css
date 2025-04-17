@@ -23,14 +23,15 @@
   gap: 0.5rem;
   font-family: 'VT323', monospace;
   font-size: 0.95rem;
-  color: #444;
+  color: var(--text-secondary);
   text-decoration: none;
   transition: background 0.15s, color 0.15s;
   opacity: 0.92;
   padding: 0.18rem 0.9rem 0.12rem 0.7rem; /* smaller size */
-  border: 1.5px solid #6e6e6e;
+  border: 1.5px solid var(--window-border);
   border-radius: 0;
-  background: rgba(255,255,255,0.72); /* transparent white background */
+  background: rgba(255,255,255,0.72); /* fallback for light mode */
+  background: var(--footer-link-bg, rgba(255,255,255,0.72));
   box-shadow: none;
   justify-content: center;
   margin-right: 6px;
@@ -45,6 +46,12 @@
   color: #222;
   box-shadow: none;
   opacity: 1;
+}
+
+[data-theme="dark"] .pixel-footer-link {
+  --footer-link-bg: rgba(36,41,46,0.82);
+  color: var(--text-secondary);
+  border-color: var(--window-border);
 }
 
 .pixel-github-icon {

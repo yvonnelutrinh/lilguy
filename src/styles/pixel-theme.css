@@ -52,6 +52,58 @@
   --text-light: #888888;
 }
 
+[data-theme="dark"] {
+  /* Dark Mode Color Palette */
+  --pixel-teal: #3b8a81;
+  --pixel-teal-dark: #24534e;
+  --pixel-teal-light: #5ebdb2;
+  --pixel-green: #4b7c4e;
+  --pixel-green-dark: #2c4a2c;
+  --pixel-green-light: #7cc47f;
+  --pixel-beige: #24292e;
+  --pixel-beige-dark: #181b1f;
+  --pixel-beige-light: #3b424a;
+  --pixel-blue: #22577a;
+  --pixel-blue-dark: #142d3b;
+  --pixel-blue-light: #68b0d8;
+  --pixel-pink: #b76e79;
+  --pixel-pink-dark: #7a434a;
+  --pixel-pink-light: #f5b0bd;
+
+  /* UI Element Colors */
+  --window-bg: #181b1f;
+  --window-header-bg: var(--pixel-teal-dark);
+  --window-header-text: #d8f6ff;
+  --window-border: #222b36;
+  --window-shadow: rgba(0,0,0,0.7);
+
+  /* Button Colors */
+  --button-primary-bg: var(--pixel-blue);
+  --button-primary-hover: var(--pixel-blue-light);
+  --button-primary-active: var(--pixel-blue-dark);
+  --button-secondary-bg: var(--pixel-beige);
+  --button-secondary-hover: var(--pixel-beige-light);
+  --button-secondary-active: var(--pixel-beige-dark);
+  --button-danger-bg: #ff5c5c;
+  --button-success-bg: var(--pixel-green);
+  --button-green-bg: var(--pixel-green);
+  --button-beige-bg: var(--pixel-beige);
+  --button-pink-bg: var(--pixel-pink);
+  --button-contrast-bg: #fff;
+  --button-contrast-text: #222;
+
+  /* Progress Bar Colors */
+  --progress-bg: #23272e;
+  --progress-fill-good: var(--pixel-green);
+  --progress-fill-medium: #e4c86f;
+  --progress-fill-bad: #ff5c5c;
+
+  /* Text Colors */
+  --text-primary: #e2eafc;
+  --text-secondary: #b1b8c8;
+  --text-light: #7a8499;
+}
+
 /* Pixel Window Styling */
 .pixel-window {
   border: 2px solid black;
