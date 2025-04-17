@@ -129,6 +129,8 @@ const ProductivityMetrics: React.FC<ProductivityMetricsProps> = ({ className, us
     
     // Transform the data from Convex to match the format expected by the component
     const transformedWeekData = React.useMemo(() => {
+
+        console.log('>>>>',weeklyData)
         if (!weeklyData) {
             return getWeekDataFromStorage(); // Fallback to local storage if no data
         }

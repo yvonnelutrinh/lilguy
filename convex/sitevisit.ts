@@ -50,7 +50,8 @@ export const getWeeklyProductivityData = query({
     // Group and aggregate data by day
     for (const visit of siteVisits) {
       const visitDate = new Date(visit.timeStamp);
-      const dayIndex = visitDate.getDay(); // 0 = Sunday, 1 = Monday, etc.
+      // Adjust the day index to shift it one day back to fix the offset
+      const dayIndex = (visitDate.getDay() + 6) % 7; // Shift one day back (Sunday becomes Saturday, Monday becomes Sunday, etc.)
       
       if (visit.classification === "productive") {
         result[dayIndex].productiveDurationTotal += visit.duration;
