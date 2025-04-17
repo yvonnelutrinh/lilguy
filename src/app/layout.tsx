@@ -20,14 +20,10 @@ export const metadata: Metadata = {
   description: "Track your productivity with your virtual pet LilGuy",
   icons: {
     icon: [
-      { url: '/favicon.png', sizes: '32x32', type: 'image/png' },
-      { url: '/icons/icon16.png', sizes: '16x16', type: 'image/png' },
-      { url: '/icons/icon32.png', sizes: '32x32', type: 'image/png' },
-      { url: '/icons/icon48.png', sizes: '48x48', type: 'image/png' },
-      { url: '/icons/icon192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/assets/icons/lilguy-logo.svg', sizes: 'any', type: 'image/svg+xml' },
     ],
     apple: [
-      { url: '/icons/icon192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/assets/icons/lilguy-logo.svg', sizes: 'any', type: 'image/svg+xml' },
     ],
   },
 };
@@ -40,8 +36,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="icon" href="/favicon.png" />
-        <link rel="apple-touch-icon" href="/icons/icon192.png" />
+        <link rel="icon" href="/assets/icons/lilguy-logo.svg" type="image/svg+xml" />
+        <link rel="apple-touch-icon" href="/assets/icons/lilguy-logo.svg" type="image/svg+xml" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}

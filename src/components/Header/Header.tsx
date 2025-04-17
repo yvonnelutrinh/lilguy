@@ -49,11 +49,7 @@ const Header: React.FC = () => {
     return (
         <header className="bg-white border-pixel border-black px-4 py-2 flex justify-between items-center">
             <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-white border-pixel border-black flex items-center justify-center">
-                    <div className="w-6 h-6 bg-pixel-green flex items-center justify-center">
-                        <span className="text-black text-xs font-bold font-pixel">LG</span>
-                    </div>
-                </div>
+                <img src="/assets/icons/lilguy-logo.svg" alt="LilGuy Logo" className="w-8 h-8 bg-white border-pixel border-black flex items-center justify-center" />
                 <h1 className="text-base font-bold sm:block font-pixel">LilGuy</h1>
             </div>
 
