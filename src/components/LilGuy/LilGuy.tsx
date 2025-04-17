@@ -9,7 +9,7 @@ import { Id } from "../../../convex/_generated/dataModel";
 import { HealthBar } from "../HealthBar/HealthBar";
 import PixelWindow from '../ui/PixelWindow';
 import { Pencil } from "lucide-react";
-import { Button } from "@/components/UI/Button/Button";
+import { Button } from "../ui/Button/Button";
 
 // helper function to safely access localStorage
 const getLocalStorageItem = (key: string, defaultValue: any) => {

@@ -2,7 +2,7 @@ import Image from 'next/image';
 import { DropdownMenu } from "radix-ui";
 import React from 'react';
 import SignInButton from '../SignInButton/SignInButton';
-import { Button } from '../UI/Button/Button';
+import { Button } from '../ui/Button/Button';
 
 
 const notifications = [

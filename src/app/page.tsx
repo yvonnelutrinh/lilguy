@@ -7,13 +7,12 @@ import type { LilGuyColor } from "@/components/LilGuy/LilGuy";
 import { LilGuy } from "@/components/LilGuy/LilGuy";
 import ProductivityMetrics from "@/components/ProductivityMetrics/ProductivityMetrics";
 import SiteList from "@/components/SiteList/SiteList";
-import TestWindow from "@/components/TestWindow/TestWindow";
 import PixelWindow from "@/components/ui/PixelWindow";
 import Footer from "@/components/Footer/Footer"; // Correct import path for Footer
 import { HealthProvider } from "@/context/HealthContext";
 import { useUser } from "@clerk/nextjs";
 import { useConvexAuth, useMutation, useQuery } from "convex/react";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { api } from "../../convex/_generated/api";
 
 export const generateLocalTokenIdentifier = () => {
@@ -82,21 +81,6 @@ export default function Home() {
     }
   }, [isLoaded, user, convexUser, createUser, localIdentifier]);
 
-  const updateCustomColor = useMutation(api.users.updateCustomColor);
-  const handleColorChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const newColor = e.target.value;
-    setCharacterColor(newColor as LilGuyColor);
-
-    if (user) {
-      updateCustomColor({
-        tokenIdentifier: `clerk:${user.id}`,
-        customColor: newColor,
-      }).catch(err => console.error("Error updating color:", err));
-    } else {
-      // Save color preference to localStorage when no user is logged in
-      localStorage.setItem('customColor', newColor);
-    }
-  }, [user, updateCustomColor]);
 
   if (isLoading) {
     return (
