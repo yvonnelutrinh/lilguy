@@ -33,7 +33,24 @@
   box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.2);
   overflow: hidden;
   font-family: 'Pixelify Sans', monospace;
+  max-width: 320px;
+  width: 100%;
+  margin: 0 auto;
 }
+
+/* Media queries for different screen sizes */
+@media (max-width: 768px) {
+  .pixel-window {
+    max-width: 300px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pixel-window {
+    max-width: 100%;
+  }
+}
+
 .pixel-window-header {
   background-color: var(--pixel-teal);
   color: white;

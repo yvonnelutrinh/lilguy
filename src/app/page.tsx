@@ -210,7 +210,7 @@ export default function Home() {
                     {activeTab === 'websites' && <SiteList userId={convexUser?._id} />}
                     {activeTab === 'goals' && <Goals />}
                     {activeTab === 'widget' && (
-                      <div className="flex justify-center">
+                      <div className="widget-container" style={{ maxWidth: "300px", width: "100%", margin: "0 auto" }}>
                         <ExtensionWidget activeTab={activeTab} />
                       </div>
                     )}
