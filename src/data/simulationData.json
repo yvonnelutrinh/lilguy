@@ -1,0 +1,172 @@
+{
+    "Reset": {
+      "lilGuyStage": "egg",
+      "health": 0,
+      "showHealth": false,
+      "lilGuyAnimation": "shake",
+      "lilGuyAnimationSpeed": 0.5,
+      "lilGuyColor": "random",
+      "lilGuyFirstGoalSet": false,
+      "lilGuyMessage": "LilGuy is an egg. Add your first goal to hatch!",
+      "lilGuyName": "LilGuy",
+      "lilGuyProductivity": 0,
+      "lilGuyTrackedHours": 0,
+      "productive_seconds": 0,
+      "unproductive_seconds": 0,
+      "total_seconds": 0,
+      "streak": 0,
+      "weeklyAverage": 0,
+      "websites": [],
+      "productivityData": {
+        "weekData": [
+          { "day": "Mon", "productive": 0, "unproductive": 0 },
+          { "day": "Tue", "productive": 0, "unproductive": 0 },
+          { "day": "Wed", "productive": 0, "unproductive": 0 },
+          { "day": "Thu", "productive": 0, "unproductive": 0 },
+          { "day": "Fri", "productive": 0, "unproductive": 0 },
+          { "day": "Sat", "productive": 0, "unproductive": 0 },
+          { "day": "Sun", "productive": 0, "unproductive": 0 }
+        ],
+        "today": { "productive": 0, "unproductive": 0 },
+        "streak": 0,
+        "weeklyAverage": 0,
+        "health": 0,
+        "mood": "neutral",
+        "goals": [],
+        "websites": []
+      }
+    },
+  
+    "Productive": {
+      "lilGuyStage": "angel",
+      "health": 90,
+      "showHealth": true,
+      "lilGuyAnimation": "idle",
+      "lilGuyColor": "random",
+      "lilGuyFirstGoalSet": true,
+      "lilGuyMessage": "LilGuy is thriving! Keep the streak going!",
+      "lilGuyName": "LilGuy",
+      "lilGuyProductivity": 90,
+      "lilGuyTrackedHours": 35,
+      "productive_seconds": 126000,
+      "unproductive_seconds": 1800,
+      "total_seconds": 127800,
+      "streak": 5,
+      "weeklyAverage": 90,
+      "websites": [
+        { "id": 1, "name": "github.com", "category": "productive", "timeSpent": 7200 },
+        { "id": 2, "name": "notion.so", "category": "productive", "timeSpent": 5400 }
+      ],
+      "productivityData": {
+        "weekData": [
+          { "day": "Mon", "productive": 5, "unproductive": 0.5 },
+          { "day": "Tue", "productive": 6, "unproductive": 0.25 },
+          { "day": "Wed", "productive": 5, "unproductive": 0.5 },
+          { "day": "Thu", "productive": 5, "unproductive": 0 },
+          { "day": "Fri", "productive": 4, "unproductive": 0.25 },
+          { "day": "Sat", "productive": 3, "unproductive": 0 },
+          { "day": "Sun", "productive": 2, "unproductive": 0 }
+        ],
+        "today": { "productive": 6, "unproductive": 0.25 },
+        "streak": 5,
+        "weeklyAverage": 90,
+        "health": 90,
+        "mood": "ecstatic",
+        "goals": [
+          { "id": 1, "title": "Launch MVP", "completed": false, "progress": 70 },
+          { "id": 2, "title": "Daily standup", "completed": true, "progress": 100 }
+        ],
+        "websites": [
+          { "id": 1, "name": "github.com", "category": "productive", "timeSpent": 7200 }
+        ]
+      }
+    },
+  
+    "Unproductive": {
+      "lilGuyStage": "devil",
+      "health": 30,
+      "showHealth": true,
+      "lilGuyAnimation": "idle",
+      "lilGuyColor": "random",
+      "lilGuyFirstGoalSet": true,
+      "lilGuyMessage": "LilGuy needs a break from distractions!",
+      "lilGuyName": "LilGuy",
+      "lilGuyProductivity": 20,
+      "lilGuyTrackedHours": 10,
+      "productive_seconds": 3600,
+      "unproductive_seconds": 14400,
+      "total_seconds": 18000,
+      "streak": 1,
+      "weeklyAverage": 20,
+      "websites": [
+        { "id": 1, "name": "youtube.com", "category": "unproductive", "timeSpent": 7200 },
+        { "id": 2, "name": "reddit.com", "category": "unproductive", "timeSpent": 5400 }
+      ],
+      "productivityData": {
+        "weekData": [
+          { "day": "Mon", "productive": 1, "unproductive": 4 },
+          { "day": "Tue", "productive": 0.5, "unproductive": 6 },
+          { "day": "Wed", "productive": 1, "unproductive": 5 },
+          { "day": "Thu", "productive": 0.5, "unproductive": 3 },
+          { "day": "Fri", "productive": 1, "unproductive": 5 },
+          { "day": "Sat", "productive": 0, "unproductive": 4 },
+          { "day": "Sun", "productive": 0, "unproductive": 4 }
+        ],
+        "today": { "productive": 0.5, "unproductive": 5 },
+        "streak": 1,
+        "weeklyAverage": 20,
+        "health": 30,
+        "mood": "sad",
+        "goals": [
+          { "id": 1, "title": "Write blog post", "completed": false, "progress": 10 }
+        ],
+        "websites": [
+          { "id": 1, "name": "youtube.com", "category": "unproductive", "timeSpent": 7200 }
+        ]
+      }
+    },
+  
+    "Normal": {
+      "lilGuyStage": "normal",
+      "health": 60,
+      "showHealth": true,
+      "lilGuyAnimation": "idle",
+      "lilGuyColor": "random",
+      "lilGuyFirstGoalSet": true,
+      "lilGuyMessage": "LilGuy is doing okay. Let’s keep moving forward!",
+      "lilGuyName": "LilGuy",
+      "lilGuyProductivity": 60,
+      "lilGuyTrackedHours": 20,
+      "productive_seconds": 7200,
+      "unproductive_seconds": 4800,
+      "total_seconds": 12000,
+      "streak": 2,
+      "weeklyAverage": 60,
+      "websites": [
+        { "id": 1, "name": "github.com", "category": "productive", "timeSpent": 3600 },
+        { "id": 2, "name": "twitter.com", "category": "unproductive", "timeSpent": 1800 }
+      ],
+      "productivityData": {
+        "weekData": [
+          { "day": "Mon", "productive": 3, "unproductive": 2 },
+          { "day": "Tue", "productive": 2, "unproductive": 1 },
+          { "day": "Wed", "productive": 4, "unproductive": 1 },
+          { "day": "Thu", "productive": 2, "unproductive": 2 },
+          { "day": "Fri", "productive": 3, "unproductive": 1 },
+          { "day": "Sat", "productive": 1, "unproductive": 1 },
+          { "day": "Sun", "productive": 0, "unproductive": 0 }
+        ],
+        "today": { "productive": 2, "unproductive": 1 },
+        "streak": 2,
+        "weeklyAverage": 60,
+        "health": 60,
+        "mood": "neutral",
+        "goals": [
+          { "id": 1, "title": "Refactor codebase", "completed": false, "progress": 50 }
+        ],
+        "websites": [
+          { "id": 1, "name": "github.com", "category": "productive", "timeSpent": 3600 }
+        ]
+      }
+    }
+  }
