@@ -391,9 +391,10 @@ function LilGuy({ size = "normal", className = "", initialAnimation = "idle", us
   );
   const [lilGuyMessage, setLilGuyMessage] = useState<string>("");
 
-  // Create a new LilGuy in Convex if one doesn't exist
+  
   useEffect(() => {
-    if (userId && !lilguy) {
+    // Create a new LilGuy in Convex if one doesn't exist
+    if (userId && lilguy === null) {
       console.log("[LilGuy] Creating new LilGuy in Convex");
       const color = getRandomColor();
       const name = "LilGuy";
@@ -446,14 +447,14 @@ function LilGuy({ size = "normal", className = "", initialAnimation = "idle", us
         if (lastUnreadMessage.body.includes("LilGuy loves productivity!")) {
           setAnimation('happy');
         } else if (lastUnreadMessage.body.includes("LilGuy hates slackers!")) {
-            setAnimation('angry');
+          setAnimation('angry');
         }
         setLilGuyMessage(lastUnreadMessage.body);
 
         // Mark the message as read after displaying it
         markMessageAsRead({ messageId: lastUnreadMessage._id });
       }
-    }, 1000);
+    }, 2000);
 
     return () => clearInterval(intervalId);
   }, [userId, lastUnreadMessage, markMessageAsRead]);
@@ -512,7 +513,7 @@ function LilGuy({ size = "normal", className = "", initialAnimation = "idle", us
   // --- Effect: First Goal Set (Hatch Sequence) ---
   useEffect(() => {
     if (firstGoalSet && lilGuyStage === 'egg' && !hatching) {
-  
+
       setHatching(true);
       playAnimationOnce(setAnimation, 'hatch', () => {
         setHatching(false);
@@ -625,9 +626,10 @@ function LilGuy({ size = "normal", className = "", initialAnimation = "idle", us
             className="pixel-button bg-blue-200 border-black border-2 px-8 py-2 text-lg font-pixel"
             onClick={() => {
               setAnimation('walk');
-              setLocalStorageItem('lilGuyAnimation', 'walk');
-              setLocalStorageItem('lilGuyMessage', 'LilGuy is going for a walk!');
-              window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'lilGuyMessage', value: 'LilGuy is going for a walk!' } }));
+              setLilGuyMessage('LilGuy is going for a walk!');
+              // setLocalStorageItem('lilGuyAnimation', 'walk');
+              // setLocalStorageItem('lilGuyMessage', 'LilGuy is going for a walk!');
+              // window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'lilGuyMessage', value: 'LilGuy is going for a walk!' } }));
             }}
           >
             Walk
@@ -636,9 +638,11 @@ function LilGuy({ size = "normal", className = "", initialAnimation = "idle", us
             className="pixel-button green border-black border-2 px-8 py-2 text-lg font-pixel"
             onClick={() => {
               setAnimation('happy');
-              setLocalStorageItem('lilGuyAnimation', 'happy');
-              setLocalStorageItem('lilGuyMessage', 'LilGuy loves pets!');
-              window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'lilGuyMessage', value: 'LilGuy loves pets!' } }));
+              setLilGuyMessage('LilGuy Loves pets!');
+
+              // setLocalStorageItem('lilGuyAnimation', 'happy');
+              // setLocalStorageItem('lilGuyMessage', 'LilGuy loves pets!');
+              // window.dispatchEvent(new CustomEvent('localStorageChanged', { detail: { key: 'lilGuyMessage', value: 'LilGuy loves pets!' } }));
             }}
           >
             Pet
@@ -656,4 +660,3 @@ function WidgetLilGuy(props: { health?: number; stage?: LilGuyStage; animation?:
 }
 
 export { getRandomColor, LilGuy, WidgetLilGuy };
-
