@@ -254,6 +254,7 @@ const Goals: React.FC<{ userId?: Id<"users">; }> = ({ userId }) => {
     }
   };
 
+  const createMessage = useMutation(api.messages.createMessage)
   const handleToggleComplete = (id: number) => {
     const updatedGoals = goals.map((goal) =>
       goal.id === id ? { ...goal, completed: !goal.completed } : goal
@@ -263,6 +264,13 @@ const Goals: React.FC<{ userId?: Id<"users">; }> = ({ userId }) => {
     // Emit appropriate emotion and health change based on completion state
     if (toggledGoal?.completed) {
       emitEmotionWithHealth("happy", 80, "completeGoal", 10);
+      createMessage({
+        userId: userId || "",
+        body: `LilGuy loves productivity! You completed ${toggledGoal?.title}`,
+        type: "goal-complete",
+        source: "manual-goal-completion",
+        durationSeconds: 0,
+      })
     } else {
       emitEmotionWithHealth("sad", 30, "uncompleteGoal", -5);
     }
@@ -272,7 +280,6 @@ const Goals: React.FC<{ userId?: Id<"users">; }> = ({ userId }) => {
     const goal = goals.find(g => g.id === id);
     if (goal?.convexId) {
       updateGoal({ goalId: goal.convexId, completed: !goal.completed });
-
     }
   };
 
