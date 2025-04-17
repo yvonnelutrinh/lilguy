@@ -56,7 +56,7 @@ export default defineSchema({
     type: v.string(),
     read: v.boolean(),
     source: v.string(),
-    healthChange: v.number(),
+    durationSeconds: v.number(),
     timestamp: v.number(),
   }).index("by_user", ["userId"]),
 

@@ -77,7 +77,7 @@ export const createMessage = mutation({
     body: v.string(),
     type: v.string(),
     source: v.string(),
-    healthChange: v.number(),
+    durationSeconds: v.number(),
   },
   handler: async (ctx, args) => {
     const messageId = await ctx.db.insert("messages", {
@@ -86,7 +86,7 @@ export const createMessage = mutation({
       type: args.type,
       read: false,
       source: args.source,
-      healthChange: args.healthChange,
+      durationSeconds: args.durationSeconds,
       timestamp: Date.now(),
     });
     
@@ -144,13 +144,13 @@ export const getMessageStats = query({
     });
     
     // Calculate total health change
-    const totalHealthChange = messages.reduce((sum, message) => sum + message.healthChange, 0);
+    const totaldurationSeconds = messages.reduce((sum, message) => sum + message.durationSeconds, 0);
     
     return {
       totalMessages,
       unreadMessages,
       messagesByType,
-      totalHealthChange,
+      totaldurationSeconds,
     };
   },
 });
