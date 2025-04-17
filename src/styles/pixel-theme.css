@@ -715,3 +715,36 @@ div[class*="w-full border-2 border-black bg-white shadow"] > div {
     max-width: calc(100vw - 32px) !important;
   }
 }
+
+/* Fix for LilGuy canvas and name editor overflow on mobile */
+@media (max-width: 640px) {
+  /* Fix canvas width */
+  canvas[class*="border-2 border-black bg-transparent pixelated"] {
+    max-width: calc(100vw - 32px) !important;
+    height: auto !important;
+  }
+  
+  /* Fix name editor container */
+  div[class*="w-full bg-pixel-primary text-black px-4 py-2 border"] {
+    max-width: calc(100vw - 32px) !important;
+    width: 100% !important;
+  }
+  
+  /* Fix name editor input field and buttons */
+  div[class*="flex items-center justify-center gap-2 w-full"] {
+    flex-wrap: wrap !important;
+    gap: 0.5rem !important;
+  }
+  
+  /* Make input take full width on its own line */
+  div[class*="flex items-center justify-center gap-2 w-full"] input {
+    width: 100% !important;
+    flex: 1 1 100% !important;
+    margin-bottom: 0.5rem !important;
+  }
+  
+  /* Make buttons share a line below input */
+  div[class*="flex items-center justify-center gap-2 w-full"] button {
+    flex: 0 1 auto !important;
+  }
+}
