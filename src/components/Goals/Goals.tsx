@@ -1,7 +1,7 @@
-import { Input } from "@/components/UI/Input/Input";
-import { SimpleContainer, SimpleItem } from '@/components/UI/SimpleContainer/SimpleContainer';
-import { Slider } from "@/components/UI/Slider/Slider";
-import Tag from '@/components/UI/Tag';
+import { Input } from "@/components/ui/Input/Input";
+import { SimpleContainer, SimpleItem } from '@/components/ui/SimpleContainer/SimpleContainer';
+import { Slider } from "@/components/ui/Slider/Slider";
+import Tag from '@/components/ui/Tag';
 import { useEmitEmotion } from '@/lib/emotionContext';
 import { triggerFirstGoalSequence } from '@/lib/lilguyActions';
 import { useMutation, useQuery } from 'convex/react';
@@ -81,7 +81,7 @@ const Goals: React.FC<{ userId?: Id<"users">; }> = ({ userId }) => {
     const savedGoals = getLocalStorageItem("goals", initialGoals);
     return savedGoals;
   });
-  // Sync UI state with Convex goals
+  // Sync ui state with Convex goals
   useEffect(() => {
     if (convexGoals && Array.isArray(convexGoals)) {
       setGoals(

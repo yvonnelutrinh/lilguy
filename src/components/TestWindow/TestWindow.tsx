@@ -7,7 +7,7 @@ import { ConvexHttpClient } from "convex/browser";
 import { useEffect, useState } from "react";
 import { api } from "../../../convex/_generated/api";
 import { normalWebsites } from '../SiteList/SiteList';
-import { SimpleContainer } from "../UI/SimpleContainer/SimpleContainer";
+import { SimpleContainer } from "../ui/SimpleContainer/SimpleContainer";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */

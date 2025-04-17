@@ -18,7 +18,7 @@
   --pixel-pink-dark: #e8899b;
   --pixel-pink-light: #fccbd5;
   
-  /* UI Element Colors */
+  /* ui Element Colors */
   --window-bg: white;
   --window-header-bg: var(--pixel-teal);
   --window-header-text: white;
@@ -70,7 +70,7 @@
   --pixel-pink-dark: #7a434a;
   --pixel-pink-light: #f5b0bd;
 
-  /* UI Element Colors */
+  /* ui Element Colors */
   --window-bg: #181b1f;
   --window-header-bg: var(--pixel-teal-dark);
   --window-header-text: #d8f6ff;
@@ -291,7 +291,7 @@
   transition: width 0.3s;
 }
 
-/* Simple bordered container - for non-pixel UI components */
+/* Simple bordered container - for non-pixel ui components */
 .simple-container {
   border: 1px solid #000;
   background-color: white;

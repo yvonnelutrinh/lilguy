@@ -8,8 +8,8 @@ import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
 import { HealthBar } from "../HealthBar/HealthBar";
 import PixelWindow from '../ui/PixelWindow';
-import { Pencil } from "lucide-react";
 import { Button } from "../ui/Button/Button";
+import { Pencil } from "lucide-react";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
@@ -105,6 +105,8 @@ function LilGuyCanvas({
     lilguy?.name || getLocalStorageItem("lilGuyName", "LilGuy")
   );
 
+  const { health, setHealth } = useHealth();
+
   // Update local state when Convex data changes
   useEffect(() => {
     if (lilguy) {
@@ -117,7 +119,7 @@ function LilGuyCanvas({
   }, [lilguy, setHealth]);
 
 
-  const { health, setHealth } = useHealth();
+  
 
   // --- Sprite image ref ---
   const spriteImageRef = useRef<HTMLImageElement | null>(null);

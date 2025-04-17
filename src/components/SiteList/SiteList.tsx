@@ -1,7 +1,7 @@
-import { Input } from "@/components/UI/Input/Input";
-import { Label } from "@/components/UI/Label/Label";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/UI/Select/Select";
-import { SimpleContainer, SimpleItem } from '@/components/UI/SimpleContainer/SimpleContainer';
+import { Input } from "@/components/ui/Input/Input";
+import { Label } from "@/components/ui/Label/Label";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/Select/Select";
+import { SimpleContainer, SimpleItem } from '@/components/ui/SimpleContainer/SimpleContainer';
 import { useHealth } from "@/context/HealthContext";
 import { useMutation, useQuery } from "convex/react";
 import { Plus, Trash2 } from "lucide-react";

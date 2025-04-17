@@ -334,7 +334,7 @@ const ExtensionWidget: React.FC<WidgetProps> = ({ onClose, onExpand, activeTab }
         </div>
        
 
-        {/* Website Tracker UI */}
+        {/* Website Tracker ui */}
         <div className="bg-white p-3 border-t border-dashed border-gray-300">
           <div className="text-xs font-bold mb-2">Website Tracker</div>
           <div className="flex flex-col gap-2">
