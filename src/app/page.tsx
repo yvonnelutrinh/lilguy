@@ -128,69 +128,69 @@ export default function Home() {
                 >
                   <LilGuy userId={convexUser?._id} />
                 </PixelWindow>
+              </div>
 
-                {/* LilGuy States Toggling - TEMP FOR TESTING ONLY */}
-                {/* <PixelWindow
+              {/* LilGuy States Toggling - TEMP FOR TESTING ONLY */}
+              {/* <PixelWindow
                   title="TEMP WINDOW"
                   className="mb-4"
                   contentClassName="p-2"
                 >
                   <TestWindow userId={convexUser?._id} />
                 </PixelWindow>
-              </div>
+              
 
               {/* Dashboard content */}
-                <div className="flex-1">
-                  <PixelWindow
-                    title="DASHBOARD"
-                    className="mb-4"
-                    contentClassName="p-0"
-                  >
-                    <div className="pixel-tabs-list">
-                      <button
-                        data-tab="dashboard"
-                        className={`pixel-tab ${activeTab === 'dashboard' ? 'active' : ''}`}
-                        data-state={activeTab === 'dashboard' ? 'active' : ''}
-                        onClick={() => setActiveTab('dashboard')}
-                      >
-                        Dashboard
-                      </button>
-                      <button
-                        data-tab="websites"
-                        className={`pixel-tab ${activeTab === 'websites' ? 'active' : ''}`}
-                        data-state={activeTab === 'websites' ? 'active' : ''}
-                        onClick={() => setActiveTab('websites')}
-                      >
-                        Websites
-                      </button>
-                      <button
-                        className={`pixel-tab ${activeTab === 'goals' ? 'active' : ''}`}
-                        data-state={activeTab === 'goals' ? 'active' : ''}
-                        onClick={() => setActiveTab('goals')}
-                      >
-                        Goals
-                      </button>
-                      <button
-                        className={`pixel-tab ${activeTab === 'widget' ? 'active' : ''}`}
-                        data-state={activeTab === 'widget' ? 'active' : ''}
-                        onClick={() => setActiveTab('widget')}
-                      >
-                        Widget
-                      </button>
-                    </div>
+              <div className="flex-1">
+                <PixelWindow
+                  title="DASHBOARD"
+                  className="mb-4"
+                  contentClassName="p-0"
+                >
+                  <div className="pixel-tabs-list">
+                    <button
+                      data-tab="dashboard"
+                      className={`pixel-tab ${activeTab === 'dashboard' ? 'active' : ''}`}
+                      data-state={activeTab === 'dashboard' ? 'active' : ''}
+                      onClick={() => setActiveTab('dashboard')}
+                    >
+                      Dashboard
+                    </button>
+                    <button
+                      data-tab="websites"
+                      className={`pixel-tab ${activeTab === 'websites' ? 'active' : ''}`}
+                      data-state={activeTab === 'websites' ? 'active' : ''}
+                      onClick={() => setActiveTab('websites')}
+                    >
+                      Websites
+                    </button>
+                    <button
+                      className={`pixel-tab ${activeTab === 'goals' ? 'active' : ''}`}
+                      data-state={activeTab === 'goals' ? 'active' : ''}
+                      onClick={() => setActiveTab('goals')}
+                    >
+                      Goals
+                    </button>
+                    <button
+                      className={`pixel-tab ${activeTab === 'widget' ? 'active' : ''}`}
+                      data-state={activeTab === 'widget' ? 'active' : ''}
+                      onClick={() => setActiveTab('widget')}
+                    >
+                      Widget
+                    </button>
+                  </div>
 
-                    <div className="p-4">
-                      {activeTab === 'dashboard' && <ProductivityMetrics userId={convexUser?._id} />}
-                      {activeTab === 'websites' && <SiteList userId={convexUser?._id} />}
-                      {activeTab === 'goals' && <Goals userId={convexUser?._id} />}
-                      {activeTab === 'widget' && (
-                        <div className="widget-container" style={{ maxWidth: "300px", width: "100%", margin: "0 auto" }}>
-                          <ExtensionWidget activeTab={activeTab} />
-                        </div>
-                      )}
-                    </div>
-                  </PixelWindow>
-                </div>
+                  <div className="p-4">
+                    {activeTab === 'dashboard' && <ProductivityMetrics userId={convexUser?._id} />}
+                    {activeTab === 'websites' && <SiteList userId={convexUser?._id} />}
+                    {activeTab === 'goals' && <Goals userId={convexUser?._id} />}
+                    {activeTab === 'widget' && (
+                      <div className="widget-container" style={{ maxWidth: "300px", width: "100%", margin: "0 auto" }}>
+                        <ExtensionWidget activeTab={activeTab} />
+                      </div>
+                    )}
+                  </div>
+                </PixelWindow>
               </div>
             </div>
           </main>
