@@ -1,0 +1,1 @@
+CSP: https://groups.google.com/a/chromium.org/g/chromium-extensions/c/sJiaTnFMLHQ?pli=1
