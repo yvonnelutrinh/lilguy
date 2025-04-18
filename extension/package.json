@@ -1,0 +1,18 @@
+{
+  "main": "scripts/background.js",
+  "type": "module",
+  "scripts": {
+    "dev": "webpack --watch",
+    "build": "webpack"
+  },
+  "dependencies": {
+    "@dqbd/tiktoken": "^1.0.20",
+    "@huggingface/transformers": "^3.4.2",
+    "@mozilla/readability": "^0.6.0",
+    "gpt-tokenizer": "^2.9.0"
+  },
+  "devDependencies": {
+    "webpack": "^5.99.5",
+    "webpack-cli": "^6.0.1"
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "name": "lilguy",
+  "short_name": "lilG",
+  "description": "Your smart learning companion. As you explore the web, this extension checks if pages are actually helping you reach your goals—like becoming a Next.js pro.",
+  "version": "1.0",
+  "manifest_version": 3,
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "192": "icons/icon192.png"
+  },
+  "action": {
+    "default_popup": "popup/dist/index.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "192": "icons/icon192.png"
+    }
+  },
+  "background": {
+    "service_worker": "dist/background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "js": ["dist/content.js"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "permissions": ["storage", "tabs", "activeTab", "scripting"],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';"
+  },
+  "host_permissions": ["<all_urls>"]
+}

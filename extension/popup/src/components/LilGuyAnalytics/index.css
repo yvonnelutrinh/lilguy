@@ -1,0 +1,54 @@
+
+.tabs {
+  display: flex;
+  margin-bottom: 15px;
+}
+
+.tab {
+  padding: 8px 16px;
+  border: none;
+  background: #393d47;
+  cursor: pointer;
+  flex: 1;
+}
+
+.tab.active {
+  background: #455480;
+  color: white;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table th,
+.data-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.data-table th {
+  background-color: #242424;
+}
+
+.clear-data {
+  margin-top: 15px;
+  padding: 8px 16px;
+  background: #f44336;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.no-data {
+  text-align: center;
+  color: #666;
+  padding: 20px;
+}
+
+.loading {
+  text-align: center;
+  padding: 20px;
+}
